@@ -1,0 +1,9 @@
+/*
+ * Adapted from Supabase (Apache License 2.0).
+ * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/popover.module.css
+ * Changes: import paths only.
+ */
+
+.popover-trigger-width {
+  width: var(--radix-popover-trigger-width);
+}

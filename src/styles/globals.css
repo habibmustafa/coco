@@ -1,0 +1,34 @@
+/*
+ * Design token entry point.
+ *
+ * Mirrors the upstream import chain from
+ * github.com/supabase/supabase/blob/master/packages/config/tailwind.config.css
+ * so the semantic system resolves in the same order: raw inputs → derivations →
+ * compat aliases → per-theme overrides → Tailwind @theme mapping → utilities.
+ *
+ * Order is significant: :root and a single class selector have equal specificity,
+ * so the theme files must come after semantic.css, and unset-tw-colors.css must
+ * come before colors.css.
+ */
+
+@import 'tailwindcss';
+@plugin "@tailwindcss/forms";
+@import 'tw-animate-css';
+
+@import './vendor/supabase/global.css';
+@import './vendor/supabase/semantic.css';
+@import './vendor/supabase/compat.css';
+@import './vendor/supabase/themes/dark.css';
+@import './vendor/supabase/themes/light.css';
+
+@import './vendor/supabase/unset-tw-colors.css';
+@import './vendor/supabase/colors.css';
+@import './vendor/supabase/theme.css';
+
+@import './vendor/supabase/animations.css';
+@import './vendor/supabase/utilities.css';
+@import './vendor/supabase/hit-area.css';
+@import './vendor/supabase/variants.css';
+@import './vendor/supabase/base.css';
+@import './vendor/supabase/design-system-base.css';
+@import './vendor/supabase/code-block-variables.css';

@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en" data-theme="light" class="light">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>core — component playground</title>
+    <!--
+      The design system site serves Inter and Source Code Pro through next/font;
+      here they come from Google Fonts. The stacks themselves are defined in the
+      library CSS (vendor/supabase/design-system-base.css).
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;600;700&family=Source+Code+Pro:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <script>
+      // Apply the stored theme before first paint so a reload does not flash the
+      // wrong one. ThemeProvider takes over from here.
+      try {
+        var stored = localStorage.getItem('theme') || 'system'
+        var resolved =
+          stored === 'system'
+            ? window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light'
+            : stored
+        var root = document.documentElement
+        root.setAttribute('data-theme', resolved)
+        root.classList.toggle('dark', resolved === 'dark')
+        root.classList.toggle('light', resolved === 'light')
+        root.style.colorScheme = resolved
+      } catch (e) {}
+    </script>
+    <div id="root"></div>
+    <script type="module" src="/playground/main.tsx"></script>
+  </body>
+</html>
