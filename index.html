@@ -4,7 +4,9 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>core — component playground</title>
+    <meta name="application-name" content="coco" />
+    <meta name="description" content="coco — Supabase dizayn sistemi əsasında React komponent kitabxanası." />
+    <title>coco — component playground</title>
     <!--
       The design system site serves Inter and Source Code Pro through next/font;
       here they come from Google Fonts. The stacks themselves are defined in the
@@ -19,6 +21,15 @@
   </head>
   <body>
     <script>
+      // Reload the playground at the top instead of restoring a previous section.
+      if (performance.getEntriesByType('navigation')[0]?.type === 'reload') {
+        history.scrollRestoration = 'manual'
+        if (location.hash) {
+          history.replaceState(history.state, '', location.pathname + location.search)
+        }
+        window.scrollTo(0, 0)
+      }
+
       // Apply the stored theme before first paint so a reload does not flash the
       // wrong one. ThemeProvider takes over from here.
       try {

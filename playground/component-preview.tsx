@@ -15,7 +15,7 @@ const sources = import.meta.glob<string>('./examples/*.tsx', {
 // The examples import from the library source; show the package name instead so
 // the snippet reads the way a consumer would write it.
 function presentSource(source: string) {
-  return source.replace(/(['"])\.\.\/\.\.\/src\1/g, "'core'").trim()
+  return source.replace(/(['"])\.\.\/\.\.\/src\1/g, "'coco'").trim()
 }
 
 function useHighlighted(source: string) {

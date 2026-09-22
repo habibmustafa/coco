@@ -8,7 +8,7 @@ You are continuing work on an existing project. Read this brief fully before tou
 
 ## 1. What the project is
 
-`core/` (Windows path: `C:\Users\hmustafazadeh\Desktop\core`) is a **private React component
+`coco/` (Windows path: `C:\Users\hmustafazadeh\Desktop\core`) is a **private React component
 library** that ports the **Supabase design system** (<https://supabase.com/design-system>).
 
 The goal is **visual identity, not inspiration**: components must look exactly like upstream.
@@ -21,14 +21,15 @@ It is **not published to npm**. `package.json` is publish-shaped (`exports`, `fi
 ## 2. Stack
 
 React 19 · TypeScript 6 · Vite 8 (library mode) · Tailwind CSS v4 (CSS-first `@theme`) ·
-Radix (`radix-ui` single package) · `class-variance-authority` · `clsx` + `tailwind-merge` ·
-`lucide-react` · oxlint. Playground-only: `shiki`. Not a git repository.
+Radix (`radix-ui` single package) · `cmdk` · `vaul` · `sonner` · `react-day-picker` · `recharts` ·
+`react-hook-form` · `framer-motion` · `class-variance-authority` · `clsx` + `tailwind-merge` ·
+`lucide-react` · oxlint. Playground-only: `shiki`, `@hookform/resolvers`, `zod`. Git branch: `main`.
 
 Commands:
 
 ```
 npm run dev            # playground dev server
-npm run build:lib      # dist/core.js + core.cjs + styles.css + index.d.ts
+npm run build:lib      # dist/coco.js + coco.cjs + styles.css + index.d.ts
 npm run lint           # oxlint
 npx tsc -b             # typecheck
 npm run check:classes  # every utility class used must exist in the built CSS
@@ -50,22 +51,28 @@ Code, identifiers, code comments and file names stay in English.
 
 ## 5. Current state
 
-**25 atom components ported** (all byte-faithful to upstream, only import paths changed):
+Layihənin adı **coco**-dur. Paket və build çıxışları `coco` adını istifadə edir;
+fiziki workspace yolu hələ `C:\Users\hmustafazadeh\Desktop\core`-dur.
+SVG loqo, nişan və favicon `public/` altındadır; qaydalar `docs/brand.md`-dədir.
 
-accordion, alert, aspect-ratio, avatar, badge, button, card, checkbox, collapsible, dialog,
-dropdown-menu, hover-card, input, label, popover, progress, radio-group, select, separator,
-sheet, skeleton, switch, tabs, textarea, tooltip.
+**33 atom components ported** (upstream source is preserved; import paths and TypeScript-only
+compatibility annotations are adapted):
+
+accordion, alert, aspect-ratio, avatar, badge, button, calendar, card, chart, checkbox, collapsible,
+command, dialog, drawer, dropdown-menu, form, hover-card, input, label, popover, progress,
+radio-group, select, separator, sheet, sidebar, skeleton, sonner, switch, table, tabs, textarea,
+tooltip.
 
 Plus: `ThemeProvider` + `useTheme` + `singleThemes` (System/Dark/Light, persisted in
 localStorage, live `matchMedia` tracking, cross-tab sync, no-flash inline script in `index.html`).
 
-Build output: `dist/core.js` ~83 kB (gzip 16 kB), `dist/styles.css` ~109 kB (gzip 21 kB),
-111 public exports. Runtime deps are **external** in the bundle.
+Build output: `dist/coco.js` ~168 kB (gzip 35.5 kB), `dist/styles.css` ~164.5 kB (gzip 28.3 kB),
+205 public exports. Runtime deps are **external** in the bundle.
 
 ### Structure
 
 ```
-core/
+coco/
 ├── CLAUDE.md, docs/plan.md, docs/codex-prompt.md
 ├── scripts/{check-classes.mjs, check-tokens.mjs}
 ├── index.html                      # playground shell; Inter + Source Code Pro; no-flash theme script
@@ -73,23 +80,23 @@ core/
 │   ├── main.tsx, app.tsx, docs.tsx, theme-switcher.tsx
 │   ├── component-preview.tsx       # Preview/Code tabs, Shiki highlight, copy button
 │   ├── shiki-theme.ts
-│   └── examples/*.tsx              # 33 demo files, one per example
+│   └── examples/*.tsx              # 42 demo files
 ├── src/
 │   ├── index.ts                    # public entry (imports the CSS, re-exports everything)
 │   ├── lib/{utils.ts, constants.ts, get-explicit-tab-index.ts}
 │   ├── providers/{theme-provider.tsx, single-themes.ts}
 │   ├── styles/
 │   │   ├── globals.css             # the upstream import chain, order matters
-│   │   └── vendor/supabase/        # 15 vendored CSS files + NOTICE.md
+│   │   └── vendor/supabase/        # 17 vendored CSS files + NOTICE.md
 │   └── components/
 │       ├── atoms/                  # from packages/ui
 │       │   ├── actions/button/
-│       │   ├── data-display/{accordion,avatar,collapsible}/
-│       │   ├── feedback/{alert,badge,progress,skeleton}/
-│       │   ├── forms/{checkbox,input,label,radio-group,select,switch,textarea}/
+│       │   ├── data-display/{accordion,avatar,chart,collapsible,table}/
+│       │   ├── feedback/{alert,badge,progress,skeleton,sonner}/
+│       │   ├── forms/{calendar,checkbox,form,input,label,radio-group,select,switch,textarea}/
 │       │   ├── layout/{aspect-ratio,card,separator}/
-│       │   ├── navigation/tabs/
-│       │   └── overlay/{dialog,dropdown-menu,hover-card,popover,sheet,tooltip}/
+│       │   ├── navigation/{command,sidebar,tabs}/
+│       │   └── overlay/{dialog,drawer,dropdown-menu,hover-card,popover,sheet,tooltip}/
 │       └── fragments/              # from packages/ui-patterns — still empty
 ├── vite.config.ts, package.json, tsconfig*.json
 ```
@@ -98,8 +105,9 @@ core/
 
 `tailwindcss` → `@plugin @tailwindcss/forms` → `tw-animate-css` → `global.css` →
 `semantic.css` → `compat.css` → `themes/dark.css` → `themes/light.css` → `unset-tw-colors.css`
-→ `colors.css` → `theme.css` → `animations.css` → `utilities.css` → `hit-area.css` →
-`variants.css` → `base.css` → `design-system-base.css` → `code-block-variables.css`.
+→ `colors.css` → `theme.css` → `charts.css` → `animations.css` → `utilities.css` → `hit-area.css` →
+`variants.css` → `base.css` → `typography.css` → `design-system-base.css` →
+`code-block-variables.css`.
 
 Never edit values inside `src/styles/vendor/supabase/`. Each file carries a source header;
 `NOTICE.md` holds the Apache-2.0 attribution and the list of changes.
@@ -154,11 +162,9 @@ Never edit values inside `src/styles/vendor/supabase/`. Each file carries a sour
 
 ## 8. Roadmap
 
-**Remaining atoms** (from `packages/ui/src/components/shadcn/ui/`), each needs its own npm package
-except Table: Table, Command (`cmdk`), Drawer (`vaul`), Sonner, Calendar (`react-day-picker`),
-Chart (`recharts` + vendor `charts.css`), Form (`react-hook-form`), Sidebar, Resizable, Input OTP,
+**Remaining atoms** (from `packages/ui/src/components/shadcn/ui/`): Resizable, Input OTP,
 alert-dialog, context-menu, menubar, navigation-menu, scroll-area, slider, toggle, toggle-group,
-button-group, input-group, field, breadcrumb. Start with **Table** — no new dependency.
+button-group, input-group, field, breadcrumb. Start with **Resizable** next.
 
 **Fragments** (from `packages/ui-patterns/src/`, go in `src/components/fragments/`, flat, no
 categories): Admonition, `collapsible-alert.tsx`, CollapsibleCardSection, `form/` (FormItemLayout),
@@ -172,7 +178,7 @@ McpUrlBuilder, PrivacySettings.
 
 - **Nothing has been verified visually in a browser** — all checking so far is at the CSS/type
   level via the two scripts. Side-by-side comparison against the live site is still owed.
-- `README.md` is still the default Vite template text.
+- README coco istifadəsini və tema inteqrasiyasını sənədləşdirir.
 - No tests (upstream has `*.test.tsx` files that were not ported).
 - `oxlint` reports a handful of warnings that come from upstream code as-is
   (`only-export-components`, unused params). Leave them; do not "fix" vendored logic.

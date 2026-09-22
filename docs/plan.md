@@ -1,7 +1,7 @@
 # Plan və iş jurnalı
 
 > Canlı sənəd. Hər qərar, düzəliş və tamamlanan iş buraya yazılır.
-> Son yenilənmə: 2026-09-22 · Status: Faza 0-4 tamamlanıb (25 atom komponent).
+> Son yenilənmə: 2026-09-22 · Status: Faza 0-4 tamamlanıb, Faza 5 davam edir (33 atom komponent).
 
 ## Məqsəd
 Supabase-in açıq-mənbə design system-ini (`supabase.com/design-system`) React komponent paketi
@@ -13,6 +13,16 @@ kimi portlamaq. Vizual nəticə **birəbir** olmalıdır — approksimasiya deyi
 ---
 
 ## Qərarlar jurnalı
+
+### coco adı və vizual kimlik — 2026-09-22
+
+İstifadəçinin qərarı ilə layihə `coco` adlandırıldı. Paket, lockfile, build çıxışları,
+HTML başlığı, playground loqosu və göstərilən import nümunələri yeniləndi.
+`public/coco-logo.svg`, `public/coco-mark.svg` və temaya uyğun favicon hazırlandı.
+README istifadə təlimatı ilə əvəzləndi; brend qaydaları `docs/brand.md`-dədir.
+Fiziki workspace yolu hələ `C:\Users\hmustafazadeh\Desktop\core`-dur.
+Reload zamanı scroll bərpası söndürülür və URL ankeri təmizlənir ki, playground
+yuxarıdan açılsın. Adi bölmə keçidləri və birbaşa anker linkləri saxlanılır.
 
 | # | Qərar | Səbəb |
 |---|---|---|
@@ -34,7 +44,7 @@ kimi portlamaq. Vizual nəticə **birəbir** olmalıdır — approksimasiya deyi
 | 16 | Fragmentlər **kateqoriyasız (flat)** | Upstream-in fragment siyahısı da flat-dır; fragmentlər atomlardan qurulan hazır bloklardır, tip üzrə bölgü onlara uyğun gəlmir |
 | 17 | Demo-lar `playground/examples/` altında **ayrı fayllar**, kod nümunəsi `import.meta.glob(..., '?raw')` ilə həmin faylın öz mənbəyindən göstərilir | Render olunan kod ilə göstərilən kod eyni fayldır — nümunə heç vaxt köhnələ bilmir; yeni fayl əlavə edilən kimi avtomatik görünür |
 | 18 | Sintaksis rəngləndirmə **Shiki** ilə, tema rəngləri `var(--code-token-*)` | Shiki v4 tema rənglərində CSS dəyişənini qəbul edir (yoxlanılıb) → kod bloku tema dəyişəndə yenidən highlight edilmədən özü uyğunlaşır; rənglər Supabase-in `code-block-variables.css`-indən gəlir |
-| 19 | Nümunə mənbəyində `'../../src'` → `'core'` əvəzlənir | Fayl işlək qalır, amma istifadəçi paket adı ilə realistik import görür |
+| 19 | Nümunə mənbəyində `'../../src'` → `'coco'` əvəzlənir | Fayl işlək qalır, amma istifadəçi paket adı ilə realistik import görür |
 
 ---
 
@@ -86,7 +96,7 @@ kimi portlamaq. Vizual nəticə **birəbir** olmalıdır — approksimasiya deyi
 ## Struktur
 
 ```
-core/
+coco/
 ├── CLAUDE.md                      # iş qaydaları (hər sessiyada avtomatik yüklənir)
 ├── docs/plan.md                   # bu fayl
 ├── playground/                    # dev-only design-system tipli demo sayt
@@ -99,17 +109,18 @@ core/
 │   ├── index.ts                   # public entry
 │   ├── styles/
 │   │   ├── globals.css            # upstream import zənciri
-│   │   └── vendor/supabase/       # 12 vendored CSS + NOTICE.md
+│   │   └── vendor/supabase/       # 17 vendored CSS + NOTICE.md
 │   ├── lib/                       # utils (cn), constants, get-explicit-tab-index
 │   ├── providers/                 # theme-provider, single-themes
 │   └── components/
 │       ├── atoms/                 # packages/ui → "Atom components"
 │       │   ├── actions/button/
-│       │   ├── data-display/avatar/
-│       │   ├── feedback/{alert,badge,progress,skeleton}/
-│       │   ├── forms/{input,label,textarea,checkbox,switch,radio-group,select}/
+│       │   ├── data-display/{accordion,avatar,chart,collapsible,table}/
+│       │   ├── feedback/{alert,badge,progress,skeleton,sonner}/
+│       │   ├── forms/{calendar,checkbox,form,input,label,radio-group,select,switch,textarea}/
 │       │   ├── layout/{card,separator,aspect-ratio}/
-│       │   └── navigation/ overlay/          # boş
+│       │   ├── navigation/{command,sidebar,tabs}/
+│       │   └── overlay/{dialog,drawer,dropdown-menu,hover-card,popover,sheet,tooltip}/
 │       └── fragments/             # packages/ui-patterns → "Fragment components" (hələ boş)
 ├── vite.config.ts
 └── package.json
@@ -122,7 +133,7 @@ core/
 - **Faza 0 — İnfrastruktur**: Vite library mode (es+cjs, `cssFileName: styles`),
   `@tailwindcss/vite`, `vite-plugin-dts` (`bundleTypes` + api-extractor), package.json
   `exports`/`sideEffects`/`peerDependencies`, playground ayrıldı, default Vite demo silindi.
-- **Token sistemi**: 12 CSS faylı byte-exact vendor edildi (OKLCH semantic sistemi, Radix
+- **Token sistemi**: 17 CSS faylı byte-exact vendor edildi (OKLCH semantic sistemi, Radix
   rəng skalaları, light/dark tema girişləri, Tailwind `@theme` mapping-i, utilities, variants,
   base, design-system tipoqrafiyası) + `NOTICE.md`.
 - **Faza 1**: Button (real versiya), Input, Card.
@@ -134,19 +145,41 @@ core/
   (→ `feedback/`), Separator, Aspect Ratio (→ `layout/`), Avatar (+Image/Fallback)
   (→ `data-display/`). Yeni asılılıq tələb etmədi.
 - **Atom/fragment bölgüsü**: `components/atoms/` və `components/fragments/`.
-- **Playground**: sticky header + sidebar nav, 16 komponent bölməsi, Colors və Typography
+- **Playground**: sticky header + sidebar nav, 33 komponent bölməsi, Colors və Typography
   bölmələri. Hər demo üçün **Preview / Code tabları** — kod `playground/examples/*.tsx`
   faylının öz mənbəyindən (`?raw`) gəlir, Shiki ilə rənglənir (`var(--code-token-*)` ilə
-  tema-uyğun), copy düyməsi var. 24 nümunə faylı.
+  tema-uyğun), copy düyməsi var. 42 nümunə faylı.
 
 - **Faza 4 — Overlay**: Dialog, Sheet, Popover, Dropdown Menu, Tooltip, Hover Card
   (→ `overlay/`), Accordion, Collapsible (→ `data-display/`), Tabs (+`useTabIndicator`)
   (→ `navigation/`). `animations.css` vendor edildi (`animate-accordion-*`, `animate-overlay-*`
   keyframe-ləri oradadır). Popover öz `popover.module.css`-i ilə gəlir. Yeni npm asılılığı yox.
 - Playground-un Preview/Code tabları artıq **öz `Tabs` komponentimizlə** işləyir (dogfooding).
+- **Faza 5 başladı — Table**: public `table.tsx` implementasiyası, onun daxili
+  `ShadowScrollArea` + `useHorizontalScroll` zənciri və upstream invoice demo-su portlandı.
+  `heading-meta` utility-si üçün upstream `packages/config/typography.css` vendor edildi.
+  Yeni npm asılılığı tələb etmədi.
+- `check:classes` tapıntı olduqda artıq non-zero exit code qaytarır; Table mənbəyindəki boşluqlu
+  upstream easing ifadələrinin parser tərəfindən yaranan iki fraqmenti false-positive kimi
+  sənədləşdirilib filtrə əlavə edildi.
+- **Faza 5 — Command**: `Command`, `CommandDialog`, input/list/group/item/empty/separator/shortcut
+  public API-si və iki upstream demo portlandı. Upstream-lə eyni `cmdk@1.1.1` runtime asılılığı
+  əlavə edildi və library bundle-da external saxlanıldı.
+- **Faza 5 — Drawer**: `Drawer` və 9 alt komponenti, directional layout/drag davranışları və
+  upstream goal/chart demo-su portlandı. `vaul@1.1.2` runtime dependency kimi external saxlanıldı;
+  demo üçün upstream catalog-dakı `recharts@2.15.4` əvvəlcə dev dependency kimi əlavə edildi.
+- **Faza 5 — Sonner, Calendar, Chart, Form, Sidebar**: beş komponent eyni keçiddə portlandı.
+  Sonner `StatusIcon`, Form `InputGroup`, Sidebar isə `useIsMobile` və legacy shadcn Button
+  implementasiyalarını daxili köməkçi kimi istifadə edir; bunlar ayrıca public atom sayılmır.
+  Chart üçün upstream `charts.css` vendor edildi. `sonner`, `react-day-picker`, `recharts`,
+  `react-hook-form` və `framer-motion` runtime dependency-dir və bundle-da external saxlanılır;
+  `@hookform/resolvers` ilə `zod` yalnız Form playground nümunəsi üçündür. Sonner playground
+  toaster-i `ThemeProvider`-in `resolvedTheme` dəyəri ilə sinxronlaşdırılıb. Upstream React
+  mənbələrinin istinad etdiyi legacy `text-success-600` və `text-destructive-50` utility-ləri
+  mövcud semantik tokenlərə bağlandı.
 
-**Cari ölçülər:** `dist/core.js` 82.9 kB (gzip 16.3 kB), `dist/styles.css` 99.8 kB (gzip 19.2 kB),
-111 public export, 25 atom komponent, 33 playground nümunəsi.
+**Cari ölçülər:** `dist/coco.js` 168.0 kB (gzip 35.5 kB), `dist/styles.css` 164.5 kB (gzip 28.3 kB),
+205 public export, 33 atom komponent, 42 playground nümunəsi.
 Shiki yalnız playground-dadır, library bundle-ına düşmür.
 
 ---
@@ -154,9 +187,8 @@ Shiki yalnız playground-dadır, library bundle-ına düşmür.
 ## Növbəti fazalar
 
 ### Atomlar (`packages/ui/src/components/shadcn/ui/`)
-- **Faza 5 — Ağır/3rd-party**: Table, Command (`cmdk`), Drawer (`vaul`), Sonner,
-  Calendar (`react-day-picker`), Chart (`recharts` + `charts.css`), Form (`react-hook-form`),
-  Sidebar, Resizable, Input OTP.
+- **Faza 5 — Ağır/3rd-party**: Table, Command, Drawer, Sonner, Calendar, Chart, Form və Sidebar
+  tamamlandı. Qalanlar: Resizable və Input OTP.
 
 ### Fragmentlər (`packages/ui-patterns/src/`)
 Atomlar hazır olandan sonra. Upstream-də mövcud olanlardan bizim üçün ən uyğunları:
@@ -194,7 +226,7 @@ npx tsc -b       # tip yoxlaması
   çəkib bizim tokenlərlə müqayisə edir (yalnız `:root`/`.light`/`.dark`/`[data-theme]` blokları;
   utility-daxili dəyişənlər — `--hit-area-*`, `--tw-*` — istifadəyə görə dəyişdiyi üçün
   müqayisədən kənardır). Font stack-indəki bilinən fərq `EXPECTED_DIFFERENCES`-dədir.
-  **Hazırkı vəziyyət: 546 ortaq token, fərq yoxdur.**
+  **Hazırkı vəziyyət: 585 ortaq token, fərq yoxdur.**
 
 ### Üçüncü qayda (skriptlə tutulmur)
 Komponenti portlayanda upstream-in öz istifadə nümunəsini də götür:
@@ -216,6 +248,5 @@ Yeni komponent və ya qərar əlavə olunanda onu da yenilə.
 
 - **Gözlə vizual təsdiq edilməyib** — sessiyada brauzer aləti yox idi. Token və class
   səviyyəsində yoxlanılıb (yuxarıdakı skriptlər), amma yan-yana baxış istifadəçidədir.
-- README hələ default Vite şablon mətnidir.
 - Test yoxdur (upstream-də `*.test.tsx` var, portlanmayıb).
-- `dark:`-in `data-theme` tələbi library istifadəçiləri üçün sənədləşdirilməlidir.
+- Tema inteqrasiyası və `data-theme` tələbi README-də sənədləşdirilib.

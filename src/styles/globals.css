@@ -24,11 +24,22 @@
 @import './vendor/supabase/unset-tw-colors.css';
 @import './vendor/supabase/colors.css';
 @import './vendor/supabase/theme.css';
+@import './vendor/supabase/charts.css';
 
 @import './vendor/supabase/animations.css';
 @import './vendor/supabase/utilities.css';
 @import './vendor/supabase/hit-area.css';
 @import './vendor/supabase/variants.css';
 @import './vendor/supabase/base.css';
+@import './vendor/supabase/typography.css';
 @import './vendor/supabase/design-system-base.css';
 @import './vendor/supabase/code-block-variables.css';
+
+/* Legacy semantic aliases still referenced by upstream React components. */
+@utility text-success-600 {
+  color: hsl(var(--brand-600));
+}
+
+@utility text-destructive-50 {
+  color: var(--foreground);
+}

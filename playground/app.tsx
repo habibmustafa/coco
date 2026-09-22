@@ -1,6 +1,7 @@
 import { ComponentPreview } from './component-preview'
 import { Preview, Section, Swatch } from './docs'
 import { ThemeSwitcher } from './theme-switcher'
+import { SonnerToaster, useTheme } from '../src'
 
 const NAV = [
   {
@@ -19,11 +20,16 @@ const NAV = [
       { id: 'avatar', label: 'Avatar' },
       { id: 'badge', label: 'Badge' },
       { id: 'button', label: 'Button' },
+      { id: 'calendar', label: 'Calendar' },
       { id: 'card', label: 'Card' },
+      { id: 'chart', label: 'Chart' },
       { id: 'checkbox', label: 'Checkbox' },
       { id: 'collapsible', label: 'Collapsible' },
+      { id: 'command', label: 'Command' },
       { id: 'dialog', label: 'Dialog' },
+      { id: 'drawer', label: 'Drawer' },
       { id: 'dropdown-menu', label: 'Dropdown Menu' },
+      { id: 'form', label: 'Form' },
       { id: 'hover-card', label: 'Hover Card' },
       { id: 'input', label: 'Input' },
       { id: 'label', label: 'Label' },
@@ -33,8 +39,11 @@ const NAV = [
       { id: 'select', label: 'Select' },
       { id: 'separator', label: 'Separator' },
       { id: 'sheet', label: 'Sheet' },
+      { id: 'sidebar', label: 'Sidebar' },
       { id: 'skeleton', label: 'Skeleton' },
+      { id: 'sonner', label: 'Sonner' },
       { id: 'switch', label: 'Switch' },
+      { id: 'table', label: 'Table' },
       { id: 'tabs', label: 'Tabs' },
       { id: 'textarea', label: 'Textarea' },
       { id: 'tooltip', label: 'Tooltip' },
@@ -43,12 +52,16 @@ const NAV = [
 ]
 
 export function App() {
+  const { resolvedTheme } = useTheme()
+
   return (
     <div className="min-h-screen bg-studio text-foreground">
       <header className="sticky top-0 z-50 w-full border-b bg-studio/95 backdrop-blur-sm supports-backdrop-filter:bg-studio/60">
         <div className="flex h-10 items-center justify-between px-6">
-          <div className="flex items-baseline gap-2">
-            <span className="text-sm font-medium">core</span>
+          <div className="flex items-center gap-3">
+            <a href="#" aria-label="coco — ana səhifə" className="focus-ring rounded-sm">
+              <img src="/coco-logo.svg" alt="coco" width={80} height={24} className="dark:invert" />
+            </a>
             <span className="text-sm text-foreground-lighter">design system</span>
           </div>
           <ThemeSwitcher />
@@ -182,11 +195,27 @@ export function App() {
             </Section>
 
             <Section
+              id="calendar"
+              title="Calendar"
+              description="Single and range date selection built on React DayPicker."
+            >
+              <ComponentPreview name="calendar-demo" />
+            </Section>
+
+            <Section
               id="card"
               title="Card"
               description="Panel with border-separated header, content and footer sections."
             >
               <ComponentPreview name="card-demo" />
+            </Section>
+
+            <Section
+              id="chart"
+              title="Chart"
+              description="Responsive Recharts wrapper with theme-aware colour configuration, tooltips and legends."
+            >
+              <ComponentPreview name="chart-bar-demo" />
             </Section>
 
             <Section
@@ -206,6 +235,15 @@ export function App() {
             </Section>
 
             <Section
+              id="command"
+              title="Command"
+              description="Searchable command menu with grouped items, shortcuts and dialog composition."
+            >
+              <ComponentPreview name="command-demo" label="Inline" />
+              <ComponentPreview name="command-dialog" label="Dialog" />
+            </Section>
+
+            <Section
               id="dialog"
               title="Dialog"
               description="Modal built on Radix, with header, section and footer slots."
@@ -214,11 +252,27 @@ export function App() {
             </Section>
 
             <Section
+              id="drawer"
+              title="Drawer"
+              description="Touch-friendly sliding panel with directional layouts and drag gestures."
+            >
+              <ComponentPreview name="drawer-demo" />
+            </Section>
+
+            <Section
               id="dropdown-menu"
               title="Dropdown Menu"
               description="Menu with labels, separators, shortcuts and submenus."
             >
               <ComponentPreview name="dropdown-menu-demo" />
+            </Section>
+
+            <Section
+              id="form"
+              title="Form"
+              description="React Hook Form composition with accessible labels, descriptions and animated validation messages."
+            >
+              <ComponentPreview name="input-form" />
             </Section>
 
             <Section
@@ -297,11 +351,27 @@ export function App() {
             </Section>
 
             <Section
+              id="sidebar"
+              title="Sidebar"
+              description="Responsive navigation shell with collapsible icon mode, mobile sheet and tooltip support."
+            >
+              <ComponentPreview name="sidebar-demo" />
+            </Section>
+
+            <Section
               id="skeleton"
               title="Skeleton"
               description="Pulsing placeholder for content that is still loading."
             >
               <ComponentPreview name="skeleton-demo" />
+            </Section>
+
+            <Section
+              id="sonner"
+              title="Sonner"
+              description="Theme-aware toast stack with Supabase status icons and button variants."
+            >
+              <ComponentPreview name="sonner-demo" />
             </Section>
 
             <Section
@@ -311,6 +381,14 @@ export function App() {
             >
               <ComponentPreview name="switch-sizes" label="Sizes" />
               <ComponentPreview name="switch-states" label="States" />
+            </Section>
+
+            <Section
+              id="table"
+              title="Table"
+              description="Responsive data table with scroll shadows, sortable headers and an optional sticky last column."
+            >
+              <ComponentPreview name="table-demo" />
             </Section>
 
             <Section
@@ -339,6 +417,7 @@ export function App() {
           </div>
         </main>
       </div>
+      <SonnerToaster theme={resolvedTheme} />
     </div>
   )
 }

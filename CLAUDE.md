@@ -1,4 +1,4 @@
-# core — Supabase design system portu
+# coco — Supabase design system portu
 
 Bu layihə Supabase-in açıq-mənbə design system-inin (`supabase.com/design-system`,
 `github.com/supabase/supabase`, Apache-2.0) React komponent paketi kimi portudur.
@@ -26,7 +26,7 @@ Hədəf: **birəbir eyni görünüş**, approksimasiya yox.
 
 ```
 npm run dev            # playground (design-system tipli demo sayt)
-npm run build:lib      # dist/core.js + core.cjs + styles.css + index.d.ts
+npm run build:lib      # dist/coco.js + coco.cjs + styles.css + index.d.ts
 npm run lint           # oxlint
 npx tsc -b             # tip yoxlaması
 npm run check:classes  # işlədilən class-ın CSS-də qarşılığı varmı
@@ -57,5 +57,6 @@ Ona görə hər dəyişiklikdən sonra:
   class-ına baxır. `ThemeProvider` hər ikisini qoyur.
 - Rendered görünüş təkcə komponent fayllarından gəlmir — tipoqrafiya və base layer
   `design-system-base.css`-dədir (upstream-də `apps/design-system/styles/globals.css`).
-- Runtime asılılıqları (`radix-ui`, `lucide-react`, `cva`, `clsx`, `tailwind-merge`) build-də
+- Runtime asılılıqları (`radix-ui`, `cmdk`, `vaul`, `sonner`, `react-day-picker`, `recharts`,
+  `react-hook-form`, `framer-motion`, `lucide-react`, `cva`, `clsx`, `tailwind-merge`) build-də
   **external**-dır; yeni runtime asılılığı əlavə edilsə, `vite.config.ts`-ə də yazılmalıdır.

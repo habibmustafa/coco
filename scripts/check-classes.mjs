@@ -26,12 +26,44 @@ function escapeClass(name) {
 // not classes. Keeping this list short is the point: a clean report means a real miss
 // stands out instead of being buried.
 const NOT_CLASSES = new Set([
+  'after:easing-[0.24,',
   'alert-description',
   'alert-title',
+  'aria-describedby',
   'aria-disabled',
+  'aria-invalid',
+  'aria-label=',
   'aspect-ratio',
+  'block-end',
+  'block-start',
+  'before:easing-[0.24,',
+  'drawer-content',
+  'drawer-description',
+  'drawer-footer',
+  'drawer-header',
+  'drawer-overlay',
+  'drawer-portal',
+  'drawer-title',
   'eu-west',
   'flex-start',
+  'group/sidebar-wrapper',
+  'group-action',
+  'group-content',
+  'group-label',
+  'inline-end',
+  'inline-start',
+  'input-group',
+  'input-group-addon',
+  'input-group-control',
+  'menu-action',
+  'menu-badge',
+  'menu-button',
+  'menu-item',
+  'menu-skeleton',
+  'menu-skeleton-icon',
+  'menu-skeleton-text',
+  'menu-sub',
+  'menu-sub-button',
   'my-project',
   'not-an-email',
   'plan-free',
@@ -40,6 +72,9 @@ const NOT_CLASSES = new Set([
   'popover-trigger-width',
   'project-name',
   'us-east',
+  'var(--color-desktop)',
+  'var(--color-mobile)',
+  'var(--foreground-default)',
 ])
 
 // Only look at string literals near a className / cn() / cva() site, so prop values,
@@ -99,3 +134,4 @@ console.log(
   '\nSome entries are expected: strings that only look like classes (prop values, ids).' +
     '\nAnything that is a real utility here renders unstyled.'
 )
+process.exitCode = 1

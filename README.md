@@ -1,35 +1,53 @@
-# React + TypeScript + Vite
+<p align="center"><img src="public/coco-mark.svg" alt="coco" width="64" height="64" /></p>
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+# coco
 
-Currently, two official plugins are available:
+Supabase dizayn sistemi əsasında React komponent kitabxanası. React 19, TypeScript,
+Tailwind CSS v4 və Radix üzərində qurulub. Paket özəldir, npm-də yayımlanmayıb.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+33 atom komponent və 42 işlək nümunə playground-da göstərilir.
 
-## React Compiler
+## Lokal işə salma
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+```sh
+npm install
+npm run dev
+```
 
-Note: This will impact Vite dev & build performances.
-You can also try [the experimental native React Compiler support in plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md#rust-react-compiler) by using `compiler: true` in the plugin options instead of using the Babel plugin.
+Playground: http://localhost:3000.
 
-## Expanding the Oxlint configuration
+```sh
+npm run verify     # build, tip, lint, class və canlı token yoxlaması
+npm run build:lib  # dist/coco.js, coco.cjs, styles.css və index.d.ts
+```
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
+## İstifadə
 
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
+Paket lokal dependency kimi qoşulduqdan sonra:
+
+```tsx
+import { Button, ThemeProvider } from 'coco'
+import 'coco/styles.css'
+
+export function App() {
+  return (
+    <ThemeProvider defaultTheme="light">
+      <Button>Başla</Button>
+    </ThemeProvider>
+  )
 }
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+`ThemeProvider` açıq, tünd və sistem temasını dəstəkləyir. Öz tema idarəetməniz varsa,
+`html` elementində həm `.light`/`.dark` class-ını, həm də uyğun `data-theme` atributunu
+təyin edin: tokenlər class-a, `dark:` utility-ləri isə atributa əsaslanır.
+
+## Sənədlər
+
+- [Plan və iş jurnalı](docs/plan.md)
+- [Agent üçün brifinq](docs/codex-prompt.md)
+- [Loqo və brend qaydaları](docs/brand.md)
+- [Supabase mənbə və lisenziya qeydləri](src/styles/vendor/supabase/NOTICE.md)
+
+Komponentlər və vendor üslubları Supabase mənbələrindən götürülüb; mənbə istinadları
+müvafiq faylların başlığında saxlanılır.
