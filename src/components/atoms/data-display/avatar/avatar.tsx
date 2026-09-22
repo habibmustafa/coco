@@ -1,53 +1,32 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/avatar.tsx
- * Changes: import paths only.
- */
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
+import type * as React from 'react'
 
-'use client'
+import { AvatarFallback, AvatarImage, AvatarRoot } from './avatar-parts'
 
-import { Avatar as AvatarPrimitive } from 'radix-ui'
-import * as React from 'react'
+type RootProps = React.ComponentProps<typeof AvatarRoot>
 
-import { cn } from '../../../../lib/utils'
+type AvatarContentProps = Omit<RootProps, 'children'> & {
+  src?: string
+  alt?: string
+  fallback?: React.ReactNode
+  children?: never
+}
 
-const Avatar = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Root>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Root
-    ref={ref}
-    className={cn('relative flex h-10 w-10 shrink-0 overflow-hidden rounded-full', className)}
-    {...props}
-  />
-))
-Avatar.displayName = AvatarPrimitive.Root.displayName
+type AvatarCompoundProps = RootProps & { src?: never; fallback?: never }
 
-const AvatarImage = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Image>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Image>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Image
-    ref={ref}
-    className={cn('aspect-square h-full w-full', className)}
-    {...props}
-  />
-))
-AvatarImage.displayName = AvatarPrimitive.Image.displayName
+export type AvatarProps = AvatarContentProps | AvatarCompoundProps
 
-const AvatarFallback = React.forwardRef<
-  React.ElementRef<typeof AvatarPrimitive.Fallback>,
-  React.ComponentPropsWithoutRef<typeof AvatarPrimitive.Fallback>
->(({ className, ...props }, ref) => (
-  <AvatarPrimitive.Fallback
-    ref={ref}
-    className={cn(
-      'flex h-full w-full items-center justify-center rounded-full bg-surface-100 border',
-      className
-    )}
-    {...props}
-  />
-))
-AvatarFallback.displayName = AvatarPrimitive.Fallback.displayName
+export function AvatarHybrid(props: AvatarProps) {
+  if (props.src === undefined && props.fallback === undefined) {
+    return <AvatarRoot {...props} />
+  }
 
-export { Avatar, AvatarFallback, AvatarImage }
+  const { src, alt, fallback, ...rest } = props
+
+  return (
+    <AvatarRoot {...rest}>
+      {src != null && <AvatarImage src={src} alt={alt} />}
+      {fallback != null && <AvatarFallback>{fallback}</AvatarFallback>}
+    </AvatarRoot>
+  )
+}

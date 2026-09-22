@@ -1,0 +1,98 @@
+/*
+ * Adapted from Supabase (Apache License 2.0).
+ * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/accordion.tsx
+ * Changes: hybrid API migration (docs/hybrid-api-migration.md) — root renamed
+ * Accordion → AccordionRoot so the atom's default export can become props-driven.
+ * Compound parts, class strings, ARIA and data attributes are unchanged.
+ */
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
+
+'use client'
+
+import { ChevronDown } from 'lucide-react'
+import { Accordion as AccordionPrimitive } from 'radix-ui'
+import * as React from 'react'
+
+import { cn } from '../../../../lib/utils'
+import { getExplicitTabIndex } from '../../../../lib/get-explicit-tab-index'
+
+const AccordionRoot = AccordionPrimitive.Root
+
+const AccordionItem = React.forwardRef<
+  React.ElementRef<typeof AccordionPrimitive.Item>,
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
+>(({ className, ...props }, ref) => (
+  <AccordionPrimitive.Item ref={ref} className={cn('border-b', className)} {...props} />
+))
+AccordionItem.displayName = 'AccordionItem'
+
+const AccordionTrigger = React.forwardRef<
+  React.ElementRef<typeof AccordionPrimitive.Trigger>,
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & {
+    focusVariant?: 'ring' | 'inset'
+    hideIcon?: boolean
+  }
+>(
+  (
+    { className, children, focusVariant = 'inset', hideIcon, disabled, tabIndex, ...props },
+    ref
+  ) => {
+    const computedTabIndex = getExplicitTabIndex(tabIndex, disabled)
+
+    return (
+      <AccordionPrimitive.Header asChild>
+        <div className="flex w-full">
+          <AccordionPrimitive.Trigger
+            ref={ref}
+            className={cn(
+              'cursor-pointer flex flex-1 gap-2 items-center justify-between py-4 text-left',
+              'font-medium hover:underline',
+              '[&[data-state=open]>svg]:rotate-180',
+              focusVariant === 'ring' && 'rounded-md',
+              className,
+              focusVariant === 'ring' ? 'focus-ring' : 'relative focus-inset'
+            )}
+            {...props}
+            disabled={disabled}
+            tabIndex={computedTabIndex}
+          >
+            {children}
+            {!hideIcon && (
+              <ChevronDown
+                aria-hidden="true"
+                className={cn(
+                  'h-4 w-4 shrink-0',
+                  'transition-transform duration-200',
+                  'motion-reduce:transition-none motion-reduce:duration-0'
+                )}
+              />
+            )}
+          </AccordionPrimitive.Trigger>
+        </div>
+      </AccordionPrimitive.Header>
+    )
+  }
+)
+AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName
+
+const AccordionContent = React.forwardRef<
+  React.ElementRef<typeof AccordionPrimitive.Content>,
+  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
+>(({ className, children, ...props }, ref) => (
+  <AccordionPrimitive.Content
+    ref={ref}
+    className={cn(
+      'overflow-hidden text-sm',
+      'transition-all motion-reduce:transition-none',
+      'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
+      'motion-reduce:animate-none',
+      className
+    )}
+    {...props}
+  >
+    <div className="pb-4 pt-0">{children}</div>
+  </AccordionPrimitive.Content>
+))
+AccordionContent.displayName = AccordionPrimitive.Content.displayName
+
+export { AccordionRoot, AccordionContent, AccordionItem, AccordionTrigger }

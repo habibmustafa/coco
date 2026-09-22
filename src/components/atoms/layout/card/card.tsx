@@ -1,73 +1,81 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/card.tsx
- * Changes: import paths only. Classes and markup are unchanged.
- */
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
+import type * as React from 'react'
 
-import * as React from 'react'
-
+import { CardContent, CardDescription, CardFooter, CardHeader, CardRoot, CardTitle } from './card-parts'
 import { cn } from '../../../../lib/utils'
 
-const Card = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn(
-        'overflow-hidden rounded-lg border bg-surface-100 text-card-foreground shadow-xs',
-        className
+type RootProps = React.ComponentProps<typeof CardRoot>
+
+export interface CardClassNames {
+  header?: string
+  title?: string
+  description?: string
+  content?: string
+  footer?: string
+}
+
+// The native `title` attribute collides with our content prop of the same name.
+type CardContentModeProps = Omit<RootProps, 'title'> & {
+  title?: React.ReactNode
+  description?: React.ReactNode
+  /** Element shown at the end of the header row, next to title/description. */
+  headerAction?: React.ReactNode
+  /** Body content, rendered inside CardContent. */
+  children?: React.ReactNode
+  footer?: React.ReactNode
+  classNames?: CardClassNames
+}
+
+type CardCompoundProps = RootProps & {
+  title?: never
+  description?: never
+  footer?: never
+  headerAction?: never
+}
+
+export type CardProps = CardContentModeProps | CardCompoundProps
+
+export function CardHybrid(props: CardProps) {
+  const isContentMode =
+    props.title !== undefined ||
+    props.description !== undefined ||
+    props.footer !== undefined ||
+    props.headerAction !== undefined
+
+  if (!isContentMode) {
+    // Narrowed by the check above; TS can't discriminate a multi-field OR on its own.
+    return <CardRoot {...(props as CardCompoundProps)} />
+  }
+
+  const { title, description, headerAction, footer, children, className, classNames, ...rest } = props
+  const hasHeader = title != null || description != null || headerAction != null
+
+  return (
+    <CardRoot className={className} {...rest}>
+      {hasHeader && (
+        <CardHeader className={classNames?.header}>
+          {headerAction != null ? (
+            <div className="flex items-center justify-between gap-2">
+              <div>
+                {title != null && <CardTitle className={classNames?.title}>{title}</CardTitle>}
+                {description != null && (
+                  <CardDescription className={classNames?.description}>{description}</CardDescription>
+                )}
+              </div>
+              {headerAction}
+            </div>
+          ) : (
+            <>
+              {title != null && <CardTitle className={classNames?.title}>{title}</CardTitle>}
+              {description != null && (
+                <CardDescription className={classNames?.description}>{description}</CardDescription>
+              )}
+            </>
+          )}
+        </CardHeader>
       )}
-      {...props}
-    />
+      {children != null && <CardContent className={classNames?.content}>{children}</CardContent>}
+      {footer != null && <CardFooter className={cn('gap-2', classNames?.footer)}>{footer}</CardFooter>}
+    </CardRoot>
   )
-)
-Card.displayName = 'Card'
-
-const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('flex flex-col space-y-1.5 py-4 px-(--card-padding-x) border-b', className)}
-      {...props}
-    />
-  )
-)
-CardHeader.displayName = 'CardHeader'
-
-const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
-  ({ className, ...props }, ref) => (
-    <h3 ref={ref} className={cn('text-xs font-mono uppercase', className)} {...props} />
-  )
-)
-CardTitle.displayName = 'CardTitle'
-
-const CardDescription = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn('text-sm text-foreground-lighter', className)} {...props} />
-))
-CardDescription.displayName = 'CardDescription'
-
-const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('py-4 px-(--card-padding-x) border-b last:border-none', className)}
-      {...props}
-    />
-  )
-)
-CardContent.displayName = 'CardContent'
-
-const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={cn('flex items-center py-4 px-(--card-padding-x)', className)}
-      {...props}
-    />
-  )
-)
-CardFooter.displayName = 'CardFooter'
-
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
+}

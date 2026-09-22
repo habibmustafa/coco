@@ -1,93 +1,93 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/tabs.tsx
- * Changes: import paths only.
- */
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
+import type * as React from 'react'
 
-'use client'
-
-import { Tabs as TabsPrimitive } from 'radix-ui'
-import { useRef, type ComponentPropsWithRef } from 'react'
-
+import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from './tabs-parts'
 import { cn } from '../../../../lib/utils'
-import { useTabIndicator } from './useTabIndicator'
 
-const Tabs = TabsPrimitive.Root
+const GRID_COLS = {
+  1: 'grid-cols-1',
+  2: 'grid-cols-2',
+  3: 'grid-cols-3',
+  4: 'grid-cols-4',
+  5: 'grid-cols-5',
+  6: 'grid-cols-6',
+} as const
 
-const trackClasses = cn(
-  'has-[[data-tab-indicator]]:border-b-0',
-  'has-[[data-tab-indicator]]:after:pointer-events-none has-[[data-tab-indicator]]:after:absolute',
-  'has-[[data-tab-indicator]]:after:bottom-0 has-[[data-tab-indicator]]:after:h-px',
-  'has-[[data-tab-indicator]]:after:left-[var(--tab-track-inset,0px)]',
-  'has-[[data-tab-indicator]]:after:right-0',
-  'has-[[data-tab-indicator]]:after:bg-[var(--tab-track,var(--border-default))]'
-)
-
-const TabsList = ({
-  className,
-  children,
-  ref,
-  ...props
-}: ComponentPropsWithRef<typeof TabsPrimitive.List>) => {
-  const listRef = useRef<HTMLDivElement>(null)
-  useTabIndicator(listRef)
-
-  return (
-    <TabsPrimitive.List
-      ref={(node) => {
-        listRef.current = node
-        if (typeof ref === 'function') ref(node)
-        else if (ref) ref.current = node
-      }}
-      className={cn('group/list relative flex items-center border-b', trackClasses, className)}
-      {...props}
-    >
-      {children}
-    </TabsPrimitive.List>
-  )
+export interface TabItem<TValue extends string = string> {
+  value: TValue
+  label: React.ReactNode
+  content: React.ReactNode
+  icon?: React.ReactNode
+  disabled?: boolean
 }
 
-const TabsIndicator = ({ className, ...props }: ComponentPropsWithRef<'span'>) => (
-  <span
-    aria-hidden
-    data-tab-indicator
-    className={cn(
-      'pointer-events-none absolute bottom-0 left-0 h-px bg-foreground',
-      'w-[var(--active-tab-width,0)] translate-x-[var(--active-tab-left,0)]',
-      'transition-none opacity-0',
-      'group-data-[tab-indicator-ready]/list:opacity-100',
-      'group-data-[tab-indicator-ready]/list:transition-[translate,width]',
-      'group-data-[tab-indicator-ready]/list:duration-[250ms]',
-      'group-data-[tab-indicator-ready]/list:ease-move',
-      'motion-reduce:transition-none',
-      className
-    )}
-    {...props}
-  />
-)
+export interface TabsClassNames {
+  list?: string
+  trigger?: string
+  content?: string
+}
 
-const TabsTrigger = ({
-  className,
-  ...props
-}: ComponentPropsWithRef<typeof TabsPrimitive.Trigger>) => (
-  <TabsPrimitive.Trigger
-    className={cn(
-      'inline-flex cursor-pointer items-center justify-center whitespace-nowrap py-1.5 text-sm transition-colors disabled:pointer-events-none disabled:opacity-50 data-[state=active]:text-foreground data-[state=active]:shadow-xs text-foreground-lighter hover:text-foreground',
-      'focus-inset',
-      'border-b-2 border-b-transparent data-[state=active]:border-b-foreground',
-      'group-has-[[data-tab-indicator]]/list:border-b-0',
-      'group',
-      className
-    )}
-    {...props}
-  />
-)
+type RootProps = React.ComponentProps<typeof TabsRoot>
 
-const TabsContent = ({
-  className,
-  ...props
-}: ComponentPropsWithRef<typeof TabsPrimitive.Content>) => (
-  <TabsPrimitive.Content className={cn('mt-4 focus-ring', className)} {...props} />
-)
+type TabsItemsProps<TValue extends string> = Omit<
+  RootProps,
+  'value' | 'defaultValue' | 'onValueChange' | 'children'
+> & {
+  items: readonly TabItem<TValue>[]
+  value?: TValue
+  defaultValue?: TValue
+  onValueChange?: (value: TValue) => void
+  /** Render the animated underline, as in the upstream demo. @default true */
+  indicator?: boolean
+  classNames?: TabsClassNames
+  children?: never
+}
 
-export { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger }
+type TabsCompoundProps = RootProps & { items?: never }
+
+export type TabsProps<TValue extends string = string> = TabsItemsProps<TValue> | TabsCompoundProps
+
+export function TabsHybrid<TValue extends string = string>(props: TabsProps<TValue>) {
+  if (props.items === undefined) {
+    return <TabsRoot {...props} />
+  }
+
+  const { items, value, defaultValue, onValueChange, indicator = true, classNames, ...rootProps } =
+    props
+
+  const count = items.length
+  const colsClass = GRID_COLS[count as keyof typeof GRID_COLS]
+
+  return (
+    <TabsRoot
+      {...rootProps}
+      value={value}
+      defaultValue={defaultValue ?? items[0]?.value}
+      onValueChange={onValueChange ? (v) => onValueChange(v as TValue) : undefined}
+    >
+      <TabsList
+        className={cn('grid w-full', colsClass, classNames?.list)}
+        style={colsClass ? undefined : { gridTemplateColumns: `repeat(${count}, minmax(0, 1fr))` }}
+      >
+        {items.map((item) => (
+          <TabsTrigger
+            key={item.value}
+            value={item.value}
+            disabled={item.disabled}
+            className={classNames?.trigger}
+          >
+            {item.icon}
+            {item.label}
+          </TabsTrigger>
+        ))}
+        {indicator && <TabsIndicator />}
+      </TabsList>
+
+      {items.map((item) => (
+        <TabsContent key={item.value} value={item.value} className={classNames?.content}>
+          {item.content}
+        </TabsContent>
+      ))}
+    </TabsRoot>
+  )
+}

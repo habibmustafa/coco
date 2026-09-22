@@ -1,251 +1,194 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/dialog.tsx
- * Changes: import paths only.
- */
-
-'use client'
-
-import { cva, type VariantProps } from 'class-variance-authority'
-import { X } from 'lucide-react'
-import { Dialog as DialogPrimitive } from 'radix-ui'
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 import * as React from 'react'
 
-import { cn } from '../../../../lib/utils'
-import { getExplicitTabIndex } from '../../../../lib/get-explicit-tab-index'
-
-export const DIALOG_PADDING_Y_SMALL = 'py-4'
-export const DIALOG_PADDING_X_SMALL = 'px-4 md:px-5'
-
-export const DIALOG_PADDING_Y = 'py-6'
-export const DIALOG_PADDING_X = 'px-4 md:px-7'
-
-const DialogPaddingVariants = cva('', {
-  variants: {
-    padding: {
-      medium: `${DIALOG_PADDING_Y} ${DIALOG_PADDING_X}`,
-      small: `${DIALOG_PADDING_Y_SMALL} ${DIALOG_PADDING_X_SMALL}`,
-    },
-  },
-  defaultVariants: {
-    padding: 'small',
-  },
-})
-
-const Dialog = DialogPrimitive.Root
-
-const DialogTrigger = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Trigger>
->(({ disabled, tabIndex, ...props }, ref) => {
-  const computedTabIndex = getExplicitTabIndex(tabIndex, disabled)
-
-  return (
-    <DialogPrimitive.Trigger ref={ref} {...props} disabled={disabled} tabIndex={computedTabIndex} />
-  )
-})
-DialogTrigger.displayName = DialogPrimitive.Trigger.displayName
-
-const DialogPortal = (props: DialogPrimitive.DialogPortalProps) => (
-  <DialogPrimitive.Portal {...props} />
-)
-DialogPortal.displayName = DialogPrimitive.Portal.displayName
-
-const DialogOverlay = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Overlay>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & { centered?: boolean }
->(({ className, centered = true, ...props }, ref) => (
-  <DialogPrimitive.Overlay
-    ref={ref}
-    className={cn(
-      'bg-black/40 backdrop-blur-xs',
-      'z-50 fixed inset-0 grid place-items-center overflow-y-auto data-closed:animate-overlay-hide py-8',
-      !centered && 'flex flex-col flex-start pb-8 sm:pt-12 md:pt-20 lg:pt-32 xl:pt-40 px-5',
-      className
-    )}
-    {...props}
-  />
-))
-DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
-
-const DialogContentVariants = cva(
-  cn(
-    'relative z-50 w-full max-w-screen border shadow-md dark:shadow-xs',
-    'data-[state=open]:animate-in data-[state=closed]:animate-out',
-    'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
-    'data-[state=closed]:slide-out-to-left-[0%] data-[state=closed]:slide-out-to-top-[0%]',
-    'data-[state=open]:slide-in-from-left-[0%] data-[state=open]:slide-in-from-top-[0%]',
-    'sm:rounded-lg md:w-full',
-    'bg-dash-sidebar'
-  ),
-  {
-    variants: {
-      size: {
-        tiny: `sm:align-middle sm:w-full sm:max-w-xs`,
-        small: `sm:align-middle sm:w-full sm:max-w-sm`,
-        medium: `sm:align-middle sm:w-full sm:max-w-lg`,
-        large: `sm:align-middle sm:w-full md:max-w-xl`,
-        xlarge: `sm:align-middle sm:w-full md:max-w-3xl`,
-        xxlarge: `sm:align-middle sm:w-full md:max-w-6xl`,
-        xxxlarge: `sm:align-middle sm:w-full md:max-w-7xl`,
-      },
-    },
-    defaultVariants: {
-      size: 'medium',
-    },
-  }
-)
-
-const DialogContent = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> &
-    VariantProps<typeof DialogContentVariants> & {
-      hideClose?: boolean
-      dialogOverlayProps?: React.ComponentPropsWithoutRef<typeof DialogOverlay>
-      centered?: boolean
-    }
->(
-  (
-    { className, children, size, hideClose, dialogOverlayProps, centered = true, ...props },
-    ref
-  ) => (
-    <DialogPortal>
-      <DialogOverlay centered={centered} {...dialogOverlayProps}>
-        <DialogPrimitive.Content
-          ref={ref}
-          className={cn(DialogContentVariants({ size }), className)}
-          {...props}
-        >
-          {children}
-          {!hideClose && (
-            <DialogPrimitive.Close
-              className={cn(
-                'absolute p-0.5 right-3.5 top-3.5 rounded-xs opacity-20 transition-opacity hover:opacity-100 focus-ring disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-foreground-muted',
-                'hit-area-6'
-              )}
-            >
-              <X size={16} />
-              <span className="sr-only">Close</span>
-            </DialogPrimitive.Close>
-          )}
-        </DialogPrimitive.Content>
-      </DialogOverlay>
-    </DialogPortal>
-  )
-)
-DialogContent.displayName = DialogPrimitive.Content.displayName
-
-const DialogHeader = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof DialogPaddingVariants>
->(({ className, padding, ...props }, ref) => (
-  <div
-    ref={ref}
-    {...props}
-    className={cn(
-      'flex flex-col gap-1.5 text-center sm:text-left',
-      DialogPaddingVariants({ padding }),
-      className
-    )}
-  />
-))
-
-DialogHeader.displayName = 'DialogHeader'
-
-const DialogFooter = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof DialogPaddingVariants>
->(({ className, children, padding, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      'flex flex-col-reverse sm:flex-row sm:justify-end sm:space-x-2',
-      'border-t',
-      DialogPaddingVariants({ padding }),
-      className
-    )}
-    {...props}
-  >
-    {children}
-  </div>
-))
-DialogFooter.displayName = 'DialogFooter'
-
-const DialogTitle = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Title>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Title>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Title
-    ref={ref}
-    // [Danny] max-w to make space for the close button
-    className={cn('text-base leading-none font-normal max-w-[calc(100%-1rem)]', className)}
-    {...props}
-  />
-))
-DialogTitle.displayName = DialogPrimitive.Title.displayName
-
-const DialogDescription = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Description>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Description>
->(({ className, ...props }, ref) => (
-  <DialogPrimitive.Description
-    ref={ref}
-    className={cn('text-sm text-foreground-lighter', className)}
-    {...props}
-  />
-))
-DialogDescription.displayName = DialogPrimitive.Description.displayName
-
-const DialogClose = React.forwardRef<
-  React.ElementRef<typeof DialogPrimitive.Close>,
-  React.ComponentPropsWithoutRef<typeof DialogPrimitive.Close>
->(({ className, children, ...props }, ref) => (
-  <DialogPrimitive.Close
-    ref={ref}
-    className={cn(
-      'opacity-70 transition-opacity hover:opacity-100 focus-ring disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-foreground-muted',
-      className
-    )}
-    {...props}
-  >
-    {children}
-  </DialogPrimitive.Close>
-))
-DialogClose.displayName = DialogPrimitive.Close.displayName
-
-const DialogSection = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & VariantProps<typeof DialogPaddingVariants>
->(({ className, children, padding, ...props }, ref) => (
-  <div
-    ref={ref}
-    {...props}
-    className={cn(DialogPaddingVariants({ padding }), 'overflow-hidden', className)}
-  >
-    {children}
-  </div>
-))
-DialogSection.displayName = 'DialogSection'
-
-const DialogSectionSeparator = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, children, ...props }, ref) => (
-  <div ref={ref} {...props} className={cn('w-full h-px bg-border', className)} />
-))
-DialogSectionSeparator.displayName = 'DialogSectionSeparator'
-
-type DialogProps = DialogPrimitive.DialogProps
-export {
-  Dialog,
-  DialogClose,
+import {
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  DialogRoot,
   DialogSection,
   DialogSectionSeparator,
   DialogTitle,
   DialogTrigger,
-  type DialogProps,
+} from './dialog-parts'
+import { Button } from '../../actions/button'
+import { cn } from '../../../../lib/utils'
+import { useControllableState } from '../../../../lib/use-controllable-state'
+
+type ButtonVariant = React.ComponentProps<typeof Button>['variant']
+
+export interface DialogRenderContext {
+  /** Closes the dialog, same as pressing Cancel or the X button. */
+  close: () => void
+  /** True while an async `onConfirm` is in flight. */
+  pending: boolean
+}
+
+type Slot = React.ReactNode | ((ctx: DialogRenderContext) => React.ReactNode)
+
+const renderSlot = (slot: Slot | undefined, ctx: DialogRenderContext) =>
+  typeof slot === 'function' ? slot(ctx) : slot
+
+export interface DialogClassNames {
+  content?: string
+  header?: string
+  title?: string
+  description?: string
+  body?: string
+  footer?: string
+}
+
+export interface DialogProps {
+  /** Controlled open state. */
+  open?: boolean
+  /** @default false */
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  /** Element that opens the dialog, rendered via DialogTrigger asChild. */
+  trigger?: React.ReactElement
+  title?: React.ReactNode
+  description?: React.ReactNode
+  /** Body content. `undefined`/`null` renders no body section. */
+  children?: Slot
+  /** `undefined` = default Cancel/Confirm buttons (only if `onConfirm` is set), `null` = hidden, node/fn = custom. */
+  footer?: Slot | null
+  onConfirm?: () => void | Promise<void>
+  onCancel?: () => void
+  /** @default "Confirm" */
+  confirmText?: React.ReactNode
+  /** @default "Cancel" */
+  cancelText?: React.ReactNode
+  /** Visual variant of the confirm Button. @default "primary" */
+  confirmType?: ButtonVariant
+  /** Close the dialog after `onConfirm` resolves. @default true */
+  closeOnConfirm?: boolean
+  /** Allow closing via overlay click / Escape. @default true */
+  dismissible?: boolean
+  className?: string
+  classNames?: DialogClassNames
+  slotProps?: {
+    content?: Partial<React.ComponentProps<typeof DialogContent>>
+  }
+}
+
+export function DialogHybrid({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  trigger,
+  title,
+  description,
+  children,
+  footer,
+  onConfirm,
+  onCancel,
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  confirmType = 'primary',
+  closeOnConfirm = true,
+  dismissible = true,
+  className,
+  classNames,
+  slotProps,
+}: DialogProps) {
+  const [open, setOpen] = useControllableState({
+    value: openProp,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  })
+  const [pending, setPending] = React.useState(false)
+
+  const close = React.useCallback(() => setOpen(false), [setOpen])
+  const ctx: DialogRenderContext = { close, pending }
+
+  const handleOpenChange = (next: boolean) => {
+    if (!next && pending) return
+    setOpen(next)
+  }
+
+  const handleConfirm = async () => {
+    if (!onConfirm) return
+    setPending(true)
+    try {
+      await onConfirm()
+      if (closeOnConfirm) setOpen(false)
+    } finally {
+      setPending(false)
+    }
+  }
+
+  const handleCancel = () => {
+    onCancel?.()
+    close()
+  }
+
+  const blockDismiss = (e: Event) => {
+    if (!dismissible || pending) e.preventDefault()
+  }
+
+  const footerNode =
+    footer === null
+      ? null
+      : footer !== undefined
+        ? renderSlot(footer, ctx)
+        : onConfirm
+          ? (
+              <>
+                <Button variant="text" onClick={handleCancel} disabled={pending}>
+                  {cancelText}
+                </Button>
+                <Button variant={confirmType} onClick={handleConfirm} loading={pending}>
+                  {confirmText}
+                </Button>
+              </>
+            )
+          : null
+
+  const bodyNode = children != null ? renderSlot(children, ctx) : null
+
+  const {
+    className: contentClassName,
+    onInteractOutside,
+    onEscapeKeyDown,
+    ...contentRest
+  } = slotProps?.content ?? {}
+
+  return (
+    <DialogRoot open={open} onOpenChange={handleOpenChange}>
+      {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
+      <DialogContent
+        {...contentRest}
+        className={cn(className, classNames?.content, contentClassName)}
+        onInteractOutside={(e) => {
+          blockDismiss(e)
+          onInteractOutside?.(e)
+        }}
+        onEscapeKeyDown={(e) => {
+          blockDismiss(e)
+          onEscapeKeyDown?.(e)
+        }}
+        {...(description == null && { 'aria-describedby': undefined })}
+      >
+        <DialogHeader className={classNames?.header}>
+          {/* Radix requires a Title for a11y even when the caller doesn't show one. */}
+          <DialogTitle className={cn(!title && 'sr-only', classNames?.title)}>
+            {title ?? 'Dialog'}
+          </DialogTitle>
+          {description != null && (
+            <DialogDescription className={classNames?.description}>{description}</DialogDescription>
+          )}
+        </DialogHeader>
+
+        {bodyNode != null && (
+          <>
+            <DialogSectionSeparator />
+            <DialogSection className={classNames?.body}>{bodyNode}</DialogSection>
+          </>
+        )}
+
+        {footerNode != null && <DialogFooter className={classNames?.footer}>{footerNode}</DialogFooter>}
+      </DialogContent>
+    </DialogRoot>
+  )
 }

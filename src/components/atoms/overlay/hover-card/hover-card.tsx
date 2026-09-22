@@ -1,42 +1,49 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/hover-card.tsx
- * Changes: import paths only.
- */
-
-'use client'
-
-import { HoverCard as HoverCardPrimitive } from 'radix-ui'
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 import * as React from 'react'
 
+import { HoverCardContent, HoverCardRoot, HoverCardTrigger } from './hover-card-parts'
 import { cn } from '../../../../lib/utils'
 
-const HoverCard = HoverCardPrimitive.Root
+type RootProps = React.ComponentProps<typeof HoverCardRoot>
+type HoverCardContentProps = React.ComponentProps<typeof HoverCardContent>
 
-const HoverCardTrigger = HoverCardPrimitive.Trigger
+export interface HoverCardClassNames {
+  content?: string
+}
 
-const HoverCardContent = React.forwardRef<
-  React.ElementRef<typeof HoverCardPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof HoverCardPrimitive.Content> & {
-    animate?: 'zoom-in' | 'slide-in'
+type HoverCardContentModeProps = Omit<RootProps, 'children'> & {
+  /** Element that opens the hover card, rendered via HoverCardTrigger asChild. */
+  trigger: React.ReactElement
+  content: React.ReactNode
+  className?: string
+  classNames?: HoverCardClassNames
+  slotProps?: {
+    content?: Partial<HoverCardContentProps>
   }
->(({ className, align = 'center', animate = 'zoom-in', sideOffset = 4, ...props }, ref) => (
-  <HoverCardPrimitive.Portal>
-    <HoverCardPrimitive.Content
-      ref={ref}
-      align={align}
-      sideOffset={sideOffset}
-      className={cn(
-        'z-50 w-64 rounded-md border bg-overlay p-4 text-popover-foreground shadow-md outline-hidden',
-        animate === 'zoom-in'
-          ? 'animate-in zoom-in-[99%]'
-          : 'animate-in fade-in-50 data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1',
-        className
-      )}
-      {...props}
-    />
-  </HoverCardPrimitive.Portal>
-))
-HoverCardContent.displayName = HoverCardPrimitive.Content.displayName
+  children?: never
+}
 
-export { HoverCard, HoverCardContent, HoverCardTrigger }
+type HoverCardCompoundProps = RootProps & { content?: never }
+
+export type HoverCardProps = HoverCardContentModeProps | HoverCardCompoundProps
+
+export function HoverCardHybrid(props: HoverCardProps) {
+  if (props.content === undefined) {
+    return <HoverCardRoot {...props} />
+  }
+
+  const { trigger, content, className, classNames, slotProps, ...rootProps } = props
+  const { className: contentClassName, ...contentRest } = slotProps?.content ?? {}
+
+  return (
+    <HoverCardRoot {...rootProps}>
+      <HoverCardTrigger asChild>{trigger}</HoverCardTrigger>
+      <HoverCardContent
+        {...contentRest}
+        className={cn(className, classNames?.content, contentClassName)}
+      >
+        {content}
+      </HoverCardContent>
+    </HoverCardRoot>
+  )
+}

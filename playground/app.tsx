@@ -1,7 +1,7 @@
 import { ComponentPreview } from './component-preview'
 import { Preview, Section, Swatch } from './docs'
 import { ThemeSwitcher } from './theme-switcher'
-import { SonnerToaster, useTheme } from '../src'
+import { Badge, SonnerToaster, useTheme } from '../src'
 
 const NAV = [
   {
@@ -56,20 +56,29 @@ export function App() {
 
   return (
     <div className="min-h-screen bg-studio text-foreground">
-      <header className="sticky top-0 z-50 w-full border-b bg-studio/95 backdrop-blur-sm supports-backdrop-filter:bg-studio/60">
-        <div className="flex h-10 items-center justify-between px-6">
+      <header className="sticky top-0 z-50 w-full border-b bg-studio/95 backdrop-blur-sm supports-backdrop-filter:bg-studio/60 relative">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-brand-default/70 to-transparent"
+        />
+        <div className="flex h-14 items-center justify-between px-6">
           <div className="flex items-center gap-3">
             <a href="#" aria-label="coco — ana səhifə" className="focus-ring rounded-sm">
-              <img src="/coco-logo.svg" alt="coco" width={80} height={24} className="dark:invert" />
+              <img src="/coco-logo.svg" alt="coco" width={84} height={26} className="dark:invert" />
             </a>
-            <span className="text-sm text-foreground-lighter">design system</span>
+            <Badge variant="secondary">design system</Badge>
           </div>
-          <ThemeSwitcher />
+          <div className="flex items-center gap-3">
+            <Badge variant="success" className="hidden sm:inline-flex">
+              17 hybrid · 33 atoms
+            </Badge>
+            <ThemeSwitcher />
+          </div>
         </div>
       </header>
 
       <div className="flex">
-        <aside className="sticky top-10 z-30 hidden h-[calc(100vh-3rem)] shrink-0 overflow-y-auto border-r px-6 md:block">
+        <aside className="sticky top-14 z-30 hidden h-[calc(100vh-3.5rem)] shrink-0 overflow-y-auto border-r px-6 md:block">
           <nav className="flex min-w-[220px] flex-col gap-6 py-6 lg:py-8">
             {NAV.map((group) => (
               <div key={group.title} className="flex flex-col gap-2">
@@ -88,8 +97,8 @@ export function App() {
           </nav>
         </aside>
 
-        <main className="min-w-0 flex-1 scroll-mt-12 px-6 py-8 outline-hidden md:px-10">
-          <div className="max-w-3xl">
+        <main className="min-w-0 flex-1 scroll-mt-14 px-6 py-8 outline-hidden md:px-10">
+          <div className="mx-auto max-w-4xl">
             <h1 className="scroll-m-20 text-4xl tracking-tight">Components</h1>
             <p className="mt-2 text-lg text-foreground-light">
               Ported from the Supabase design system. Tokens, variants and markup match upstream.
@@ -147,7 +156,13 @@ export function App() {
               title="Accordion"
               description="Disclosure list with animated height transitions."
             >
-              <ComponentPreview name="accordion-demo" />
+              <ComponentPreview
+                name="accordion-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'accordion-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'accordion-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -155,7 +170,13 @@ export function App() {
               title="Alert"
               description="Tinted container with an optional icon, title and description."
             >
-              <ComponentPreview name="alert-variants" />
+              <ComponentPreview
+                name="alert-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'alert-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'alert-variants' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -171,7 +192,13 @@ export function App() {
               title="Avatar"
               description="Image with a fallback shown while it loads or when it fails."
             >
-              <ComponentPreview name="avatar-demo" />
+              <ComponentPreview
+                name="avatar-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'avatar-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'avatar-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -207,7 +234,13 @@ export function App() {
               title="Card"
               description="Panel with border-separated header, content and footer sections."
             >
-              <ComponentPreview name="card-demo" />
+              <ComponentPreview
+                name="card-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'card-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'card-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -215,7 +248,13 @@ export function App() {
               title="Chart"
               description="Responsive Recharts wrapper with theme-aware colour configuration, tooltips and legends."
             >
-              <ComponentPreview name="chart-bar-demo" />
+              <ComponentPreview
+                name="chart-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'chart-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'chart-bar-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -231,7 +270,13 @@ export function App() {
               title="Collapsible"
               description="Single disclosure region without the list chrome."
             >
-              <ComponentPreview name="collapsible-demo" />
+              <ComponentPreview
+                name="collapsible-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'collapsible-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'collapsible-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -239,8 +284,22 @@ export function App() {
               title="Command"
               description="Searchable command menu with grouped items, shortcuts and dialog composition."
             >
-              <ComponentPreview name="command-demo" label="Inline" />
-              <ComponentPreview name="command-dialog" label="Dialog" />
+              <ComponentPreview
+                name="command-props-demo"
+                label="Inline"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'command-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'command-demo' },
+                ]}
+              />
+              <ComponentPreview
+                name="command-dialog-props-demo"
+                label="Dialog"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'command-dialog-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'command-dialog' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -248,7 +307,13 @@ export function App() {
               title="Dialog"
               description="Modal built on Radix, with header, section and footer slots."
             >
-              <ComponentPreview name="dialog-demo" />
+              <ComponentPreview
+                name="dialog-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'dialog-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'dialog-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -256,7 +321,13 @@ export function App() {
               title="Drawer"
               description="Touch-friendly sliding panel with directional layouts and drag gestures."
             >
-              <ComponentPreview name="drawer-demo" />
+              <ComponentPreview
+                name="drawer-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'drawer-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'drawer-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -264,7 +335,13 @@ export function App() {
               title="Dropdown Menu"
               description="Menu with labels, separators, shortcuts and submenus."
             >
-              <ComponentPreview name="dropdown-menu-demo" />
+              <ComponentPreview
+                name="dropdown-menu-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'dropdown-menu-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'dropdown-menu-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -280,7 +357,13 @@ export function App() {
               title="Hover Card"
               description="Richer preview surface shown after a hover delay."
             >
-              <ComponentPreview name="hover-card-demo" />
+              <ComponentPreview
+                name="hover-card-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'hover-card-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'hover-card-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -305,7 +388,13 @@ export function App() {
               title="Popover"
               description="Anchored surface for small forms and controls."
             >
-              <ComponentPreview name="popover-demo" />
+              <ComponentPreview
+                name="popover-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'popover-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'popover-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -321,8 +410,22 @@ export function App() {
               title="Radio Group"
               description="Standard items, plus the large card-style item used for pickers."
             >
-              <ComponentPreview name="radio-group-demo" label="Items" />
-              <ComponentPreview name="radio-group-large" label="Large items" />
+              <ComponentPreview
+                name="radio-group-props-demo"
+                label="Items"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'radio-group-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'radio-group-demo' },
+                ]}
+              />
+              <ComponentPreview
+                name="radio-group-large-props-demo"
+                label="Large items"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'radio-group-large-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'radio-group-large' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -330,8 +433,29 @@ export function App() {
               title="Select"
               description="Radix select on the raised control surface, with grouped items and a separator."
             >
-              <ComponentPreview name="select-sizes" label="Sizes" />
-              <ComponentPreview name="select-groups" label="Groups" />
+              <ComponentPreview
+                name="select-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'select-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'select-demo' },
+                ]}
+              />
+              <ComponentPreview
+                name="select-sizes-props-demo"
+                label="Sizes"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'select-sizes-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'select-sizes' },
+                ]}
+              />
+              <ComponentPreview
+                name="select-groups-props-demo"
+                label="Groups"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'select-groups-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'select-groups' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -347,7 +471,13 @@ export function App() {
               title="Sheet"
               description="Same primitive as Dialog, anchored to an edge of the viewport."
             >
-              <ComponentPreview name="sheet-demo" />
+              <ComponentPreview
+                name="sheet-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'sheet-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'sheet-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -388,7 +518,13 @@ export function App() {
               title="Table"
               description="Responsive data table with scroll shadows, sortable headers and an optional sticky last column."
             >
-              <ComponentPreview name="table-demo" />
+              <ComponentPreview
+                name="table-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'table-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'table-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -396,7 +532,13 @@ export function App() {
               title="Tabs"
               description="Tab list with an animated indicator driven by useTabIndicator."
             >
-              <ComponentPreview name="tabs-demo" />
+              <ComponentPreview
+                name="tabs-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'tabs-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'tabs-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -412,7 +554,13 @@ export function App() {
               title="Tooltip"
               description="Short hint on hover or focus; requires a TooltipProvider."
             >
-              <ComponentPreview name="tooltip-demo" />
+              <ComponentPreview
+                name="tooltip-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'tooltip-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'tooltip-demo' },
+                ]}
+              />
             </Section>
           </div>
         </main>

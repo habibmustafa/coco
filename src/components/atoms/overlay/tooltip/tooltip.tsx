@@ -1,51 +1,51 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/tooltip.tsx
- * Changes: import paths only.
- */
-
-'use client'
-
-import { Tooltip as TooltipPrimitive } from 'radix-ui'
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 import * as React from 'react'
 
+import { TooltipContent, TooltipProvider, TooltipRoot, TooltipTrigger } from './tooltip-parts'
 import { cn } from '../../../../lib/utils'
 
-const TooltipProvider = TooltipPrimitive.Provider
+type RootProps = React.ComponentProps<typeof TooltipRoot>
+type TooltipContentProps = React.ComponentProps<typeof TooltipContent>
 
-const TooltipPortal = TooltipPrimitive.Portal
+export interface TooltipClassNames {
+  content?: string
+}
 
-const Tooltip = (props: React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Root>) => (
-  <TooltipPrimitive.Root {...props} />
-)
+type TooltipContentModeProps = Omit<RootProps, 'children'> & {
+  /** Element that triggers the tooltip, rendered via TooltipTrigger asChild. */
+  trigger: React.ReactElement
+  content: React.ReactNode
+  className?: string
+  classNames?: TooltipClassNames
+  slotProps?: {
+    content?: Partial<TooltipContentProps>
+  }
+  children?: never
+}
 
-const TooltipTrigger = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Trigger>
->(({ className, ...props }, ref) => (
-  <TooltipPrimitive.TooltipTrigger ref={ref} {...props} className={cn(className)} />
-))
+type TooltipCompoundProps = RootProps & { content?: never }
 
-const TooltipContent = React.forwardRef<
-  React.ElementRef<typeof TooltipPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
->(({ className, sideOffset = 4, ...props }, ref) => (
-  // TooltipPortal was added because in some cases the tooltip was rendered behind other elements. This is a known issue
-  // in shadcn/ui https://github.com/shadcn-ui/ui/issues/129. Radix UI has portal in its examples.
-  <TooltipPrimitive.Portal>
-    <TooltipPrimitive.Content
-      ref={ref}
-      sideOffset={sideOffset}
-      {...props}
-      className={cn(
-        'z-50 overflow-hidden rounded-md border bg-alternative px-3 py-1.5 text-xs text-foreground shadow-md animate-in fade-in-50 data-[side=bottom]:slide-in-from-top-1 data-[side=left]:slide-in-from-right-1 data-[side=right]:slide-in-from-left-1 data-[side=top]:slide-in-from-bottom-1',
-        className
-      )}
-    />
-  </TooltipPrimitive.Portal>
-))
-TooltipContent.displayName = TooltipPrimitive.Content.displayName
+export type TooltipProps = TooltipContentModeProps | TooltipCompoundProps
 
-export type TooltipContentProps = React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
+export function TooltipHybrid(props: TooltipProps) {
+  if (props.content === undefined) {
+    return <TooltipRoot {...props} />
+  }
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger, TooltipPortal }
+  const { trigger, content, className, classNames, slotProps, ...rootProps } = props
+  const { className: contentClassName, ...contentRest } = slotProps?.content ?? {}
+
+  return (
+    <TooltipProvider>
+      <TooltipRoot {...rootProps}>
+        <TooltipTrigger asChild>{trigger}</TooltipTrigger>
+        <TooltipContent
+          {...contentRest}
+          className={cn(className, classNames?.content, contentClassName)}
+        >
+          {content}
+        </TooltipContent>
+      </TooltipRoot>
+    </TooltipProvider>
+  )
+}

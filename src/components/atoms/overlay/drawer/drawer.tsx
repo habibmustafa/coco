@@ -1,130 +1,166 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/drawer.tsx
- * Fetched: 2026-09-22
- */
-
-'use client'
-
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 import * as React from 'react'
-import { Drawer as DrawerPrimitive } from 'vaul'
 
-import { cn } from '../../../../lib/utils'
-
-function Drawer({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Root>) {
-  return <DrawerPrimitive.Root data-slot="drawer" {...props} />
-}
-
-function DrawerTrigger({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {
-  return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />
-}
-
-function DrawerPortal({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Portal>) {
-  return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />
-}
-
-function DrawerClose({ ...props }: React.ComponentProps<typeof DrawerPrimitive.Close>) {
-  return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />
-}
-
-function DrawerOverlay({
-  className,
-  ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Overlay>) {
-  return (
-    <DrawerPrimitive.Overlay
-      data-slot="drawer-overlay"
-      className={cn(
-        'data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-50 bg-black/50',
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-function DrawerContent({
-  className,
-  children,
-  ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
-  return (
-    <DrawerPortal data-slot="drawer-portal">
-      <DrawerOverlay />
-      <DrawerPrimitive.Content
-        data-slot="drawer-content"
-        className={cn(
-          'group/drawer-content bg-background fixed z-50 flex h-auto flex-col',
-          'data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-lg data-[vaul-drawer-direction=top]:border-b',
-          'data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-lg data-[vaul-drawer-direction=bottom]:border-t',
-          'data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-3/4 data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=right]:sm:max-w-sm',
-          'data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=left]:sm:max-w-sm',
-          className
-        )}
-        {...props}
-      >
-        <div className="bg-muted mx-auto mt-4 hidden h-2 w-[100px] shrink-0 rounded-full group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
-        {children}
-      </DrawerPrimitive.Content>
-    </DrawerPortal>
-  )
-}
-
-function DrawerHeader({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="drawer-header"
-      className={cn(
-        'flex flex-col gap-0.5 p-4 group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center md:gap-1.5 md:text-left',
-        className
-      )}
-      {...props}
-    />
-  )
-}
-
-function DrawerFooter({ className, ...props }: React.ComponentProps<'div'>) {
-  return (
-    <div
-      data-slot="drawer-footer"
-      className={cn('mt-auto flex flex-col gap-2 p-4', className)}
-      {...props}
-    />
-  )
-}
-
-function DrawerTitle({ className, ...props }: React.ComponentProps<typeof DrawerPrimitive.Title>) {
-  return (
-    <DrawerPrimitive.Title
-      data-slot="drawer-title"
-      className={cn('text-foreground font-semibold', className)}
-      {...props}
-    />
-  )
-}
-
-function DrawerDescription({
-  className,
-  ...props
-}: React.ComponentProps<typeof DrawerPrimitive.Description>) {
-  return (
-    <DrawerPrimitive.Description
-      data-slot="drawer-description"
-      className={cn('text-muted-foreground text-sm', className)}
-      {...props}
-    />
-  )
-}
-
-export {
-  Drawer,
-  DrawerPortal,
-  DrawerOverlay,
-  DrawerTrigger,
-  DrawerClose,
+import {
   DrawerContent,
-  DrawerHeader,
-  DrawerFooter,
-  DrawerTitle,
   DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerRoot,
+  DrawerTitle,
+  DrawerTrigger,
+} from './drawer-parts'
+import { Button } from '../../actions/button'
+import { cn } from '../../../../lib/utils'
+import { useControllableState } from '../../../../lib/use-controllable-state'
+
+type ButtonVariant = React.ComponentProps<typeof Button>['variant']
+type DrawerRootProps = React.ComponentProps<typeof DrawerRoot>
+type DrawerContentProps = React.ComponentProps<typeof DrawerContent>
+
+export interface DrawerRenderContext {
+  close: () => void
+  pending: boolean
+}
+
+type Slot = React.ReactNode | ((ctx: DrawerRenderContext) => React.ReactNode)
+
+const renderSlot = (slot: Slot | undefined, ctx: DrawerRenderContext) =>
+  typeof slot === 'function' ? slot(ctx) : slot
+
+export interface DrawerClassNames {
+  content?: string
+  header?: string
+  title?: string
+  description?: string
+  body?: string
+  footer?: string
+}
+
+export interface DrawerProps {
+  open?: boolean
+  /** @default false */
+  defaultOpen?: boolean
+  onOpenChange?: (open: boolean) => void
+  /** Element that opens the drawer, rendered via DrawerTrigger asChild. */
+  trigger?: React.ReactElement
+  title?: React.ReactNode
+  description?: React.ReactNode
+  /** Body content. `undefined`/`null` renders no body wrapper. */
+  children?: Slot
+  /** `undefined` = default Cancel/Confirm buttons (only if `onConfirm` is set), `null` = hidden, node/fn = custom. */
+  footer?: Slot | null
+  onConfirm?: () => void | Promise<void>
+  onCancel?: () => void
+  /** @default "Confirm" */
+  confirmText?: React.ReactNode
+  /** @default "Cancel" */
+  cancelText?: React.ReactNode
+  /** Visual variant of the confirm Button. @default "primary" */
+  confirmType?: ButtonVariant
+  /** @default true */
+  closeOnConfirm?: boolean
+  /** Edge of the viewport the drawer slides in from. @default "bottom" */
+  direction?: DrawerRootProps['direction']
+  className?: string
+  classNames?: DrawerClassNames
+  slotProps?: {
+    content?: Partial<DrawerContentProps>
+  }
+}
+
+export function DrawerHybrid({
+  open: openProp,
+  defaultOpen = false,
+  onOpenChange,
+  trigger,
+  title,
+  description,
+  children,
+  footer,
+  onConfirm,
+  onCancel,
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
+  confirmType = 'primary',
+  closeOnConfirm = true,
+  direction,
+  className,
+  classNames,
+  slotProps,
+}: DrawerProps) {
+  const [open, setOpen] = useControllableState({
+    value: openProp,
+    defaultValue: defaultOpen,
+    onChange: onOpenChange,
+  })
+  const [pending, setPending] = React.useState(false)
+
+  const close = React.useCallback(() => setOpen(false), [setOpen])
+  const ctx: DrawerRenderContext = { close, pending }
+
+  const handleOpenChange = (next: boolean) => {
+    if (!next && pending) return
+    setOpen(next)
+  }
+
+  const handleConfirm = async () => {
+    if (!onConfirm) return
+    setPending(true)
+    try {
+      await onConfirm()
+      if (closeOnConfirm) setOpen(false)
+    } finally {
+      setPending(false)
+    }
+  }
+
+  const handleCancel = () => {
+    onCancel?.()
+    close()
+  }
+
+  const footerNode =
+    footer === null
+      ? null
+      : footer !== undefined
+        ? renderSlot(footer, ctx)
+        : onConfirm
+          ? (
+              <>
+                <Button variant={confirmType} onClick={handleConfirm} loading={pending}>
+                  {confirmText}
+                </Button>
+                <Button variant="outline" onClick={handleCancel} disabled={pending}>
+                  {cancelText}
+                </Button>
+              </>
+            )
+          : null
+
+  const bodyNode = children != null ? renderSlot(children, ctx) : null
+
+  return (
+    <DrawerRoot open={open} onOpenChange={handleOpenChange} direction={direction}>
+      {trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
+      <DrawerContent
+        {...slotProps?.content}
+        className={cn(className, classNames?.content, slotProps?.content?.className)}
+        {...(description == null && { 'aria-describedby': undefined })}
+      >
+        <DrawerHeader className={classNames?.header}>
+          <DrawerTitle className={cn(!title && 'sr-only', classNames?.title)}>
+            {title ?? 'Drawer'}
+          </DrawerTitle>
+          {description != null && (
+            <DrawerDescription className={classNames?.description}>{description}</DrawerDescription>
+          )}
+        </DrawerHeader>
+
+        {bodyNode != null && <div className={classNames?.body}>{bodyNode}</div>}
+
+        {footerNode != null && <DrawerFooter className={classNames?.footer}>{footerNode}</DrawerFooter>}
+      </DrawerContent>
+    </DrawerRoot>
+  )
 }

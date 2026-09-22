@@ -37,7 +37,11 @@ const NOT_CLASSES = new Set([
   'block-end',
   'block-start',
   'before:easing-[0.24,',
+  'dialog-demo-email',
+  'dialog-props-render-fn-email',
   'drawer-content',
+  'sheet-demo-name',
+  'short-lived',
   'drawer-description',
   'drawer-footer',
   'drawer-header',
@@ -71,6 +75,9 @@ const NOT_CLASSES = new Set([
   'plan-team',
   'popover-trigger-width',
   'project-name',
+  'radio-group',
+  'sep-1',
+  'sep-2',
   'us-east',
   'var(--color-desktop)',
   'var(--color-mobile)',
@@ -111,7 +118,7 @@ function collectCandidates(file) {
 const css = readFileSync(CSS, 'utf8')
 const files = SOURCES.flatMap((pattern) => globSync(pattern))
 const exampleNames = new Set(
-  globSync('playground/examples/*.tsx').map((path) => path.split(/[\\/]/).pop().replace('.tsx', ''))
+  globSync('playground/examples/**/*.tsx').map((path) => path.split(/[\\/]/).pop().replace('.tsx', ''))
 )
 const candidates = new Set()
 for (const file of files) for (const token of collectCandidates(file)) candidates.add(token)

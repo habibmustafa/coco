@@ -1,72 +1,49 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/popover.tsx
- * Changes: import paths only.
- */
-
-'use client'
-
-import { Popover as PopoverPrimitive } from 'radix-ui'
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 import * as React from 'react'
 
+import { PopoverContent, PopoverRoot, PopoverTrigger } from './popover-parts'
 import { cn } from '../../../../lib/utils'
-import { getExplicitTabIndex } from '../../../../lib/get-explicit-tab-index'
-import styles from './popover.module.css'
 
-const Popover = PopoverPrimitive.Root
+type RootProps = React.ComponentProps<typeof PopoverRoot>
+type PopoverContentProps = React.ComponentProps<typeof PopoverContent>
 
-const PopoverTrigger = React.forwardRef<
-  React.ElementRef<typeof PopoverPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger>
->(({ disabled, tabIndex, ...props }, ref) => {
-  const computedTabIndex = getExplicitTabIndex(tabIndex, disabled)
+export interface PopoverClassNames {
+  content?: string
+}
+
+type PopoverContentModeProps = Omit<RootProps, 'children'> & {
+  /** Element that opens the popover, rendered via PopoverTrigger asChild. */
+  trigger: React.ReactElement
+  content: React.ReactNode
+  className?: string
+  classNames?: PopoverClassNames
+  slotProps?: {
+    content?: Partial<PopoverContentProps>
+  }
+  children?: never
+}
+
+type PopoverCompoundProps = RootProps & { content?: never }
+
+export type PopoverProps = PopoverContentModeProps | PopoverCompoundProps
+
+export function PopoverHybrid(props: PopoverProps) {
+  if (props.content === undefined) {
+    return <PopoverRoot {...props} />
+  }
+
+  const { trigger, content, className, classNames, slotProps, ...rootProps } = props
+  const { className: contentClassName, ...contentRest } = slotProps?.content ?? {}
 
   return (
-    <PopoverPrimitive.Trigger
-      ref={ref}
-      {...props}
-      disabled={disabled}
-      tabIndex={computedTabIndex}
-    />
+    <PopoverRoot {...rootProps}>
+      <PopoverTrigger asChild>{trigger}</PopoverTrigger>
+      <PopoverContent
+        {...contentRest}
+        className={cn(className, classNames?.content, contentClassName)}
+      >
+        {content}
+      </PopoverContent>
+    </PopoverRoot>
   )
-})
-PopoverTrigger.displayName = PopoverPrimitive.Trigger.displayName
-
-const PopoverAnchor = PopoverPrimitive.Anchor
-
-export type PopoverContentProps = {
-  align?: 'center' | 'start' | 'end'
-  sideOffset?: number
-  sameWidthAsTrigger?: boolean
-} & React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Content>
-
-const PopoverContent = React.forwardRef<
-  React.ElementRef<typeof PopoverPrimitive.Content>,
-  PopoverContentProps
->(({ className, align = 'center', sideOffset = 4, sameWidthAsTrigger = false, ...props }, ref) => {
-  return (
-    <PopoverPrimitive.Portal>
-      <PopoverPrimitive.Content
-        ref={ref}
-        align={align}
-        sideOffset={sideOffset}
-        className={cn(
-          sameWidthAsTrigger ? styles['popover-trigger-width'] : '',
-          'z-50 w-72 rounded-md border border-overlay bg-overlay p-4 text-popover-foreground shadow-md outline-hidden animate-in data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
-          className
-        )}
-        {...props}
-      />
-    </PopoverPrimitive.Portal>
-  )
-})
-PopoverContent.displayName = 'PopoverContent'
-
-const PopoverSeparator = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
-  ({ className, children, ...props }, ref) => (
-    <div ref={ref} {...props} className={cn('w-full h-px bg-border-overlay', className)} />
-  )
-)
-PopoverSeparator.displayName = 'PopoverSeparator'
-
-export { Popover, PopoverAnchor, PopoverContent, PopoverSeparator, PopoverTrigger }
+}

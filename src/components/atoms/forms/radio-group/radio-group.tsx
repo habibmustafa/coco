@@ -1,130 +1,82 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/radio-group.tsx
- * Changes: import paths only.
- */
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
+import type * as React from 'react'
 
-'use client'
-
-import { Circle } from 'lucide-react'
-import { RadioGroup as RadioGroupPrimitive } from 'radix-ui'
-import * as React from 'react'
-
+import { RadioGroupItem, RadioGroupLargeItem, RadioGroupRoot } from './radio-group-parts'
+import { Label } from '../label'
 import { cn } from '../../../../lib/utils'
 
-const RadioGroup = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Root>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Root>
->(({ className, ...props }, ref) => {
-  return (
-    <RadioGroupPrimitive.Root
-      className={cn('relative grid gap-2', className)}
-      {...props}
-      ref={ref}
-    />
-  )
-})
-RadioGroup.displayName = RadioGroupPrimitive.Root.displayName
-
-const RadioGroupItem = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ className, ...props }, ref) => {
-  return (
-    <RadioGroupPrimitive.Item
-      ref={ref}
-      className={cn(
-        'relative aspect-square h-4 w-4 rounded-full border border-primary text-primary focus-ring disabled:cursor-not-allowed disabled:opacity-50',
-        className
-      )}
-      {...props}
-    >
-      <RadioGroupPrimitive.Indicator className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Circle size={10} strokeWidth={0} className="fill-current text-current" />
-      </RadioGroupPrimitive.Indicator>
-    </RadioGroupPrimitive.Item>
-  )
-})
-RadioGroupItem.displayName = RadioGroupPrimitive.Item.displayName
-
-interface RadioGroupLargeItemProps {
+export interface RadioOption {
+  value: string
+  label: React.ReactNode
+  id?: string
+  disabled?: boolean
+  /** @default "default" */
+  variant?: 'default' | 'large'
+  /** Only used when `variant: "large"`. */
   image?: React.ReactNode
-  label: string
+  /** Only used when `variant: "large"`. @default true */
   showIndicator?: boolean
 }
 
-const RadioGroupLargeItem = React.forwardRef<
-  React.ElementRef<typeof RadioGroupPrimitive.Item>,
-  RadioGroupLargeItemProps & React.ComponentPropsWithoutRef<typeof RadioGroupPrimitive.Item>
->(({ id: idProp, label, showIndicator = true, ...props }, ref) => {
-  const generatedId = React.useId()
-  const id = idProp || generatedId
+export interface RadioGroupClassNames {
+  item?: string
+  itemRow?: string
+  label?: string
+}
+
+type RootProps = React.ComponentProps<typeof RadioGroupRoot>
+
+type RadioGroupOptionsProps = Omit<RootProps, 'children'> & {
+  options: readonly RadioOption[]
+  classNames?: RadioGroupClassNames
+  children?: never
+}
+
+type RadioGroupCompoundProps = RootProps & { options?: never }
+
+export type RadioGroupProps = RadioGroupOptionsProps | RadioGroupCompoundProps
+
+export function RadioGroupHybrid(props: RadioGroupProps) {
+  if (props.options === undefined) {
+    return <RadioGroupRoot {...props} />
+  }
+
+  const { options, classNames, ...rootProps } = props
+
   return (
-    <RadioGroupPrimitive.Item
-      ref={ref}
-      id={id}
-      {...props}
-      className={cn(
-        'flex flex-col gap-2',
-        'w-48',
-        'bg-surface-200',
-        'rounded-md border border-strong',
-        'p-2',
-        'shadow-xs',
-        'hover:border-control-hover focus-visible:border-control-hover hover:bg-surface-300',
-        'data-[state=checked]:bg-selection data-[state=checked]:border-control-hover',
-        'transition-colors',
-        'group',
-        props.className
-      )}
-    >
-      {props.children}
-      <div className="flex gap-2 w-full">
-        {showIndicator && (
-          <div className="relative w-3 h-3 min-w-3 mt-0.5">
-            <RadioGroupPrimitive.Indicator
-              className={cn(
-                'absolute',
-                'w-[10px] h-[10px]',
-                'left-px top-px',
-                'border border-background-surface-300',
-                'rounded-full',
-                'data-[state=checked]:border-background-surface-300',
-                'data-[state=checked]:ring-foreground',
-                'data-[state=checked]:bg-foreground'
-              )}
+    <RadioGroupRoot {...rootProps}>
+      {options.map((option) => {
+        const id = option.id ?? `${rootProps.name ?? 'radio-group'}-${option.value}`
+
+        if (option.variant === 'large') {
+          return (
+            <RadioGroupLargeItem
+              key={option.value}
+              value={option.value}
+              id={id}
+              disabled={option.disabled}
+              image={option.image}
+              showIndicator={option.showIndicator}
+              label={typeof option.label === 'string' ? option.label : String(option.label)}
+              className={classNames?.item}
             />
-            <div
-              className={cn(
-                'absolute',
-                'w-3 h-3',
-                'border border-stronger',
-                'rounded-full',
-                'group-hover:border-control-hover',
-                'group-focus-visible:border-control-hover',
-                'group-data-[state=checked]:border-control-hover',
-                'transition-colors'
-              )}
-            ></div>
+          )
+        }
+
+        return (
+          <div key={option.value} className={cn('flex items-center gap-2', classNames?.itemRow)}>
+            <RadioGroupItem
+              value={option.value}
+              id={id}
+              disabled={option.disabled}
+              className={classNames?.item}
+            />
+            <Label htmlFor={id} className={classNames?.label}>
+              {option.label}
+            </Label>
           </div>
-        )}
-
-        <label
-          htmlFor={id}
-          className={cn(
-            'text-xs transition-colors text-left',
-            'text-light',
-            'group-hover:text-foreground group-data-[state=checked]:text-foreground',
-            props.disabled ? 'cursor-not-allowed' : 'cursor-pointer'
-          )}
-        >
-          {label}
-        </label>
-      </div>
-    </RadioGroupPrimitive.Item>
+        )
+      })}
+    </RadioGroupRoot>
   )
-})
-
-RadioGroupLargeItem.displayName = RadioGroupPrimitive.Item.displayName
-
-export { RadioGroup, RadioGroupItem, RadioGroupLargeItem }
+}

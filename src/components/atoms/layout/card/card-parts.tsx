@@ -1,0 +1,76 @@
+/*
+ * Adapted from Supabase (Apache License 2.0).
+ * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/card.tsx
+ * Changes: hybrid API migration (docs/hybrid-api-migration.md) — root renamed
+ * Card → CardRoot so the atom's default export can become props-driven.
+ * Compound parts, class strings, ARIA and data attributes are unchanged.
+ */
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
+
+import * as React from 'react'
+
+import { cn } from '../../../../lib/utils'
+
+const CardRoot = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn(
+        'overflow-hidden rounded-lg border bg-surface-100 text-card-foreground shadow-xs',
+        className
+      )}
+      {...props}
+    />
+  )
+)
+CardRoot.displayName = 'CardRoot'
+
+const CardHeader = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn('flex flex-col space-y-1.5 py-4 px-(--card-padding-x) border-b', className)}
+      {...props}
+    />
+  )
+)
+CardHeader.displayName = 'CardHeader'
+
+const CardTitle = React.forwardRef<HTMLParagraphElement, React.HTMLAttributes<HTMLHeadingElement>>(
+  ({ className, ...props }, ref) => (
+    <h3 ref={ref} className={cn('text-xs font-mono uppercase', className)} {...props} />
+  )
+)
+CardTitle.displayName = 'CardTitle'
+
+const CardDescription = React.forwardRef<
+  HTMLParagraphElement,
+  React.HTMLAttributes<HTMLParagraphElement>
+>(({ className, ...props }, ref) => (
+  <p ref={ref} className={cn('text-sm text-foreground-lighter', className)} {...props} />
+))
+CardDescription.displayName = 'CardDescription'
+
+const CardContent = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn('py-4 px-(--card-padding-x) border-b last:border-none', className)}
+      {...props}
+    />
+  )
+)
+CardContent.displayName = 'CardContent'
+
+const CardFooter = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
+      ref={ref}
+      className={cn('flex items-center py-4 px-(--card-padding-x)', className)}
+      {...props}
+    />
+  )
+)
+CardFooter.displayName = 'CardFooter'
+
+export { CardRoot, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }

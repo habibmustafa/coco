@@ -48,6 +48,10 @@ Code, identifiers, code comments and file names stay in English.
 - `docs/plan.md` — **living record**: decision log, corrections log, structure, completed work,
   roadmap, verification. **Update it in the same turn as the work, not in a batch at the end.**
   The user asked for this explicitly.
+- `docs/hybrid-api-migration.md` — separate, self-contained agent brief for the ongoing hybrid
+  API migration (compound + props-driven dual API for the 16 atoms listed in its §9, golden
+  markup tests as the fidelity safety net). Read it fully before touching any atom listed
+  there; it supersedes byte-exact re-sync for those components (see its §2).
 
 ## 5. Current state
 
@@ -66,8 +70,27 @@ tooltip.
 Plus: `ThemeProvider` + `useTheme` + `singleThemes` (System/Dark/Light, persisted in
 localStorage, live `matchMedia` tracking, cross-tab sync, no-flash inline script in `index.html`).
 
-Build output: `dist/coco.js` ~168 kB (gzip 35.5 kB), `dist/styles.css` ~164.5 kB (gzip 28.3 kB),
-205 public exports. Runtime deps are **external** in the bundle.
+Build output: `dist/coco.js` ~200.1 kB (gzip 43.7 kB), `dist/styles.css` ~165.0 kB (gzip 28.4 kB),
+267 public exports. Runtime deps are **external** in the bundle.
+
+**Hybrid API migration complete** for 17 atoms (`docs/hybrid-api-migration.md`): Dialog, Sheet,
+Drawer, Tooltip, Popover, HoverCard, DropdownMenu, Tabs, Accordion, Collapsible, Select,
+RadioGroup, Command, Card, Alert, Avatar, Table each expose both a props-driven mode and the
+original compound API from the same import (`<Tabs items={...} />` vs. `<Tabs><TabsList>...`).
+Dialog/Sheet/Drawer are Strategy B (root renamed to `*Root`, the plain name is now the
+props-driven component); the rest are Strategy A (additive, non-breaking — a data prop like
+`items`/`content`/`options` switches into props mode). Golden markup tests (`tests/golden/`,
+`npm run test`, 73 tests) are the fidelity guarantee — every pre-existing compound snapshot
+stayed byte-identical through the refactor. Two gotchas worth knowing before touching any atom
+this pattern hasn't reached yet (Sonner, Calendar, Chart, Form, Sidebar): (1) React's
+`HTMLAttributes` already defines `content` and `title` — a same-named content prop must
+`Omit` those explicitly from the root's prop type, or TypeScript produces a confusing
+`string & ReactPortal`-style intersection error; (2) any part attached to the
+`Object.assign(Hybrid, { ... })` namespace needs its prop type actually `export`-ed from the
+`-parts.tsx` file, or `vite-plugin-dts`/api-extractor fails the build with `TS4023` when
+bundling declarations. Playground examples live one folder per component now
+(`playground/examples/<component>/<name>.tsx`), addressed by bare filename via a recursive
+glob + basename lookup in `component-preview.tsx`.
 
 ### Structure
 
@@ -130,9 +153,12 @@ Never edit values inside `src/styles/vendor/supabase/`. Each file carries a sour
    enough — see the Tabs gotcha below.
 4. Place it in the right category folder, add an `index.ts` barrel, re-export from `src/index.ts`
    (keep it alphabetical).
-5. Add a `playground/examples/<name>-demo.tsx` and a `<Section>` + `<ComponentPreview>` in
+5. Add `playground/examples/<name>/<name>-demo.tsx` (one folder per component — glob is
+   recursive, addressed by bare filename) and a `<Section>` + `<ComponentPreview>` in
    `playground/app.tsx`, in alphabetical order.
-6. Run `npm run verify`. Both checks must be clean.
+6. Run `npm run verify` (build + lint + check:classes + check:tokens + golden tests). All must
+   be clean. If the component is going hybrid (see `docs/hybrid-api-migration.md`), also add it
+   to `CLICK_TO_OPEN`/`HOVER_TO_OPEN` in `tests/golden/golden.test.tsx` if it's an overlay.
 7. Update `docs/plan.md`.
 
 ## 7. Gotchas already paid for — do not rediscover these
@@ -159,6 +185,12 @@ Never edit values inside `src/styles/vendor/supabase/`. Each file carries a sour
   PowerShell `Move-Item` — Git Bash `mv` fails with "Permission denied". Also note `TaskStop` on
   the npm wrapper can leave the vite child alive holding the port.
 - New runtime dependencies must also be added to `rollupOptions.external` in `vite.config.ts`.
+- **Hybrid components**: a same-named content prop (`content`, `title`) can silently collide
+  with a key React's `HTMLAttributes` already defines — `Omit` it explicitly from the root's
+  props or you get a baffling `string & ReactPortal` intersection error instead of a clear one.
+  And any part attached to the `Object.assign(Hybrid, {...})` namespace needs its prop
+  interface actually `export`-ed from `-parts.tsx`, or the declaration bundler fails with
+  `TS4023` at build time, not at `tsc -b`.
 
 ## 8. Roadmap
 
@@ -176,12 +208,13 @@ McpUrlBuilder, PrivacySettings.
 
 ## 9. Known open issues
 
-- **Nothing has been verified visually in a browser** — all checking so far is at the CSS/type
-  level via the two scripts. Side-by-side comparison against the live site is still owed.
+- **Nothing has been verified visually in a browser** — all checking so far is at the CSS/type/
+  golden-markup level. Side-by-side comparison against the live site is still owed.
 - README coco istifadəsini və tema inteqrasiyasını sənədləşdirir.
-- No tests (upstream has `*.test.tsx` files that were not ported).
 - `oxlint` reports a handful of warnings that come from upstream code as-is
   (`only-export-components`, unused params). Leave them; do not "fix" vendored logic.
+- Hybrid API migration done for 17 atoms; Sonner/Calendar/Chart/Form/Sidebar not yet
+  evaluated for it (Sonner is already imperative — `toast()` — so it may not need one).
 
 ## 10. First thing to do
 

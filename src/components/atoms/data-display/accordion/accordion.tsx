@@ -1,95 +1,75 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/accordion.tsx
- * Changes: import paths only.
- */
+// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
+import type * as React from 'react'
 
-'use client'
+import { AccordionContent, AccordionItem, AccordionRoot, AccordionTrigger } from './accordion-parts'
 
-import { ChevronDown } from 'lucide-react'
-import { Accordion as AccordionPrimitive } from 'radix-ui'
-import * as React from 'react'
+export interface AccordionItemData {
+  value: string
+  trigger: React.ReactNode
+  content: React.ReactNode
+  disabled?: boolean
+}
 
-import { cn } from '../../../../lib/utils'
-import { getExplicitTabIndex } from '../../../../lib/get-explicit-tab-index'
+export interface AccordionClassNames {
+  item?: string
+  trigger?: string
+  content?: string
+}
 
-const Accordion = AccordionPrimitive.Root
+// Radix's own root props are a `type`-discriminated union (single value vs. string[]).
+// `Omit<RootProps, ...>` would collapse that union to its common keys and lose the
+// discrimination — so the two shapes are mirrored here by hand instead.
+type AccordionItemsCommonProps = {
+  disabled?: boolean
+  dir?: 'ltr' | 'rtl'
+  orientation?: 'horizontal' | 'vertical'
+  className?: string
+  items: readonly AccordionItemData[]
+  classNames?: AccordionClassNames
+  children?: never
+}
 
-const AccordionItem = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Item>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item>
->(({ className, ...props }, ref) => (
-  <AccordionPrimitive.Item ref={ref} className={cn('border-b', className)} {...props} />
-))
-AccordionItem.displayName = 'AccordionItem'
+type AccordionSingleItemsProps = AccordionItemsCommonProps & {
+  type: 'single'
+  collapsible?: boolean
+  value?: string
+  defaultValue?: string
+  onValueChange?: (value: string) => void
+}
 
-const AccordionTrigger = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Trigger>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger> & {
-    focusVariant?: 'ring' | 'inset'
-    hideIcon?: boolean
+type AccordionMultipleItemsProps = AccordionItemsCommonProps & {
+  type: 'multiple'
+  value?: string[]
+  defaultValue?: string[]
+  onValueChange?: (value: string[]) => void
+}
+
+type AccordionItemsProps = AccordionSingleItemsProps | AccordionMultipleItemsProps
+
+type AccordionCompoundProps = React.ComponentProps<typeof AccordionRoot> & { items?: never }
+
+export type AccordionProps = AccordionItemsProps | AccordionCompoundProps
+
+export function AccordionHybrid(props: AccordionProps) {
+  if (props.items === undefined) {
+    return <AccordionRoot {...props} />
   }
->(
-  (
-    { className, children, focusVariant = 'inset', hideIcon, disabled, tabIndex, ...props },
-    ref
-  ) => {
-    const computedTabIndex = getExplicitTabIndex(tabIndex, disabled)
 
-    return (
-      <AccordionPrimitive.Header asChild>
-        <div className="flex w-full">
-          <AccordionPrimitive.Trigger
-            ref={ref}
-            className={cn(
-              'cursor-pointer flex flex-1 gap-2 items-center justify-between py-4 text-left',
-              'font-medium hover:underline',
-              '[&[data-state=open]>svg]:rotate-180',
-              focusVariant === 'ring' && 'rounded-md',
-              className,
-              focusVariant === 'ring' ? 'focus-ring' : 'relative focus-inset'
-            )}
-            {...props}
-            disabled={disabled}
-            tabIndex={computedTabIndex}
-          >
-            {children}
-            {!hideIcon && (
-              <ChevronDown
-                aria-hidden="true"
-                className={cn(
-                  'h-4 w-4 shrink-0',
-                  'transition-transform duration-200',
-                  'motion-reduce:transition-none motion-reduce:duration-0'
-                )}
-              />
-            )}
-          </AccordionPrimitive.Trigger>
-        </div>
-      </AccordionPrimitive.Header>
-    )
-  }
-)
-AccordionTrigger.displayName = AccordionPrimitive.Trigger.displayName
+  const { items, classNames, ...rootProps } = props
 
-const AccordionContent = React.forwardRef<
-  React.ElementRef<typeof AccordionPrimitive.Content>,
-  React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Content>
->(({ className, children, ...props }, ref) => (
-  <AccordionPrimitive.Content
-    ref={ref}
-    className={cn(
-      'overflow-hidden text-sm',
-      'transition-all motion-reduce:transition-none',
-      'data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down',
-      'motion-reduce:animate-none',
-      className
-    )}
-    {...props}
-  >
-    <div className="pb-4 pt-0">{children}</div>
-  </AccordionPrimitive.Content>
-))
-AccordionContent.displayName = AccordionPrimitive.Content.displayName
-
-export { Accordion, AccordionContent, AccordionItem, AccordionTrigger }
+  return (
+    <AccordionRoot {...rootProps}>
+      {items.map((item) => (
+        <AccordionItem
+          key={item.value}
+          value={item.value}
+          disabled={item.disabled}
+          className={classNames?.item}
+        >
+          <AccordionTrigger className={classNames?.trigger}>{item.trigger}</AccordionTrigger>
+          <AccordionContent className={classNames?.content}>{item.content}</AccordionContent>
+        </AccordionItem>
+      ))}
+    </AccordionRoot>
+  )
+}

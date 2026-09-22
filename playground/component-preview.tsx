@@ -5,17 +5,31 @@ import { useEffect, useState, type ComponentType } from 'react'
 import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from '../src'
 import { supabaseCodeTheme } from './shiki-theme'
 
-const demos = import.meta.glob<{ default: ComponentType }>('./examples/*.tsx', { eager: true })
-const sources = import.meta.glob<string>('./examples/*.tsx', {
-  query: '?raw',
-  import: 'default',
-  eager: true,
-})
+// Examples live one folder per component (./examples/<component>/<name>.tsx), so the
+// glob is recursive; call sites still address a demo by its bare file name.
+function basename(path: string) {
+  return path.split('/').pop()!.replace(/\.tsx$/, '')
+}
+
+function byBasename<T>(modules: Record<string, T>) {
+  return Object.fromEntries(Object.entries(modules).map(([path, mod]) => [basename(path), mod]))
+}
+
+const demos = byBasename(
+  import.meta.glob<{ default: ComponentType }>('./examples/**/*.tsx', { eager: true })
+)
+const sources = byBasename(
+  import.meta.glob<string>('./examples/**/*.tsx', {
+    query: '?raw',
+    import: 'default',
+    eager: true,
+  })
+)
 
 // The examples import from the library source; show the package name instead so
 // the snippet reads the way a consumer would write it.
 function presentSource(source: string) {
-  return source.replace(/(['"])\.\.\/\.\.\/src\1/g, "'coco'").trim()
+  return source.replace(/(['"])(?:\.\.\/)+src\1/g, "'coco'").trim()
 }
 
 function useHighlighted(source: string) {
@@ -34,6 +48,20 @@ function useHighlighted(source: string) {
   }, [source])
 
   return html
+}
+
+function CodeTab({ source }: { source: string }) {
+  const html = useHighlighted(source)
+
+  return (
+    <div className="relative w-full overflow-hidden rounded-md border bg-surface-75/75">
+      <CopyButton value={source} />
+      <div
+        className="code-content max-h-[650px] overflow-x-auto px-4 py-4 font-mono text-sm [&_pre]:my-0 [&_pre]:bg-transparent!"
+        dangerouslySetInnerHTML={{ __html: html }}
+      />
+    </div>
+  )
 }
 
 function CopyButton({ value }: { value: string }) {
@@ -59,16 +87,34 @@ function CopyButton({ value }: { value: string }) {
   )
 }
 
-export function ComponentPreview({ name, label }: { name: string; label?: string }) {
-  const key = `./examples/${name}.tsx`
-  const Demo = demos[key]?.default
-  const source = presentSource(sources[key] ?? '')
-  const html = useHighlighted(source)
+export interface ComponentPreviewCodeVariant {
+  id: string
+  label: string
+  /** Example file (without extension) this tab's code comes from. */
+  name: string
+}
+
+export function ComponentPreview({
+  name,
+  label,
+  codeVariants,
+}: {
+  name: string
+  label?: string
+  /**
+   * Extra code tabs after "Preview", each showing another example's source
+   * (no separate live render — one preview is enough). Defaults to a single
+   * "Code" tab for `name` itself, matching the plain Preview/Code layout.
+   */
+  codeVariants?: ComponentPreviewCodeVariant[]
+}) {
+  const Demo = demos[name]?.default
+  const variants = codeVariants ?? [{ id: 'code', label: 'Code', name }]
 
   if (!Demo) {
     return (
       <p className="text-sm text-destructive">
-        Missing example: <code className="font-mono">{key}</code>
+        Missing example: <code className="font-mono">{name}.tsx</code>
       </p>
     )
   }
@@ -82,7 +128,11 @@ export function ComponentPreview({ name, label }: { name: string; label?: string
       <Tabs defaultValue="preview">
         <TabsList className="gap-5">
           <TabsTrigger value="preview">Preview</TabsTrigger>
-          <TabsTrigger value="code">Code</TabsTrigger>
+          {variants.map((variant) => (
+            <TabsTrigger key={variant.id} value={variant.id}>
+              {variant.label}
+            </TabsTrigger>
+          ))}
           <TabsIndicator />
         </TabsList>
 
@@ -90,22 +140,18 @@ export function ComponentPreview({ name, label }: { name: string; label?: string
           <div className="relative overflow-hidden rounded-md border bg-studio">
             <div className="z-0 pointer-events-none absolute h-full w-full bg-[radial-gradient(oklch(from_var(--foreground-default)_l_c_h_/_0.02)_1px,transparent_1px)] bg-size-[16px_16px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
             <div className="z-10 relative">
-              <div className="preview flex min-h-[256px] w-full flex-wrap items-center justify-center gap-3 p-10">
+              <div className="preview flex min-h-64 w-full flex-wrap items-center justify-center gap-3 p-10">
                 <Demo />
               </div>
             </div>
           </div>
         </TabsContent>
 
-        <TabsContent value="code">
-          <div className="relative w-full overflow-hidden rounded-md border bg-surface-75/75">
-            <CopyButton value={source} />
-            <div
-              className="code-content max-h-[650px] overflow-x-auto px-4 py-4 font-mono text-sm [&_pre]:my-0 [&_pre]:bg-transparent!"
-              dangerouslySetInnerHTML={{ __html: html }}
-            />
-          </div>
-        </TabsContent>
+        {variants.map((variant) => (
+          <TabsContent key={variant.id} value={variant.id}>
+            <CodeTab source={presentSource(sources[variant.name] ?? '')} />
+          </TabsContent>
+        ))}
       </Tabs>
     </div>
   )
