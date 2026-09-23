@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/hooks/use-mobile.tsx
- * Fetched: 2026-09-22
- */
-
 import * as React from 'react'
 
 const MOBILE_BREAKPOINT = 768

@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/Row/index.tsx
- * Changes: `ui` package import replaced with our Button/FloatingPlate atoms + cn helper.
- */
-
 'use client'
 
 import { ChevronLeft, ChevronRight } from 'lucide-react'

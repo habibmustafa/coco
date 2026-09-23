@@ -26,7 +26,7 @@ export default function MetricCardPropsDemo() {
         isLoading={!data.length}
         label="Active Users"
         tooltip="The number of active users over the last 24 hours"
-        href="https://supabase.com"
+        href="#metric-card"
         value={averageValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
         differential={`${diffPercentage > 0 ? '+' : '-'}${Math.abs(diffPercentage).toFixed(1)}%`}
         differentialVariant={diffPercentage > 0 ? 'positive' : 'negative'}

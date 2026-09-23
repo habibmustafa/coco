@@ -1,10 +1,3 @@
-/*
- * Vendored from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/config/tailwind-plugins/hit-area.css
- * Fetched: 2026-09-22
- * Changes: none.
- */
-
 @utility hit-area-debug {
   position: relative;
   &::before {

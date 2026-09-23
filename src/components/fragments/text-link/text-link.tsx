@@ -1,10 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/TextLink/index.tsx
- * Changes: `next/link` replaced with a plain anchor (this package has no Next.js runtime
- * dependency); `ui` package import replaced with our cn helper.
- */
-
 'use client'
 
 import { ChevronRight } from 'lucide-react'

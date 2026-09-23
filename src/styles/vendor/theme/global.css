@@ -1,10 +1,3 @@
-/*
- * Vendored from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/build/css/source/global.css
- * Fetched: 2026-09-22
- * Changes: import paths adjusted for this package; see ./NOTICE.md
- */
-
 :root {
   --colors-black: 0deg 0% 0%;
   --colors-white: 0deg 0% 100%;

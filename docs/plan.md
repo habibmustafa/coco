@@ -126,7 +126,7 @@ yuxarıdan açılsın. Adi bölmə keçidləri və birbaşa anker linkləri saxl
 12. **`--destructive-lightness` token-i canlı saytla üst-üstə düşmürdü (`check:tokens`)** —
     Admonition fragmentini portlayarkən aşkarlandı, özü fragment ilə əlaqəsizdir: upstream
     `packages/ui/build/css/source/semantic.css`-də dark-mode anchor-u `0.75`-dən `0.55`-ə
-    dəyişdirmişdi (light.css-dəki `0.52` override toxunulmamışdı). `src/styles/vendor/supabase/
+    dəyişdirmişdi (light.css-dəki `0.52` override toxunulmamışdı). `src/styles/vendor/theme/
     semantic.css`-dəki dəyər upstream ilə eyniləşdirildi. Eyni upstream fetch-də `--primary-hover`/
     `--warning-hover`/`--destructive-hover` kimi yeni tokenlər də görünürdü, amma bunlar bizdə
     ümumiyyətlə mövcud olmadığı üçün `check:tokens` skripti onları müqayisəyə salmır (yalnız hər
@@ -166,13 +166,13 @@ coco/
 │   ├── main.tsx                   # ThemeProvider wrap
 │   ├── app.tsx                    # sidebar nav + komponent bölmələri
 │   ├── docs.tsx                   # Section / Preview / Swatch
-│   └── theme-switcher.tsx         # System / Dark / Light
+│   └── shiki-theme.ts             # playground kod teması
 ├── index.html                     # Inter + Source Code Pro, no-flash tema script-i
 ├── src/
 │   ├── index.ts                   # public entry
 │   ├── styles/
 │   │   ├── globals.css            # upstream import zənciri
-│   │   └── vendor/supabase/       # 17 vendored CSS + NOTICE.md
+│   │   └── vendor/theme/       # 17 vendored CSS + NOTICE.md
 │   ├── lib/                       # utils (cn), constants, get-explicit-tab-index
 │   ├── providers/                 # theme-provider, single-themes
 │   └── components/
@@ -206,6 +206,24 @@ coco/
 ---
 
 ## Tamamlanmış işlər
+
+- **2026-09-23 — Mənbə başlıqları:** 113 fayldakı uzun və təkrarlanan atribusiya
+  blokları, ardınca onlara qoyulan qısa əvəzedici şərhlər silindi. Mənbə, lisenziya
+  və dəyişiklik xülasəsi `src/styles/vendor/theme/NOTICE.md`-də saxlanılır.
+  Layihə özəldir; paylamadan əvvəl fayl səviyyəsində dəyişiklik bildirişləri
+  yenidən qiymətləndirilməlidir.
+
+- **2026-09-23 — Adlandırma və şərh təmizliyi:** CSS vendor qovluğu
+  `src/styles/vendor/theme/` adlandırıldı; bütün import və sənəd yolları yeniləndi.
+  Playground nümunələrindəki kənar brend adları coco/generic məzmunla əvəz edildi,
+  kod temasının adı `coco` oldu, 17 fayldakı təkrar lisenziya sətri və digər artıq
+  şərhlər çıxarıldı. Mənbə fayllarında tələb olunan atribusiya və dəyişiklik
+  bildirişləri saxlanıldı.
+
+- **2026-09-23 — Playground header:** tema dəyişdiricisi kitabxananın `ThemeToggle`
+  fragmenti ilə əvəz edildi. Fragmentin sadə ikon trigger-i Supabase tokenləri ilə
+  çərçivəli, cari seçimi göstərən kompakt düyməyə çevrildi; açılan menyuya başlıq və
+  System/Dark/Light ikonları əlavə olundu.
 
 - **Faza 0 — İnfrastruktur**: Vite library mode (es+cjs, `cssFileName: styles`),
   `@tailwindcss/vite`, `vite-plugin-dts` (`bundleTypes` + api-extractor), package.json
@@ -414,7 +432,7 @@ tələb etmədi.
 **Fragment tur 1 — ShimmeringLoader, MetricCard**:
 - `src/components/fragments/shimmering-loader/` — `ShimmeringLoader`,
   `GenericSkeletonLoader`, `GenericSelectionSkeletonLoader`, `GenericTableLoader`. Upstream-in
-  `.shimmering-loader` CSS-i (`index.css`) `src/styles/vendor/supabase/shimmering-loader.css`
+  `.shimmering-loader` CSS-i (`index.css`) `src/styles/vendor/theme/shimmering-loader.css`
   kimi vendor edildi və `globals.css`-ə əlavə olundu (Chart-ın `charts.css`-i ilə eyni naxış).
   Upstream həm komponenti, həm onun props tipini `ShimmeringLoader` adlandırır (TS-də iki ayrı
   namespace olduğu üçün qanuni) — bizim flat public API-də qarışıqlıq yaratmasın deyə tip

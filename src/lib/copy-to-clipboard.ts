@@ -1,10 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/lib/utils/clipboard.ts
- * Changes: `noop` from lodash replaced with an inline no-op default (one function, not worth
- * a whole dependency — same reasoning as this project's own cn() helper).
- */
-
 import { toast } from 'sonner'
 
 type ClipboardText = string | Promise<string>

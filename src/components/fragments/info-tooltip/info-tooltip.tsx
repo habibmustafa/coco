@@ -1,12 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/info-tooltip.tsx
- * Changes: `ui` package import replaced with our Tooltip atom parts. Upstream relies on a single
- * app-wide TooltipProvider ancestor; our hybrid Tooltip only auto-wraps a Provider in its
- * props-driven ("content" prop) mode (docs/hybrid-api-migration.md), so this compound usage
- * wraps its own TooltipProvider to stay self-contained for a consumer that hasn't added one.
- */
-
 import { forwardRef, type ElementRef } from 'react'
 
 import {

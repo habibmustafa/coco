@@ -1,11 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/GlassPanel/index.tsx
- * Changes: `next/image`'s `Image` (with `fill`/`sizes`) replaced with a plain absolutely-fills
- * `<img>` (this package has no Next.js runtime dependency); `next-themes` replaced with our
- * own ThemeProvider hook; `ui` package import replaced with our cn helper.
- */
-
 'use client'
 
 import * as React from 'react'

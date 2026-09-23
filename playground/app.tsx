@@ -1,7 +1,6 @@
 import { ComponentPreview } from './component-preview'
 import { Preview, Section, Swatch } from './docs'
-import { ThemeSwitcher } from './theme-switcher'
-import { Badge, SonnerToaster, useTheme } from '../src'
+import { Badge, SonnerToaster, ThemeToggle, useTheme } from '../src'
 
 const NAV = [
   {
@@ -98,7 +97,7 @@ export function App() {
             <Badge variant="success" className="hidden sm:inline-flex">
               23 hybrid · 57 components
             </Badge>
-            <ThemeSwitcher />
+            <ThemeToggle />
           </div>
         </div>
       </header>
@@ -127,7 +126,7 @@ export function App() {
           <div className="mx-auto max-w-4xl">
             <h1 className="scroll-m-20 text-4xl tracking-tight">Components</h1>
             <p className="mt-2 text-lg text-foreground-light">
-              Ported from the Supabase design system. Tokens, variants and markup match upstream.
+              React components, patterns and design tokens for coco.
             </p>
             <div role="none" className="mt-6 mb-6 h-px w-full shrink-0 bg-border-muted" />
 
@@ -575,7 +574,7 @@ export function App() {
             <Section
               id="sonner"
               title="Sonner"
-              description="Theme-aware toast stack with Supabase status icons and button variants."
+              description="Theme-aware toast stack with status icons and button variants."
             >
               <ComponentPreview name="sonner-demo" />
             </Section>

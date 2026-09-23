@@ -1,13 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/ShimmeringLoader/index.tsx
- * Changes: `ui` package import replaced with our Card/Table atoms + cn helper. Upstream names
- * both the component and its props type `ShimmeringLoader` (legal in TS, separate namespaces);
- * renamed the type to `ShimmeringLoaderProps` here to avoid an ambiguous re-export from the
- * package's flat public API. The `.shimmering-loader` CSS lives in
- * src/styles/vendor/supabase/shimmering-loader.css.
- */
-
 import { forwardRef, type CSSProperties } from 'react'
 
 import { cn } from '../../../lib/utils'

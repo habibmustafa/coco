@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/input.tsx
- * Changes: import paths only. Variants, classes and markup are unchanged.
- */
-
 import { cva, type VariantProps } from 'class-variance-authority'
 import * as React from 'react'
 

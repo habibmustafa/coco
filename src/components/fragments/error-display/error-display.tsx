@@ -1,13 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/ErrorDisplay/ErrorDisplay.tsx
- * Changes: `ui` package import replaced with our Card atom + cn helper; WarningIcon now comes
- * from our already-ported Admonition fragment instead of a sibling `../Admonition` import.
- * The "Contact support" link's default `/support/new` base path is upstream's own
- * Supabase-dashboard route (unchanged) — it is a non-functional default outside that app,
- * same as upstream's own fallback when `supportFormParams` is omitted.
- */
-
 'use client'
 
 import { HelpCircle } from 'lucide-react'

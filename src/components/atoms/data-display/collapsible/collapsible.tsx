@@ -1,4 +1,3 @@
-// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 import * as React from 'react'
 
 import { CollapsibleContent, CollapsibleRoot, CollapsibleTrigger } from './collapsible-parts'

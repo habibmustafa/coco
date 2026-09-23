@@ -1,9 +1,3 @@
-/*
- * Vendored from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/config/css/charts.css
- * Fetched: 2026-09-22
- */
-
 :root {
   --chart-1: var(--color-brand-800);
   --chart-2: var(--color-blue-900);

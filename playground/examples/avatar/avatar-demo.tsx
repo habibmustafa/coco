@@ -4,8 +4,8 @@ export default function AvatarDemo() {
   return (
     <>
       <Avatar>
-        <AvatarImage src="https://github.com/supabase.png" alt="Supabase" />
-        <AvatarFallback>SB</AvatarFallback>
+        <AvatarImage src="/coco-mark.svg" alt="coco" />
+        <AvatarFallback>CO</AvatarFallback>
       </Avatar>
       <Avatar>
         <AvatarImage src="https://example.invalid/missing.png" alt="" />

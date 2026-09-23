@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/Admonition/Admonition.tsx
- * Changes: `ui` package import replaced with our Alert atom + cn helper; file/import renames only.
- */
-
 import { forwardRef } from 'react'
 
 import { AlertDescription, AlertRoot as Alert, AlertTitle } from '../../atoms/feedback/alert'

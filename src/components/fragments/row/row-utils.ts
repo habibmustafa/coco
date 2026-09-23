@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/Row/Row.utils.ts
- * Changes: none besides the file rename (Row.utils.ts -> row-utils.ts).
- */
-
 import { useLayoutEffect, useState } from 'react'
 
 export const useMeasuredWidth = <T extends HTMLElement>(ref: React.RefObject<T | null>) => {

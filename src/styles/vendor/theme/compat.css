@@ -1,11 +1,4 @@
 /*
- * Vendored from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/build/css/source/compat.css
- * Fetched: 2026-09-22
- * Changes: import paths adjusted for this package; see ./NOTICE.md
- */
-
-/*
  * Backwards-compatibility aliases.
  *
  * These map the old token names onto the semantic system in semantic.css so

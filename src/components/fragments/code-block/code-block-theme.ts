@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/CodeBlock/CodeBlock.utils.ts
- * Changes: none besides the file rename (CodeBlock.utils.ts -> code-block-theme.ts).
- */
-
 export const monokaiCustomTheme = (isDarkMode: boolean) => {
   return {
     hljs: {

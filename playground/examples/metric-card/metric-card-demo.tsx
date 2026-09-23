@@ -31,7 +31,7 @@ export default function MetricCardDemo() {
   return (
     <div className="w-full max-w-sm">
       <MetricCard isLoading={!data.length}>
-        <MetricCardHeader href="https://supabase.com">
+        <MetricCardHeader href="#metric-card">
           <MetricCardLabel tooltip="The number of active users over the last 24 hours">
             Active Users
           </MetricCardLabel>

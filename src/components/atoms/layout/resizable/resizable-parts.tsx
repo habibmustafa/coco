@@ -1,11 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/resizable.tsx
- * Changes: import path only. No root rename needed for the hybrid API migration (see
- * ./resizable.tsx) — `ResizablePanelGroup` doesn't collide with the atom's hybrid default
- * export name (`Resizable`), unlike e.g. Card → CardRoot.
- */
-
 'use client'
 
 import { GripVertical } from 'lucide-react'

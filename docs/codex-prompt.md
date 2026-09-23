@@ -106,7 +106,7 @@ coco/
 ├── scripts/{check-classes.mjs, check-tokens.mjs}
 ├── index.html                      # playground shell; Inter + Source Code Pro; no-flash theme script
 ├── playground/                     # dev-only docs site, never built or published
-│   ├── main.tsx, app.tsx, docs.tsx, theme-switcher.tsx
+│   ├── main.tsx, app.tsx, docs.tsx, shiki-theme.ts
 │   ├── component-preview.tsx       # Preview/Code tabs, Shiki highlight, copy button
 │   ├── shiki-theme.ts
 │   └── examples/*.tsx              # 42 demo files
@@ -116,7 +116,7 @@ coco/
 │   ├── providers/{theme-provider.tsx, single-themes.ts}
 │   ├── styles/
 │   │   ├── globals.css             # the upstream import chain, order matters
-│   │   └── vendor/supabase/        # 17 vendored CSS files + NOTICE.md
+│   │   └── vendor/theme/        # 17 vendored CSS files + NOTICE.md
 │   └── components/
 │       ├── atoms/                  # from packages/ui
 │       │   ├── actions/button/
@@ -138,8 +138,8 @@ coco/
 `variants.css` → `base.css` → `typography.css` → `design-system-base.css` →
 `code-block-variables.css`.
 
-Never edit values inside `src/styles/vendor/supabase/`. Each file carries a source header;
-`NOTICE.md` holds the Apache-2.0 attribution and the list of changes.
+Never edit values inside `src/styles/vendor/theme/`. `NOTICE.md` holds source
+attribution and license details; review file-level change notices before distribution.
 
 ## 6. How to port a component (follow exactly)
 

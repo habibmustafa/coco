@@ -1,13 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/input-otp.tsx
- * Changes: import path only. `animate-caret-blink` comes from the `tw-animate-css` package
- * already imported in globals.css (no separate vendoring needed).
- * Hybrid API migration (docs/hybrid-api-migration.md) — root renamed InputOTP →
- * InputOTPRoot so the atom's default export can become props-driven (see ./input-otp.tsx).
- * Compound parts, class strings and behavior are unchanged.
- */
-
 'use client'
 
 import { OTPInput, OTPInputContext, REGEXP_ONLY_DIGITS_AND_CHARS } from 'input-otp'

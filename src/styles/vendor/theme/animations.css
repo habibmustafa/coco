@@ -1,11 +1,4 @@
 /*
- * Vendored from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/config/css/animations.css
- * Fetched: 2026-09-22
- * Changes: none.
- */
-
-/*
  * Tailwind v4 animation tokens + the @keyframes they reference.
  *
  * Each --animate-* token in @theme generates an `animate-{name}` utility.

@@ -3,7 +3,7 @@ import { codeToHtml } from 'shiki'
 import { useEffect, useState, type ComponentType } from 'react'
 
 import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from '../src'
-import { supabaseCodeTheme } from './shiki-theme'
+import { cocoCodeTheme } from './shiki-theme'
 
 // Examples live one folder per component (./examples/<component>/<name>.tsx), so the
 // glob is recursive; call sites still address a demo by its bare file name.
@@ -38,7 +38,7 @@ function useHighlighted(source: string) {
   useEffect(() => {
     let active = true
 
-    codeToHtml(source, { lang: 'tsx', theme: supabaseCodeTheme }).then((result) => {
+    codeToHtml(source, { lang: 'tsx', theme: cocoCodeTheme }).then((result) => {
       if (active) setHtml(result)
     })
 

@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/lib/constants.ts
- * Changes: only the size scale used by the ported components is kept.
- */
-
 export const SIZE = {
   text: {
     tiny: 'text-xs',

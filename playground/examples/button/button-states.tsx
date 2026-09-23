@@ -12,7 +12,7 @@ export default function ButtonStates() {
         Disabled, focusable
       </Button>
       <Button asChild variant="link">
-        <a href="https://supabase.com/design-system">asChild link</a>
+        <a href="#button">asChild link</a>
       </Button>
     </>
   )

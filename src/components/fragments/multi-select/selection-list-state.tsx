@@ -1,11 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/SelectionListState/SelectionListState.tsx
- * Changes: `ui` package import replaced with our cn helper. Not part of the chosen fragment
- * set on its own — kept here as MultiSelect's internal loading/empty/error row, same as
- * upstream (it lives outside multi-select/ upstream too, but has no other consumer we ported).
- */
-
 import { cn } from '../../../lib/utils'
 import { GenericSelectionSkeletonLoader } from '../shimmering-loader'
 

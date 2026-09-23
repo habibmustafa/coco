@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/form/FormItemLayout/FormItemLayout.tsx
- * Changes: `ui` package import replaced with our Form atom; ../Layout/FormLayout -> ./form-layout.
- */
-
 import { forwardRef, type ElementRef } from 'react'
 
 import { FormItem } from '../../atoms/forms/form'

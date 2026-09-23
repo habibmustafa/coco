@@ -62,13 +62,9 @@ What MAY change:
 
 Visual fidelity is proven by **golden markup tests** (§8), not by comparing source files.
 
-License: Apache-2.0 §4(b) — every modified file gets a header comment:
-
-```ts
-// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
-```
-
-`NOTICE.md` stays and gets one line stating that components were modified.
+Source attribution and license details are centralized in
+`src/styles/vendor/theme/NOTICE.md`. The current package is private; revisit
+Apache-2.0 §4(b) file-level change notices before distributing it.
 
 ---
 
@@ -333,12 +329,11 @@ disable cancel, block overlay click / Escape while pending, close after resolve
 ### 7.1 Strategy B — Dialog
 
 `dialog-parts.tsx` = the current `dialog.tsx` with the root export renamed
-`Dialog` → `DialogRoot` (plus `DialogRootProps` type) and the license header. Nothing else
+`Dialog` → `DialogRoot` (plus `DialogRootProps` type). Nothing else
 changes in it.
 
 ```tsx
 // src/components/atoms/overlay/dialog/dialog.tsx
-// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 import * as React from "react";
 import {
   DialogContent,
@@ -527,7 +522,6 @@ sections and spacing of the upstream dialog demo (e.g. if parts include `DialogS
 
 ```tsx
 // src/components/atoms/navigation/tabs/tabs.tsx
-// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 import * as React from "react";
 import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from "./tabs-parts";
 import { cn } from "../../../../lib/utils";
@@ -708,7 +702,7 @@ Add to the decisions journal (next free numbers):
 - Hybrid API in place (no separate entry)
 - Strategy A (additive root, discriminated union) vs Strategy B (renamed root) + list
 - Golden markup tests as the fidelity guarantee
-- Apache-2.0 modification headers
+- Source attribution in `NOTICE.md`; review file-level notices before distribution
 
 Update: structure section (`-parts.tsx` files, `tests/`), verification section
 (`npm run test`), open issues (remove "no tests"), public export count, bundle sizes.

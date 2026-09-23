@@ -1,8 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/lib/utils/getExplicitTabIndex.ts
- */
-
 /**
  * Explicit tabIndex for keyboard focus (Safari skips buttons otherwise).
  * - Explicit `tabIndex` prop takes precedence

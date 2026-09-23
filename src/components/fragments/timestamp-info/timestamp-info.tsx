@@ -1,11 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/TimestampInfo/index.tsx
- * Changes: `ui` package import replaced with our Tooltip atom parts, cn helper and
- * copyToClipboard lib helper. Compound `Tooltip` wraps its own `TooltipProvider`, same
- * reasoning as ../info-tooltip and ../metric-card.
- */
-
 'use client'
 
 import dayjs from 'dayjs'

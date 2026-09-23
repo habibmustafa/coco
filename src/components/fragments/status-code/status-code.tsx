@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/StatusCode/index.tsx
- * Changes: `ui` package import replaced with our cn helper; file rename only.
- */
-
 'use client'
 
 import { cn } from '../../../lib/utils'

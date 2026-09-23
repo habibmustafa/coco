@@ -2,7 +2,7 @@
 
 # coco
 
-Supabase dizayn sistemi əsasında React komponent kitabxanası. React 19, TypeScript,
+coco üçün React komponent kitabxanası. React 19, TypeScript,
 Tailwind CSS v4 və Radix üzərində qurulub. Paket özəldir, npm-də yayımlanmayıb.
 
 37 atom və 20 fragment komponent (23-ü hibrid — həm compound, həm props-driven API), 92 işlək
@@ -48,7 +48,4 @@ təyin edin: tokenlər class-a, `dark:` utility-ləri isə atributa əsaslanır.
 - [Plan və iş jurnalı](docs/plan.md)
 - [Agent üçün brifinq](docs/codex-prompt.md)
 - [Loqo və brend qaydaları](docs/brand.md)
-- [Supabase mənbə və lisenziya qeydləri](src/styles/vendor/supabase/NOTICE.md)
-
-Komponentlər və vendor üslubları Supabase mənbələrindən götürülüb; mənbə istinadları
-müvafiq faylların başlığında saxlanılır.
+- [Üçüncü tərəf mənbə və lisenziya qeydləri](src/styles/vendor/theme/NOTICE.md)

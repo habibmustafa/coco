@@ -11,7 +11,7 @@ export default function GlassPanelDemo() {
         showIconBg
         showLink
       >
-        Every Supabase project is a dedicated Postgres database.
+        Keep each workspace's data in a dedicated database.
       </GlassPanel>
     </div>
   )

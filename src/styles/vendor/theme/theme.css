@@ -1,11 +1,4 @@
 /*
- * Vendored from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/config/css/theme.css
- * Fetched: 2026-09-22
- * Changes: import paths adjusted for this package; see ./NOTICE.md
- */
-
-/*
  * Defines every Tailwind v4 --color-* design token. Tailwind generates
  * bg-{name} / text-{name} / border-{name} / ring-{name} / border-{r,l,t,b}-{name}
  * utilities for each entry. Semantic tokens are complete color values derived

@@ -1,6 +1,6 @@
 import './styles/globals.css'
 
-// Atoms — ported from packages/ui (supabase.com/design-system → "Atom components")
+// Atom components
 
 export * from './components/atoms/actions/button'
 

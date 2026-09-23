@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/progress.tsx
- * Changes: import paths only.
- */
-
 'use client'
 
 import { Progress as ProgressPrimitive } from 'radix-ui'

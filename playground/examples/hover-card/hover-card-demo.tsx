@@ -4,16 +4,16 @@ export default function HoverCardDemo() {
   return (
     <HoverCard>
       <HoverCardTrigger asChild>
-        <Button variant="link">@supabase</Button>
+        <Button variant="link">@coco</Button>
       </HoverCardTrigger>
       <HoverCardContent className="w-64">
         <div className="flex gap-3">
           <Avatar>
-            <AvatarFallback>SB</AvatarFallback>
+            <AvatarFallback>CO</AvatarFallback>
           </Avatar>
           <div>
-            <p className="text-sm font-medium">Supabase</p>
-            <p className="text-sm text-foreground-light">The open source Firebase alternative.</p>
+            <p className="text-sm font-medium">coco</p>
+            <p className="text-sm text-foreground-light">React components for your next interface.</p>
           </div>
         </div>
       </HoverCardContent>

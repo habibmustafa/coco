@@ -2,7 +2,7 @@ import type { ThemeRegistrationRaw } from 'shiki'
 
 /**
  * Colours resolve from the --code-token-* variables vendored in
- * src/styles/vendor/supabase/code-block-variables.css, so a code block follows
+ * src/styles/vendor/theme/code-block-variables.css, so a code block follows
  * the active theme without being re-highlighted.
  *
  * Rules live in `settings`, not `tokenColors`: Shiki reads `settings` first and
@@ -92,8 +92,8 @@ const settings: NonNullable<ThemeRegistrationRaw['settings']> = [
   },
 ]
 
-export const supabaseCodeTheme: ThemeRegistrationRaw = {
-  name: 'supabase',
+export const cocoCodeTheme: ThemeRegistrationRaw = {
+  name: 'coco',
   type: 'dark',
   colors: {
     'editor.foreground': 'var(--code-foreground)',

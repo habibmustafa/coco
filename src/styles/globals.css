@@ -1,9 +1,7 @@
 /*
  * Design token entry point.
  *
- * Mirrors the upstream import chain from
- * github.com/supabase/supabase/blob/master/packages/config/tailwind.config.css
- * so the semantic system resolves in the same order: raw inputs → derivations →
+ * The semantic system resolves in this order: raw inputs → derivations →
  * compat aliases → per-theme overrides → Tailwind @theme mapping → utilities.
  *
  * Order is significant: :root and a single class selector have equal specificity,
@@ -16,26 +14,26 @@
 @plugin "tailwind-scrollbar";
 @import 'tw-animate-css';
 
-@import './vendor/supabase/global.css';
-@import './vendor/supabase/semantic.css';
-@import './vendor/supabase/compat.css';
-@import './vendor/supabase/themes/dark.css';
-@import './vendor/supabase/themes/light.css';
+@import './vendor/theme/global.css';
+@import './vendor/theme/semantic.css';
+@import './vendor/theme/compat.css';
+@import './vendor/theme/themes/dark.css';
+@import './vendor/theme/themes/light.css';
 
-@import './vendor/supabase/unset-tw-colors.css';
-@import './vendor/supabase/colors.css';
-@import './vendor/supabase/theme.css';
-@import './vendor/supabase/charts.css';
-@import './vendor/supabase/shimmering-loader.css';
+@import './vendor/theme/unset-tw-colors.css';
+@import './vendor/theme/colors.css';
+@import './vendor/theme/theme.css';
+@import './vendor/theme/charts.css';
+@import './vendor/theme/shimmering-loader.css';
 
-@import './vendor/supabase/animations.css';
-@import './vendor/supabase/utilities.css';
-@import './vendor/supabase/hit-area.css';
-@import './vendor/supabase/variants.css';
-@import './vendor/supabase/base.css';
-@import './vendor/supabase/typography.css';
-@import './vendor/supabase/design-system-base.css';
-@import './vendor/supabase/code-block-variables.css';
+@import './vendor/theme/animations.css';
+@import './vendor/theme/utilities.css';
+@import './vendor/theme/hit-area.css';
+@import './vendor/theme/variants.css';
+@import './vendor/theme/base.css';
+@import './vendor/theme/typography.css';
+@import './vendor/theme/design-system-base.css';
+@import './vendor/theme/code-block-variables.css';
 
 /* Legacy semantic aliases still referenced by upstream React components. */
 @utility text-success-600 {

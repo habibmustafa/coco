@@ -1,14 +1,6 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/ThemeToggle.tsx
- * Changes: `next-themes`'s `useTheme` replaced with our own ThemeProvider hook (`theme`/
- * `resolvedTheme`/`setTheme` have the same shape); `ui` package import replaced with our
- * DropdownMenu atom + cn helper + singleThemes.
- */
-
 'use client'
 
-import { Moon, Sun } from 'lucide-react'
+import { ChevronDown, Monitor, Moon, Sun } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
 import { cn } from '../../../lib/utils'
@@ -16,6 +8,7 @@ import { singleThemes, useTheme, type Theme } from '../../../providers'
 import {
   DropdownMenuContent,
   DropdownMenuGroup,
+  DropdownMenuLabel,
   DropdownMenuRadioGroup,
   DropdownMenuRadioItem,
   DropdownMenuRoot,
@@ -26,6 +19,12 @@ interface ThemeToggleProps {
   forceDark?: boolean
   triggerClassName?: string
   contentClassName?: string
+}
+
+const ICONS: Record<Theme, typeof Sun> = {
+  system: Monitor,
+  dark: Moon,
+  light: Sun,
 }
 
 export const ThemeToggle = ({
@@ -41,30 +40,35 @@ export const ThemeToggle = ({
     setIsMounted(true)
   }, [])
 
-  // Conditionally force the theme to 'dark' when disabled is true
   const currentTheme = forceDark ? 'dark' : theme
 
   if (!isMounted) return null
 
+  const currentThemeName = singleThemes.find(({ value }) => value === currentTheme)?.name ?? 'System'
+
   return (
-    <DropdownMenuRoot open={open} onOpenChange={() => setOpen(!open)} modal={false}>
+    <DropdownMenuRoot open={open} onOpenChange={setOpen} modal={false}>
       <DropdownMenuTrigger asChild disabled={forceDark}>
         <button
           id="user-settings-dropdown"
+          type="button"
+          aria-label={`Theme: ${currentThemeName}`}
           className={cn(
-            'flex items-center justify-center h-7 w-7 text-foreground-light',
+            'focus-ring inline-flex h-8 cursor-pointer items-center gap-2 rounded-md border border-strong bg-background px-2.5 text-xs text-foreground-light transition-colors hover:border-control-hover hover:bg-surface-100 hover:text-foreground data-[state=open]:bg-surface-100 disabled:cursor-not-allowed disabled:opacity-50',
             triggerClassName
           )}
         >
           {resolvedTheme === 'dark' ? (
-            <Moon className="h-[20px] w-[20px] rotate-90 transition-all dark:rotate-0" />
+            <Moon className="h-4 w-4 shrink-0" />
           ) : (
-            <Sun className="w-[20px] h-[20px] rotate-0 transition-all dark:-rotate-90" />
+            <Sun className="h-4 w-4 shrink-0" />
           )}
-          <span className="sr-only">Toggle theme</span>
+          <span>{currentThemeName}</span>
+          <ChevronDown className="h-3.5 w-3.5 shrink-0 text-foreground-lighter" />
         </button>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end" className={cn('w-60', contentClassName)}>
+      <DropdownMenuContent align="end" className={cn('w-40', contentClassName)}>
+        <DropdownMenuLabel>Appearance</DropdownMenuLabel>
         <DropdownMenuGroup>
           <DropdownMenuRadioGroup
             value={currentTheme}
@@ -74,11 +78,15 @@ export const ThemeToggle = ({
           >
             {singleThemes
               .filter((x) => x.value === 'dark' || x.value === 'light' || x.value === 'system')
-              .map((theme) => (
-                <DropdownMenuRadioItem key={theme.value} value={theme.value}>
-                  {theme.name}
-                </DropdownMenuRadioItem>
-              ))}
+              .map((theme) => {
+                const Icon = ICONS[theme.value as Theme]
+                return (
+                  <DropdownMenuRadioItem key={theme.value} value={theme.value}>
+                    <Icon className="mr-2 h-3.5 w-3.5 text-foreground-lighter" />
+                    {theme.name}
+                  </DropdownMenuRadioItem>
+                )
+              })}
           </DropdownMenuRadioGroup>
         </DropdownMenuGroup>
       </DropdownMenuContent>

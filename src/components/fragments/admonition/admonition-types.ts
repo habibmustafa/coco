@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/Admonition/Admonition.types.ts
- * Changes: none besides the file rename (Admonition.types.ts -> admonition-types.ts).
- */
-
 import type { HTMLAttributes, ReactNode } from 'react'
 
 export type AdmonitionType =

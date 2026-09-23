@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/sonner.tsx
- * Fetched: 2026-09-22
- */
-
 'use client'
 
 import { Toaster as Sonner } from 'sonner'
@@ -73,7 +67,7 @@ const SonnerToaster = ({ toastOptions, ...props }: ToasterProps) => {
         closeButton: true,
         ...toastOptions,
       }}
-      // @ts-expect-error Supabase passes its cn helper, while Sonner 1.x omits it from ToasterProps.
+      // @ts-expect-error The source passes cn, while Sonner 1.x omits it from ToasterProps.
       cn={cn}
       {...props}
     />

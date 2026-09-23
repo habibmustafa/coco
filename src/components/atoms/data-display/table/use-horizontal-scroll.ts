@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/hooks/use-horizontal-scroll.ts
- * Fetched: 2026-09-22
- */
-
 import * as React from 'react'
 
 export const useHorizontalScroll = (ref: React.RefObject<HTMLDivElement | null>) => {

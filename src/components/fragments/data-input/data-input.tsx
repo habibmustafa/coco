@@ -1,12 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/DataInputs/Input.tsx
- * Changes: `ui` package import replaced with our Form atom's InputGroup parts + our
- * copyToClipboard lib helper. Upstream exports this as `Input`/`Props` — renamed to
- * `DataInput`/`DataInputProps` here since the bare names would collide with our own
- * `Input` atom and `InputProps` type in the package's flat public API.
- */
-
 import { Copy } from 'lucide-react'
 import React, {
   forwardRef,

@@ -1,11 +1,4 @@
 /*
- * Vendored from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/config/css/base.css
- * Fetched: 2026-09-22
- * Changes: import paths adjusted for this package; see ./NOTICE.md
- */
-
-/*
  * Base layer rules migrated from packages/config/ui.config.js addBase calls.
  *
  * Hides the spinner buttons on number inputs across browsers (WebKit + Firefox).

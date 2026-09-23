@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/Admonition/AdmonitionIcons.tsx
- * Changes: import path only (`ui` -> our lib cn helper, ./Admonition.types -> ./admonition-types).
- */
-
 import type { ReactNode, SVGProps } from 'react'
 
 import { cn } from '../../../lib/utils'

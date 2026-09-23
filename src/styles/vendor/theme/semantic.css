@@ -1,11 +1,4 @@
 /*
- * Vendored from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/build/css/source/semantic.css
- * Fetched: 2026-09-22
- * Changes: import paths adjusted for this package; see ./NOTICE.md
- */
-
-/*
  * Core semantic color system.
  *
  * Themes override the small set of inputs below; every semantic color is then
@@ -21,7 +14,7 @@
    * theme can run, say, a cool-gray surface against the green brand:
    *   --surface-hue  tints backgrounds, text and borders (the neutral ramp)
    *   --primary-hue  is the brand hue that --primary is built from
-   * Both default to --hue (Supabase green ≈157.5° in OKLCH), so a theme that only
+   * Both default to --hue (brand green ≈157.5° in OKLCH), so a theme that only
    * sets --hue keeps surfaces and brand locked together as before; override
    * either one to let them diverge. */
   --hue: 157.5;

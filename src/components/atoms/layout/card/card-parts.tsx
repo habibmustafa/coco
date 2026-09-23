@@ -1,12 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/card.tsx
- * Changes: hybrid API migration (docs/hybrid-api-migration.md) — root renamed
- * Card → CardRoot so the atom's default export can become props-driven.
- * Compound parts, class strings, ARIA and data attributes are unchanged.
- */
-// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
-
 import * as React from 'react'
 
 import { cn } from '../../../../lib/utils'

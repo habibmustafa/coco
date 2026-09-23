@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/ErrorDisplay/ErrorDisplay.types.ts
- * Changes: none besides the file rename (ErrorDisplay.types.ts -> error-display-types.ts).
- */
-
 import type { ComponentPropsWithoutRef, ReactNode } from 'react'
 
 export interface SupportFormParams {

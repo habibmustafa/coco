@@ -1,16 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/MetricCard/index.tsx
- * Changes: `ui` package import replaced with our Card/Button/Skeleton/Tooltip atoms + cn helper.
- * `next/link` replaced with a plain anchor (this package has no Next.js runtime dependency).
- * Compound `Tooltip` usages each wrap their own `TooltipProvider`, same reasoning as
- * ../info-tooltip: our hybrid Tooltip only auto-wraps a Provider in its props-driven
- * ("content" prop) mode (docs/hybrid-api-migration.md), not compound mode.
- * Hybrid API migration (same doc) — root renamed MetricCard → MetricCardRoot so the
- * fragment's default export can become props-driven (see ./metric-card.tsx). Compound
- * parts, class strings and behavior are unchanged.
- */
-
 'use client'
 
 import dayjs from 'dayjs'

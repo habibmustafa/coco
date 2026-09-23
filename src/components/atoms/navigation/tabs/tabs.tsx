@@ -1,4 +1,3 @@
-// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 import type * as React from 'react'
 
 import { TabsContent, TabsIndicator, TabsList, TabsRoot, TabsTrigger } from './tabs-parts'

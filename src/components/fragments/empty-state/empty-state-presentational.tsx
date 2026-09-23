@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/EmptyStatePresentational/index.tsx
- * Changes: `ui` package import replaced with our cn helper; file rename only.
- */
-
 import type { LucideIcon } from 'lucide-react'
 import { SquarePlus } from 'lucide-react'
 import { createElement, isValidElement, type ReactNode } from 'react'

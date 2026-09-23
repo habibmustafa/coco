@@ -1,19 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/CodeBlock/CodeBlock.tsx
- * Changes: `ui` package import replaced with our Button/FloatingPlate atoms, copyToClipboard
- * lib helper and cn helper. `next-themes`'s `useTheme` replaced with our own ThemeProvider
- * hook (`resolvedTheme` is already a plain 'dark' | 'light' here, so `.includes('dark')`
- * became `=== 'dark'`). `lodash`'s `noop` replaced with an inline default, same reasoning as
- * copy-to-clipboard.ts. Deep-path language imports switched from `dist/cjs/...` to
- * `dist/esm/...`: the CJS language files export `{ default: fn }` (double-wrapped), which a
- * `dist/cjs/...` subpath import bypasses the package's own ESM/CJS interop for — Vite's dev
- * pre-bundler then hands `registerLanguage` the wrapper object instead of the language
- * function, throwing `languageDefinition.bind is not a function` at first render. The `esm`
- * build's files are plain `export default <language fn>`, so this doesn't happen; `Light` is
- * imported from the same `esm` build for a consistent module graph.
- */
-
 'use client'
 
 // @ts-ignore no upstream type declarations

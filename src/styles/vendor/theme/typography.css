@@ -1,9 +1,3 @@
-/*
- * Vendored from Supabase under Apache-2.0.
- * Source: github.com/supabase/supabase/blob/master/packages/config/typography.css
- * Fetched: 2026-09-22
- */
-
 /* Heading */
 @utility heading-title {
   @apply scroll-m-20 text-2xl tracking-tight;

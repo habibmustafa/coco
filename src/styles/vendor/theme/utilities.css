@@ -1,11 +1,4 @@
 /*
- * Vendored from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/config/css/utilities.css
- * Fetched: 2026-09-22
- * Changes: import paths adjusted for this package; see ./NOTICE.md
- */
-
-/*
  * Custom Tailwind v4 utilities migrated from packages/config/ui.config.js
  * (addUtilities + matchUtilities) and packages/config/tailwind.config.js
  * (the .bg legacy shim).

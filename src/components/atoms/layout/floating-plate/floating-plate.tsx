@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/FloatingPlate/FloatingPlate.tsx
- * Changes: import path only.
- */
-
 import type { HTMLAttributes, ReactNode } from 'react'
 
 import { cn } from '../../../../lib/utils'

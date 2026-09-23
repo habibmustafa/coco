@@ -12,8 +12,10 @@ Hədəf: **birəbir eyni görünüş**, approksimasiya yox.
 - **Komponent portlayarkən:** əvvəlcə `packages/ui/index.tsx`-dən hansı implementasiyanın *public*
   olduğunu təsdiqlə (hər şey `shadcn/ui/` altında deyil), sonra faylı olduğu kimi götür və
   **yalnız import path-larını** dəyiş. CVA variantları, class-lar və markup toxunulmaz qalır.
-- **Vendored fayllara dəyər dəyişikliyi etmə.** `src/styles/vendor/supabase/` altındakı CSS
-  upstream-dən byte-exact gəlir; hər faylın başında mənbə şərhi var (Apache-2.0 tələbi).
+- **Vendored fayllara dəyər dəyişikliyi etmə.** `src/styles/vendor/theme/` altındakı CSS
+  dəyərləri upstream ilə eynidir; mənbə və lisenziya məlumatı həmin qovluğun
+  `NOTICE.md` faylındadır. Paylamadan əvvəl fayl səviyyəsində dəyişiklik
+  bildirişlərini yenidən qiymətləndir.
 - Fayl/qovluq adları **lowercase kebab-case** (Windows lokal / Linux CI case fərqi bug yaradır).
 - **Atom / fragment bölgüsü** upstream-i əks etdirir:
   - `src/components/atoms/<kateqoriya>/<ad>/` — `packages/ui`-dən gələnlər ("Atom components").

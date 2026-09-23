@@ -1,4 +1,3 @@
-// Based on supabase/supabase packages/ui (Apache-2.0). Modified: hybrid props API.
 //
 // Chart has no compound "root" to make dual-purpose — ChartContainer already accepts
 // arbitrary Recharts children (Bar/Line/Pie/...) and composing a chart is inherently

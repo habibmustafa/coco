@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/sidebar.tsx
- * Fetched: 2026-09-22
- */
-
 'use client'
 
 import { cva, type VariantProps } from 'class-variance-authority'

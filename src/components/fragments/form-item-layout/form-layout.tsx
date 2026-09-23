@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/form/Layout/FormLayout.tsx
- * Changes: `ui` package import replaced with our Form/Label atoms + cn/SIZE from lib; file rename only.
- */
-
 import { cva } from 'class-variance-authority'
 import React from 'react'
 

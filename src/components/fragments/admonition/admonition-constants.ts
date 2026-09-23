@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/Admonition/Admonition.constants.ts
- * Changes: import path only (./Admonition.types -> ./admonition-types).
- */
-
 import type { AdmonitionType } from './admonition-types'
 
 export const TYPE_TO_VARIANT = {

@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/StatusIcon.tsx
- * Fetched: 2026-09-22
- */
-
 import { forwardRef, type SVGProps } from 'react'
 
 import { cn } from '../../../../lib/utils'

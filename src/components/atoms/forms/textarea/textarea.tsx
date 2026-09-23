@@ -1,9 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/textarea.tsx
- * Changes: import paths only.
- */
-
 import * as React from 'react'
 
 import { cn } from '../../../../lib/utils'

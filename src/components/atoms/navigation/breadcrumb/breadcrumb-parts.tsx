@@ -1,11 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui/src/components/shadcn/ui/breadcrumb.tsx
- * Changes: hybrid API migration (docs/hybrid-api-migration.md) — root renamed
- * Breadcrumb → BreadcrumbRoot so the atom's default export can become props-driven.
- * Compound parts, class strings, ARIA and data attributes are unchanged.
- */
-
 import { Slot as SlotPrimitive } from 'radix-ui'
 import { ChevronRightIcon } from 'lucide-react'
 import * as React from 'react'

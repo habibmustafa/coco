@@ -1,16 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/multi-select/multi-select.tsx
- * Changes: `ui` package import replaced with our Badge/Command/Popover atoms + SIZE
- * constants + cn helper. `../SelectionListState` now points at ./selection-list-state
- * (ported alongside, see that file's header). Everything else — CVA variants, class
- * strings, keyboard handling, dropdown sizing — is unchanged.
- * Hybrid API migration (docs/hybrid-api-migration.md) — root renamed MultiSelector →
- * MultiSelectorRoot so the fragment's default export can become props-driven (see
- * ./multi-select.tsx). The `MultiSelector.Trigger = ...` namespace assignments moved to
- * ./index.ts, alongside the other 16 hybridised atoms' Object.assign pattern.
- */
-
 'use client'
 
 import { cva, type VariantProps } from 'class-variance-authority'

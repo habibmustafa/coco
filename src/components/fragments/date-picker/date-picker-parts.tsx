@@ -1,13 +1,3 @@
-/*
- * Adapted from Supabase (Apache License 2.0).
- * Source: github.com/supabase/supabase/blob/master/packages/ui-patterns/src/DatePicker/DatePicker.tsx
- * Changes: `ui` package import replaced with our Button/Popover atoms + cn helper.
- * `PopoverTrigger`/`PopoverContent` are our raw compound parts (PopoverRoot etc.), not the
- * hybrid props-driven export. Hybrid API migration (docs/hybrid-api-migration.md) — root
- * renamed DatePicker → DatePickerRoot so the fragment's default export can become
- * props-driven (see ./date-picker.tsx).
- */
-
 import { CalendarIcon } from 'lucide-react'
 import type { ComponentProps } from 'react'
 
