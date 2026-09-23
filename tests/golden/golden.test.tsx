@@ -10,6 +10,18 @@ import userEvent from "@testing-library/user-event";
 import type { ComponentType } from "react";
 import { describe, expect, test } from "vitest";
 import { normalizeMarkup } from "./normalize";
+import { ThemeProvider } from "../../src/providers";
+
+// Playground examples normally render under main.tsx's <ThemeProvider>. Most don't need it,
+// but a fragment can call useTheme() directly (CodeBlock does, matching upstream's own
+// next-themes usage) — wrapping here keeps every example renderable in isolation.
+function withTheme(Example: ComponentType) {
+  return (
+    <ThemeProvider>
+      <Example />
+    </ThemeProvider>
+  );
+}
 
 const modules = import.meta.glob<{ default: ComponentType }>(
   "../../playground/examples/**/*.tsx",
@@ -49,7 +61,7 @@ describe("golden markup", () => {
     const Example = mod.default;
 
     test(`${name} — default render`, async () => {
-      render(<Example />);
+      render(withTheme(Example));
       const html = normalizeMarkup(document.body);
       await expect(html).toMatchFileSnapshot(`./${name}.html`);
     });
@@ -59,7 +71,7 @@ describe("golden markup", () => {
         `${name} — open state`,
         async () => {
           const user = userEvent.setup();
-          render(<Example />);
+          render(withTheme(Example));
           const trigger = document.body.querySelector("button");
           if (!trigger) throw new Error(`${name}: no trigger <button> found to open it`);
 

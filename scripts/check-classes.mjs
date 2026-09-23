@@ -40,8 +40,36 @@ const NOT_CLASSES = new Set([
   'dialog-demo-email',
   'dialog-props-render-fn-email',
   'drawer-content',
+  'error-display-title',
+  // Upstream typo (Bootstrap-style name; Tailwind's own utility is `italic`) — not a real
+  // utility on their site either, kept verbatim for fidelity to the ported markup.
+  'font-italic',
+  // CodeBlock: `--color-surface` (unsuffixed, distinct from the `surface-75..400` scale we do
+  // have) isn't a token check-tokens.mjs finds on the live site either — a dead class there
+  // too, kept verbatim. `code-block` is a bare CSS hook with no rule in the public design
+  // system bundle (Studio-dashboard-only styling, out of reach for this port).
+  'border-surface',
+  'code-block',
+  'language-pgsql',
+  'var(--background-selection)',
+  // TimestampInfo/StatusCode: same category as font-italic/border-surface above — upstream
+  // typos that never resolved to a real utility on their own site either. `items-right` isn't
+  // a Tailwind utility (only `items-end`/`justify-end` are); `rounded-l-0` isn't valid Tailwind
+  // radius syntax (the scale is none/sm/md/lg/full, not numeric).
+  'items-right',
+  'rounded-l-0',
+  // Resizable: `data-slot` values, not classes.
+  'resizable-panel',
+  'resizable-panel-group',
+  // Row: a CSS custom property read out of a JS `style` object, not a class.
+  'var(--column-width)',
+  'calc(var(--radix-popover-content-available-height)',
+  "hsl(var(--brand-default))",
+  'inline-combobox',
+  'multi-select',
   'sheet-demo-name',
   'short-lived',
+  'third-party',
   'drawer-description',
   'drawer-footer',
   'drawer-header',

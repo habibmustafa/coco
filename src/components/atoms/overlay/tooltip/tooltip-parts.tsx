@@ -33,8 +33,6 @@ const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
 >(({ className, sideOffset = 4, ...props }, ref) => (
-  // TooltipPortal was added because in some cases the tooltip was rendered behind other elements. This is a known issue
-  // in shadcn/ui https://github.com/shadcn-ui/ui/issues/129. Radix UI has portal in its examples.
   <TooltipPrimitive.Portal>
     <TooltipPrimitive.Content
       ref={ref}

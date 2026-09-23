@@ -1,0 +1,50 @@
+<div>
+<div class="text-sm rounded-t-md bg-surface-100 py-2 px-4 border border-b-0 border-default font-sans">schema.sql</div>
+<div class="group relative max-w-[90vw] md:max-w-none overflow-auto">
+<pre class="code-block border border-surface p-4 w-full my-0! !bg-surface-100 outline-hidden focus:border-foreground-lighter/50 rounded-t-none rounded-b-md language-pgsql" contenteditable="true" style="display: block; overflow-x: auto; color: rgb(68, 68, 68); font-size: 13px; line-height: 1.4;">
+<code class="language-pgsql" style="white-space: pre;">
+<span>
+<span class="comment linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 44px; text-align: center; user-select: none; margin-right: 12px; color: rgb(130, 130, 130); font-size: 12px; padding: 4px;">1</span>
+<span style="color: rgb(86, 156, 214); font-weight: normal;">create</span>
+<span> </span>
+<span style="color: rgb(86, 156, 214); font-weight: normal;">table</span>
+<span> profiles (
+</span>
+</span>
+<span>
+<span class="comment linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 44px; text-align: center; user-select: none; margin-right: 12px; color: rgb(130, 130, 130); font-size: 12px; padding: 4px;">2</span>
+<span>  id </span>
+<span style="color: rgb(62, 207, 142); font-weight: normal;">uuid</span>
+<span> </span>
+<span style="color: rgb(86, 156, 214); font-weight: normal;">references</span>
+<span> auth.users </span>
+<span style="color: rgb(86, 156, 214); font-weight: normal;">primary key</span>
+<span>,
+</span>
+</span>
+<span>
+<span class="comment linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 44px; text-align: center; user-select: none; margin-right: 12px; color: rgb(130, 130, 130); font-size: 12px; padding: 4px;">3</span>
+<span>  username </span>
+<span style="color: rgb(62, 207, 142); font-weight: normal;">text</span>
+<span> </span>
+<span style="color: rgb(86, 156, 214); font-weight: normal;">unique</span>
+<span>
+</span>
+</span>
+<span>
+<span class="comment linenumber react-syntax-highlighter-line-number" style="display: inline-block; min-width: 44px; text-align: center; user-select: none; margin-right: 12px; color: rgb(130, 130, 130); font-size: 12px; padding: 4px;">4</span>);</span>
+</code>
+</pre>
+<div class="inline-flex rounded-lg absolute right-2 top-2 bg-surface-100 dark:bg-200 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition">
+<button aria-label="Copy" class="relative inline-flex items-center justify-center cursor-pointer space-x-2 text-center font-regular ease-out duration-200 rounded-md transition-[background-color,border-color,color,scale] [&amp;:not([aria-haspopup])]:motion-safe:active:scale-[0.97] focus-ring border text-foreground bg-background dark:bg-card hover:bg-popover border-strong hover:border-control-hover data-[state=open]:bg-popover data-[state=open]:border-control-hover text-xs py-1 h-[26px] px-1.5 dark:bg-200! dark:hover:bg-button! hover:bg-alternative!" data-size="tiny" tabindex="0" type="button">
+<div aria-hidden="true" class="inline-flex items-center justify-center shrink-0 [&amp;_svg]:h-[14px] [&amp;_svg]:w-[14px] text-foreground-lighter">
+<svg aria-hidden="true" class="lucide lucide-copy" fill="none" height="24" xmlns="http://www.w3.org/2000/svg" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" width="24">
+<rect height="14" x="8" rx="2" ry="2" y="8" width="14">
+</rect>
+<path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2">
+</path>
+</svg>
+</div>  </button>
+</div>
+</div>
+</div>

@@ -59,13 +59,19 @@ Layihənin adı **coco**-dur. Paket və build çıxışları `coco` adını isti
 fiziki workspace yolu hələ `C:\Users\hmustafazadeh\Desktop\core`-dur.
 SVG loqo, nişan və favicon `public/` altındadır; qaydalar `docs/brand.md`-dədir.
 
-**33 atom components ported** (upstream source is preserved; import paths and TypeScript-only
-compatibility annotations are adapted):
+**37 atom components + 20 fragment components ported** (upstream source is preserved; import
+paths and TypeScript-only compatibility annotations are adapted). 23 of them (20 atoms + 3
+fragments) are hybrid — both a compound (Root/Parts) and a flat props-driven API, see
+`docs/hybrid-api-migration.md`.
 
-accordion, alert, aspect-ratio, avatar, badge, button, calendar, card, chart, checkbox, collapsible,
-command, dialog, drawer, dropdown-menu, form, hover-card, input, label, popover, progress,
-radio-group, select, separator, sheet, sidebar, skeleton, sonner, switch, table, tabs, textarea,
-tooltip.
+Atoms: accordion, alert, aspect-ratio, avatar, badge, breadcrumb, button, calendar, card,
+chart, checkbox, collapsible, command, dialog, drawer, dropdown-menu, floating-plate, form,
+hover-card, input, input-otp, label, popover, progress, radio-group, resizable, select,
+separator, sheet, sidebar, skeleton, sonner, switch, table, tabs, textarea, tooltip.
+
+Fragments: admonition, code-block, data-input, date-picker, empty-state, error-display,
+form-item-layout, glass-panel, info-tooltip, metric-card, multi-select, row,
+shimmering-loader, status-code, text-link, theme-toggle, timestamp-info.
 
 Plus: `ThemeProvider` + `useTheme` + `singleThemes` (System/Dark/Light, persisted in
 localStorage, live `matchMedia` tracking, cross-tab sync, no-flash inline script in `index.html`).

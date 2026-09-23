@@ -19,6 +19,7 @@ const NAV = [
       { id: 'aspect-ratio', label: 'Aspect Ratio' },
       { id: 'avatar', label: 'Avatar' },
       { id: 'badge', label: 'Badge' },
+      { id: 'breadcrumb', label: 'Breadcrumb' },
       { id: 'button', label: 'Button' },
       { id: 'calendar', label: 'Calendar' },
       { id: 'card', label: 'Card' },
@@ -29,13 +30,16 @@ const NAV = [
       { id: 'dialog', label: 'Dialog' },
       { id: 'drawer', label: 'Drawer' },
       { id: 'dropdown-menu', label: 'Dropdown Menu' },
+      { id: 'floating-plate', label: 'Floating Plate' },
       { id: 'form', label: 'Form' },
       { id: 'hover-card', label: 'Hover Card' },
       { id: 'input', label: 'Input' },
+      { id: 'input-otp', label: 'Input OTP' },
       { id: 'label', label: 'Label' },
       { id: 'popover', label: 'Popover' },
       { id: 'progress', label: 'Progress' },
       { id: 'radio-group', label: 'Radio Group' },
+      { id: 'resizable', label: 'Resizable' },
       { id: 'select', label: 'Select' },
       { id: 'separator', label: 'Separator' },
       { id: 'sheet', label: 'Sheet' },
@@ -47,6 +51,28 @@ const NAV = [
       { id: 'tabs', label: 'Tabs' },
       { id: 'textarea', label: 'Textarea' },
       { id: 'tooltip', label: 'Tooltip' },
+    ],
+  },
+  {
+    title: 'Fragment components',
+    items: [
+      { id: 'admonition', label: 'Admonition' },
+      { id: 'form-item-layout', label: 'Form Item Layout' },
+      { id: 'info-tooltip', label: 'Info Tooltip' },
+      { id: 'empty-state', label: 'Empty State' },
+      { id: 'error-display', label: 'Error Display' },
+      { id: 'shimmering-loader', label: 'Shimmering Loader' },
+      { id: 'metric-card', label: 'Metric Card' },
+      { id: 'multi-select', label: 'Multi Select' },
+      { id: 'date-picker', label: 'Date Picker' },
+      { id: 'code-block', label: 'Code Block' },
+      { id: 'data-input', label: 'Data Input' },
+      { id: 'timestamp-info', label: 'Timestamp Info' },
+      { id: 'status-code', label: 'Status Code' },
+      { id: 'text-link', label: 'Text Link' },
+      { id: 'theme-toggle', label: 'Theme Toggle' },
+      { id: 'glass-panel', label: 'Glass Panel' },
+      { id: 'row', label: 'Row' },
     ],
   },
 ]
@@ -70,7 +96,7 @@ export function App() {
           </div>
           <div className="flex items-center gap-3">
             <Badge variant="success" className="hidden sm:inline-flex">
-              17 hybrid · 33 atoms
+              23 hybrid · 57 components
             </Badge>
             <ThemeSwitcher />
           </div>
@@ -210,6 +236,20 @@ export function App() {
             </Section>
 
             <Section
+              id="breadcrumb"
+              title="Breadcrumb"
+              description="Ancestor trail with a chevron separator; the last item renders as static text."
+            >
+              <ComponentPreview
+                name="breadcrumb-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'breadcrumb-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'breadcrumb-demo' },
+                ]}
+              />
+            </Section>
+
+            <Section
               id="button"
               title="Button"
               description="Nine variants, five sizes, icons on either side, loading and block states."
@@ -345,6 +385,14 @@ export function App() {
             </Section>
 
             <Section
+              id="floating-plate"
+              title="Floating Plate"
+              description="Opaque backing plate for a default Button floating over busy content (code, tables, gradients)."
+            >
+              <ComponentPreview name="floating-plate-demo" />
+            </Section>
+
+            <Section
               id="form"
               title="Form"
               description="React Hook Form composition with accessible labels, descriptions and animated validation messages."
@@ -373,6 +421,20 @@ export function App() {
             >
               <ComponentPreview name="input-sizes" label="Sizes" />
               <ComponentPreview name="input-states" label="States" />
+            </Section>
+
+            <Section
+              id="input-otp"
+              title="Input OTP"
+              description="One-time-password field split into per-character slots, built on input-otp."
+            >
+              <ComponentPreview
+                name="input-otp-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'input-otp-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'input-otp-demo' },
+                ]}
+              />
             </Section>
 
             <Section
@@ -424,6 +486,20 @@ export function App() {
                 codeVariants={[
                   { id: 'props', label: 'Props-driven', name: 'radio-group-large-props-demo' },
                   { id: 'compound', label: 'Compound', name: 'radio-group-large' },
+                ]}
+              />
+            </Section>
+
+            <Section
+              id="resizable"
+              title="Resizable"
+              description="Drag-resizable panel group (react-resizable-panels), with optional layout persistence."
+            >
+              <ComponentPreview
+                name="resizable-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'resizable-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'resizable-demo' },
                 ]}
               />
             </Section>
@@ -561,6 +637,160 @@ export function App() {
                   { id: 'compound', label: 'Compound', name: 'tooltip-demo' },
                 ]}
               />
+            </Section>
+
+            <Section
+              id="admonition"
+              title="Admonition"
+              description="Callout built on Alert, with a type-driven icon/variant, optional actions and a horizontal/vertical/responsive layout."
+            >
+              <ComponentPreview name="admonition-demo" />
+            </Section>
+
+            <Section
+              id="form-item-layout"
+              title="Form Item Layout"
+              description="Label/description/error wrapper around a form field, sharing layout with FormField."
+            >
+              <ComponentPreview name="form-item-layout-demo" />
+            </Section>
+
+            <Section
+              id="info-tooltip"
+              title="Info Tooltip"
+              description="Info-glyph trigger with a self-contained TooltipProvider, for inline hints."
+            >
+              <ComponentPreview name="info-tooltip-demo" />
+            </Section>
+
+            <Section
+              id="empty-state"
+              title="Empty State"
+              description="Dashed-border placeholder for a first-run feature state, with an icon, title and action slot."
+            >
+              <ComponentPreview name="empty-state-presentational-demo" />
+            </Section>
+
+            <Section
+              id="error-display"
+              title="Error Display"
+              description="Card-based error panel with a monospace error message and a support-link footer."
+            >
+              <ComponentPreview name="error-display-demo" />
+            </Section>
+
+            <Section
+              id="shimmering-loader"
+              title="Shimmering Loader"
+              description="Animated skeleton bar and its generic list/table loading compositions."
+            >
+              <ComponentPreview name="shimmering-loader-demo" />
+            </Section>
+
+            <Section
+              id="metric-card"
+              title="Metric Card"
+              description="Dashboard tile with a label/link header, value/differential and a Recharts sparkline."
+            >
+              <ComponentPreview
+                name="metric-card-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'metric-card-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'metric-card-demo' },
+                ]}
+              />
+            </Section>
+
+            <Section
+              id="multi-select"
+              title="Multi Select"
+              description="Command-driven combobox for picking several values, with badges, a creatable mode and an inline-search variant."
+            >
+              <ComponentPreview
+                name="multi-select-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'multi-select-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'multi-select-demo' },
+                ]}
+              />
+            </Section>
+
+            <Section
+              id="date-picker"
+              title="Date Picker"
+              description="Popover-wrapped Calendar with a styled trigger button, for a single date."
+            >
+              <ComponentPreview
+                name="date-picker-props-demo"
+                codeVariants={[
+                  { id: 'props', label: 'Props-driven', name: 'date-picker-props-demo' },
+                  { id: 'compound', label: 'Compound', name: 'date-picker-demo' },
+                ]}
+              />
+            </Section>
+
+            <Section
+              id="code-block"
+              title="Code Block"
+              description="Syntax-highlighted code (react-syntax-highlighter, Monokai theme) with a hover-reveal copy button."
+            >
+              <ComponentPreview name="code-block-demo" />
+            </Section>
+
+            <Section
+              id="data-input"
+              title="Data Input"
+              description="Input wrapped in an InputGroup with optional copy, password-style reveal and action slots."
+            >
+              <ComponentPreview name="data-input-demo" />
+            </Section>
+
+            <Section
+              id="timestamp-info"
+              title="Timestamp Info"
+              description="Formatted timestamp whose tooltip lists UTC, local, relative and raw values — each row copies on click."
+            >
+              <ComponentPreview name="timestamp-info-demo" />
+            </Section>
+
+            <Section
+              id="status-code"
+              title="Status Code"
+              description="HTTP method + status pill, coloured by the response class (2xx/4xx/5xx)."
+            >
+              <ComponentPreview name="status-code-demo" />
+            </Section>
+
+            <Section
+              id="text-link"
+              title="Text Link"
+              description="Inline link with an optional counter and an animated chevron."
+            >
+              <ComponentPreview name="text-link-demo" />
+            </Section>
+
+            <Section
+              id="theme-toggle"
+              title="Theme Toggle"
+              description="Sun/moon icon button opening a System/Dark/Light dropdown, wired to this package's own ThemeProvider."
+            >
+              <ComponentPreview name="theme-toggle-demo" />
+            </Section>
+
+            <Section
+              id="glass-panel"
+              title="Glass Panel"
+              description="Bordered feature card with an icon/logo header, used for marketing-style grids."
+            >
+              <ComponentPreview name="glass-panel-demo" />
+            </Section>
+
+            <Section
+              id="row"
+              title="Row"
+              description="Horizontally scrollable row of equal-width items with edge-fade arrow navigation."
+            >
+              <ComponentPreview name="row-demo" />
             </Section>
           </div>
         </main>

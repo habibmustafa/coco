@@ -13,6 +13,7 @@
 
 @import 'tailwindcss';
 @plugin "@tailwindcss/forms";
+@plugin "tailwind-scrollbar";
 @import 'tw-animate-css';
 
 @import './vendor/supabase/global.css';
@@ -25,6 +26,7 @@
 @import './vendor/supabase/colors.css';
 @import './vendor/supabase/theme.css';
 @import './vendor/supabase/charts.css';
+@import './vendor/supabase/shimmering-loader.css';
 
 @import './vendor/supabase/animations.css';
 @import './vendor/supabase/utilities.css';
@@ -42,4 +44,16 @@
 
 @utility text-destructive-50 {
   color: var(--foreground);
+}
+
+/*
+ * MultiSelector's dropdown list is styled with an older `tailwind-scrollbar` (v1-v3)
+ * class name — `scrollbar-thumb-rounded-lg` — that the current v4 major (the only one
+ * compatible with Tailwind v4, see @plugin "tailwind-scrollbar" above) no longer emits.
+ * Reproduced by hand at the same radius as our `rounded-lg` (0.5rem).
+ */
+@utility scrollbar-thumb-rounded-lg {
+  &::-webkit-scrollbar-thumb {
+    border-radius: 0.5rem;
+  }
 }

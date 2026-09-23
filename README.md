@@ -5,7 +5,8 @@
 Supabase dizayn sistemi əsasında React komponent kitabxanası. React 19, TypeScript,
 Tailwind CSS v4 və Radix üzərində qurulub. Paket özəldir, npm-də yayımlanmayıb.
 
-33 atom komponent və 42 işlək nümunə playground-da göstərilir.
+37 atom və 20 fragment komponent (23-ü hibrid — həm compound, həm props-driven API), 92 işlək
+nümunə playground-da göstərilir.
 
 ## Lokal işə salma
 
