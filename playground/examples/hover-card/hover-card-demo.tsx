@@ -1,22 +1,22 @@
-import { Avatar, AvatarFallback, Button, HoverCard, HoverCardContent, HoverCardTrigger } from '../../../src'
+import { Avatar, Button, HoverCard } from '../../../src'
 
 export default function HoverCardDemo() {
   return (
-    <HoverCard>
-      <HoverCardTrigger asChild>
+    <HoverCard.Root>
+      <HoverCard.Trigger asChild>
         <Button variant="link">@coco</Button>
-      </HoverCardTrigger>
-      <HoverCardContent className="w-64">
+      </HoverCard.Trigger>
+      <HoverCard.Content className="w-64">
         <div className="flex gap-3">
-          <Avatar>
-            <AvatarFallback>CO</AvatarFallback>
-          </Avatar>
+          <Avatar.Root>
+            <Avatar.Fallback>CO</Avatar.Fallback>
+          </Avatar.Root>
           <div>
             <p className="text-sm font-medium">coco</p>
             <p className="text-sm text-foreground-light">React components for your next interface.</p>
           </div>
         </div>
-      </HoverCardContent>
-    </HoverCard>
+      </HoverCard.Content>
+    </HoverCard.Root>
   )
 }

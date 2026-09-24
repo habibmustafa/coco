@@ -3,6 +3,7 @@
  * `items`. Not present upstream; follows the same shape as DropdownMenu/Select's flat
  * `items`/`options` props.
  */
+import { ChevronDown } from 'lucide-react'
 import * as React from 'react'
 
 import {
@@ -14,6 +15,40 @@ import {
   BreadcrumbRoot,
   BreadcrumbSeparator,
 } from './breadcrumb-parts'
+import {
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuRoot,
+  DropdownMenuTrigger,
+} from '../../overlay/dropdown-menu'
+import {
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerRoot,
+  DrawerTitle,
+  DrawerTrigger,
+} from '../../overlay/drawer'
+import { Button } from '../../actions/button'
+
+const MOBILE_BREAKPOINT = 768
+
+/** Local, not exported — mirrors Sidebar's own private `useIsMobile` (not a shared hook). */
+function useIsMobile() {
+  const [isMobile, setIsMobile] = React.useState(false)
+
+  React.useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${MOBILE_BREAKPOINT - 1}px)`)
+    const onChange = () => setIsMobile(window.innerWidth < MOBILE_BREAKPOINT)
+    mql.addEventListener('change', onChange)
+    onChange()
+    return () => mql.removeEventListener('change', onChange)
+  }, [])
+
+  return isMobile
+}
 
 type RootProps = React.ComponentPropsWithoutRef<typeof BreadcrumbRoot>
 
@@ -21,10 +56,27 @@ export interface BreadcrumbItemData {
   label: React.ReactNode
   /** Omit on the current page — it renders as non-interactive text. */
   href?: string
+  /** Renders a static, non-interactive BreadcrumbEllipsis instead of `label`/`href`. */
+  ellipsis?: boolean
+  /** Renders `label` as a DropdownMenu trigger instead of a link; each entry is a menu item. */
+  menuItems?: { label: React.ReactNode; onSelect?: () => void }[]
 }
 
 type BreadcrumbItemsModeProps = Omit<RootProps, 'children'> & {
   items: BreadcrumbItemData[]
+  /** Overrides the default chevron between items, e.g. `<Slash />`. */
+  separator?: React.ReactNode
+  /**
+   * Collapses the middle items behind an ellipsis trigger once `items.length` exceeds this —
+   * keeps the first item and the last `maxItems - 2`. Omit to never collapse.
+   */
+  maxItems?: number
+  /**
+   * How the collapsed items open. `"dropdown"` always uses a DropdownMenu; `"responsive"`
+   * switches to a bottom Drawer under 768px, matching upstream's own breadcrumb-responsive.
+   * @default "dropdown"
+   */
+  overflow?: 'dropdown' | 'responsive'
   children?: never
 }
 
@@ -32,29 +84,134 @@ type BreadcrumbCompoundProps = RootProps & { items?: never }
 
 export type BreadcrumbProps = BreadcrumbItemsModeProps | BreadcrumbCompoundProps
 
+function BreadcrumbItemContent({
+  item,
+  isLast,
+}: {
+  item: BreadcrumbItemData
+  isLast: boolean
+}) {
+  if (item.ellipsis) return <BreadcrumbEllipsis />
+
+  if (item.menuItems) {
+    return (
+      <DropdownMenuRoot>
+        <DropdownMenuTrigger className="flex items-center gap-1 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-3.5">
+          {item.label}
+          <ChevronDown />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="start">
+          {item.menuItems.map((menuItem, index) => (
+            <DropdownMenuItem key={index} onSelect={menuItem.onSelect}>
+              {menuItem.label}
+            </DropdownMenuItem>
+          ))}
+        </DropdownMenuContent>
+      </DropdownMenuRoot>
+    )
+  }
+
+  return item.href && !isLast ? (
+    <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+  ) : (
+    <BreadcrumbPage>{item.label}</BreadcrumbPage>
+  )
+}
+
+/** The ellipsis trigger for collapsed items: a DropdownMenu, or a Drawer under 768px in "responsive" mode. */
+function BreadcrumbOverflowTrigger({
+  items,
+  overflow,
+}: {
+  items: BreadcrumbItemData[]
+  overflow: 'dropdown' | 'responsive'
+}) {
+  const isMobile = useIsMobile()
+
+  if (overflow === 'responsive' && isMobile) {
+    return (
+      <DrawerRoot>
+        <DrawerTrigger aria-label="Toggle Menu">
+          <BreadcrumbEllipsis className="h-4 w-4" />
+        </DrawerTrigger>
+        <DrawerContent>
+          <DrawerHeader className="text-left">
+            <DrawerTitle>Navigate to</DrawerTitle>
+            <DrawerDescription>Select a page to navigate to.</DrawerDescription>
+          </DrawerHeader>
+          <div className="grid gap-1 px-4">
+            {items.map((item, index) =>
+              item.href ? (
+                <a key={index} href={item.href} className="py-1 text-sm">
+                  {item.label}
+                </a>
+              ) : (
+                <span key={index} className="py-1 text-sm">
+                  {item.label}
+                </span>
+              )
+            )}
+          </div>
+          <DrawerFooter className="pt-4">
+            <DrawerClose asChild>
+              <Button variant="outline">Close</Button>
+            </DrawerClose>
+          </DrawerFooter>
+        </DrawerContent>
+      </DrawerRoot>
+    )
+  }
+
+  return (
+    <DropdownMenuRoot>
+      <DropdownMenuTrigger className="flex items-center gap-1" aria-label="Toggle menu">
+        <BreadcrumbEllipsis className="size-4" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start">
+        {items.map((item, index) =>
+          item.href ? (
+            <DropdownMenuItem key={index} asChild>
+              <a href={item.href}>{item.label}</a>
+            </DropdownMenuItem>
+          ) : (
+            <DropdownMenuItem key={index}>{item.label}</DropdownMenuItem>
+          )
+        )}
+      </DropdownMenuContent>
+    </DropdownMenuRoot>
+  )
+}
+
 export function BreadcrumbHybrid(props: BreadcrumbProps) {
   if (props.items === undefined) {
     return <BreadcrumbRoot {...props} />
   }
 
-  const { items, ...rootProps } = props
+  const { items, separator, maxItems, overflow = 'dropdown', ...rootProps } = props
+
+  const collapse = maxItems !== undefined && items.length > maxItems && maxItems >= 3
+  const tailCount = Math.max(maxItems ? maxItems - 2 : 0, 1)
+  const overflowItems = collapse ? items.slice(1, items.length - tailCount) : []
+  const visibleItems = collapse
+    ? [items[0], { ellipsis: true as const, label: null }, ...items.slice(-tailCount)]
+    : items
 
   return (
     <BreadcrumbRoot {...rootProps}>
       <BreadcrumbList>
-        {items.map((item, index) => {
-          const isLast = index === items.length - 1
+        {visibleItems.map((item, index) => {
+          const isLast = index === visibleItems.length - 1
 
           return (
             <React.Fragment key={index}>
               <BreadcrumbItem>
-                {item.href && !isLast ? (
-                  <BreadcrumbLink href={item.href}>{item.label}</BreadcrumbLink>
+                {item.ellipsis ? (
+                  <BreadcrumbOverflowTrigger items={overflowItems} overflow={overflow} />
                 ) : (
-                  <BreadcrumbPage>{item.label}</BreadcrumbPage>
+                  <BreadcrumbItemContent item={item} isLast={isLast} />
                 )}
               </BreadcrumbItem>
-              {!isLast && <BreadcrumbSeparator />}
+              {!isLast && <BreadcrumbSeparator>{separator}</BreadcrumbSeparator>}
             </React.Fragment>
           )
         })}

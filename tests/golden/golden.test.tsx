@@ -32,6 +32,18 @@ const modules = import.meta.glob<{ default: ComponentType }>(
 // Everything else (forms, static display, non-portal composites) only needs the
 // closed/default-render snapshot below.
 const CLICK_TO_OPEN = new Set([
+  "alert-dialog-demo",
+  "alert-dialog-props-demo",
+  "alert-dialog-destructive",
+  "alert-dialog-destructive-props-demo",
+  "alert-dialog-warning",
+  "alert-dialog-warning-props-demo",
+  "alert-dialog-close-only",
+  "alert-dialog-close-only-props-demo",
+  "alert-dialog-async",
+  "alert-dialog-async-props-demo",
+  "alert-dialog-async-error",
+  "alert-dialog-async-error-props-demo",
   "dialog-demo",
   "dialog-props-demo",
   "sheet-demo",
@@ -42,6 +54,10 @@ const CLICK_TO_OPEN = new Set([
   "popover-props-demo",
   "dropdown-menu-demo",
   "dropdown-menu-props-demo",
+  "dropdown-menu-checkboxes-demo",
+  "dropdown-menu-checkboxes-props-demo",
+  "dropdown-menu-radio-group-demo",
+  "dropdown-menu-radio-group-props-demo",
 ]);
 const HOVER_TO_OPEN = new Set([
   "tooltip-demo",

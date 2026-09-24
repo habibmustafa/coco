@@ -1,800 +1,498 @@
-import { ComponentPreview } from './component-preview'
-import { Preview, Section, Swatch } from './docs'
-import { Badge, SonnerToaster, ThemeToggle, useTheme } from '../src'
+import { Home, Menu, Palette, Search, Type as TypeIcon } from "lucide-react";
+import {
+  useEffect,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
 
-const NAV = [
-  {
-    title: 'Getting started',
-    items: [
-      { id: 'colors', label: 'Colors' },
-      { id: 'typography', label: 'Typography' },
+import {
+  Badge,
+  Command,
+  Dialog,
+  Sheet,
+  SonnerToaster,
+  ThemeToggle,
+  useTheme,
+  type CommandGroupData,
+} from "../src";
+import { ComponentPreview, previewAnchor } from "./component-preview";
+import { Preview, Swatch } from "./docs";
+import { Link, Navigate, useRouter } from "./router";
+import {
+  COMPONENT_GROUPS,
+  findComponent,
+  type ComponentPreviewSpec,
+} from "./registry";
+
+/*
+ * Route map:
+ *   /                     → overview (tokens + component index)
+ *   /colors, /typography  → token pages
+ *   /components/<id>      → one page per component (id = registry entry id)
+ * Unknown paths redirect to "/" via <Navigate>.
+ */
+
+const navLink =
+  "text-sm text-foreground-light transition-colors hover:text-foreground";
+const activeNavLink = "text-sm font-medium text-foreground transition-colors";
+const commandItemIcon = "mr-2 h-4 w-4 shrink-0 text-foreground-muted";
+// The library's CommandDialog is roomy (h-12 input, py-3 items) to match the generic
+// "Type a command…" demo — this header search wants the same compact rows upstream's
+// own site-wide search uses, so it composes the parts directly instead of that wrapper.
+const commandRootClassName =
+  "overflow-hidden rounded-md bg-overlay text-foreground-light [&_[cmdk-group-heading]]:px-2 [&_[cmdk-group-heading]]:py-1.5 [&_[cmdk-group-heading]]:font-mono [&_[cmdk-group-heading]]:text-xs [&_[cmdk-group-heading]]:uppercase [&_[cmdk-group-heading]]:text-foreground-muted [&_[cmdk-group]:not([hidden])_~[cmdk-group]]:pt-0 [&_[cmdk-group]]:px-2 [&_[cmdk-input-wrapper]_svg]:h-4 [&_[cmdk-input-wrapper]_svg]:w-4 [&_[cmdk-input]]:h-10 [&_[cmdk-item]]:rounded-xs [&_[cmdk-item]]:px-2 [&_[cmdk-item]]:py-1.5 [&_[cmdk-item]]:text-sm [&_[cmdk-item]_svg]:h-4 [&_[cmdk-item]_svg]:w-4";
+
+/**
+ * Nav content shared by the desktop sidebar and the mobile drawer, so the two never
+ * drift apart. `onNavigate` closes the mobile sheet after a link is clicked. Search
+ * lives in the header's Cmd/Ctrl+K palette instead of a second, in-sidebar filter.
+ */
+function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
+  const { path } = useRouter();
+
+  return (
+    <nav className="flex min-w-[220px] flex-col gap-6 py-6 lg:py-8">
+      <div className="flex flex-col gap-2">
+        <p className="font-mono text-xs uppercase text-foreground-muted">
+          Overview
+        </p>
+        <Link
+          to="/"
+          onClick={onNavigate}
+          className={path === "/" ? activeNavLink : navLink}
+        >
+          Components
+        </Link>
+        <Link
+          to="/colors"
+          onClick={onNavigate}
+          className={path === "/colors" ? activeNavLink : navLink}
+        >
+          Colors
+        </Link>
+        <Link
+          to="/typography"
+          onClick={onNavigate}
+          className={path === "/typography" ? activeNavLink : navLink}
+        >
+          Typography
+        </Link>
+      </div>
+
+      {COMPONENT_GROUPS.map((group) => (
+        <div key={group.title} className="flex flex-col gap-2">
+          <p className="font-mono text-xs uppercase text-foreground-muted">
+            {group.title}
+          </p>
+          {group.entries.map((entry) => {
+            const href = `/components/${entry.id}`;
+            return (
+              <Link
+                key={entry.id}
+                to={href}
+                onClick={onNavigate}
+                className={path === href ? activeNavLink : navLink}
+              >
+                {entry.title}
+              </Link>
+            );
+          })}
+        </div>
+      ))}
+    </nav>
+  );
+}
+
+/**
+ * Header search: Ctrl/Cmd+K (from anywhere) or clicking the trigger opens a
+ * command palette listing every route, each row carrying the same icon as its
+ * Overview card (registry.tsx is the single source for both). The trigger button
+ * is lifted verbatim from supabase.com/design-system's own header (checked against
+ * its live, rendered DOM — see docs/plan.md); the dialog composes the Command
+ * primitives directly rather than the library's own CommandDialog, which is sized
+ * for its "Type a command…" demo, not a dense, whole-library search list.
+ */
+function CommandMenu() {
+  const { navigate } = useRouter();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key.toLowerCase() === "k" && (event.metaKey || event.ctrlKey)) {
+        event.preventDefault();
+        setOpen((value) => !value);
+      }
+    }
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  const go = (to: string) => {
+    setOpen(false);
+    navigate(to);
+  };
+
+  const groups: CommandGroupData[] = useMemo(
+    () => [
+      {
+        key: "pages",
+        heading: "Pages",
+        items: [
+          {
+            key: "overview",
+            value: "Components overview",
+            label: "Components",
+            icon: <Home className={commandItemIcon} />,
+            onSelect: () => go("/"),
+          },
+          {
+            key: "colors",
+            value: "Colors tokens",
+            label: "Colors",
+            icon: <Palette className={commandItemIcon} />,
+            onSelect: () => go("/colors"),
+          },
+          {
+            key: "typography",
+            value: "Typography tokens",
+            label: "Typography",
+            icon: <TypeIcon className={commandItemIcon} />,
+            onSelect: () => go("/typography"),
+          },
+        ],
+      },
+      ...COMPONENT_GROUPS.map((group) => ({
+        key: group.title,
+        heading: group.title,
+        items: group.entries.map((entry) => {
+          const Icon = entry.icon;
+          return {
+            key: entry.id,
+            value: entry.title,
+            label: entry.title,
+            icon: <Icon className={commandItemIcon} />,
+            onSelect: () => go(`/components/${entry.id}`),
+          };
+        }),
+      })),
     ],
-  },
-  {
-    title: 'Atom components',
-    items: [
-      { id: 'accordion', label: 'Accordion' },
-      { id: 'alert', label: 'Alert' },
-      { id: 'aspect-ratio', label: 'Aspect Ratio' },
-      { id: 'avatar', label: 'Avatar' },
-      { id: 'badge', label: 'Badge' },
-      { id: 'breadcrumb', label: 'Breadcrumb' },
-      { id: 'button', label: 'Button' },
-      { id: 'calendar', label: 'Calendar' },
-      { id: 'card', label: 'Card' },
-      { id: 'chart', label: 'Chart' },
-      { id: 'checkbox', label: 'Checkbox' },
-      { id: 'collapsible', label: 'Collapsible' },
-      { id: 'command', label: 'Command' },
-      { id: 'dialog', label: 'Dialog' },
-      { id: 'drawer', label: 'Drawer' },
-      { id: 'dropdown-menu', label: 'Dropdown Menu' },
-      { id: 'floating-plate', label: 'Floating Plate' },
-      { id: 'form', label: 'Form' },
-      { id: 'hover-card', label: 'Hover Card' },
-      { id: 'input', label: 'Input' },
-      { id: 'input-otp', label: 'Input OTP' },
-      { id: 'label', label: 'Label' },
-      { id: 'popover', label: 'Popover' },
-      { id: 'progress', label: 'Progress' },
-      { id: 'radio-group', label: 'Radio Group' },
-      { id: 'resizable', label: 'Resizable' },
-      { id: 'select', label: 'Select' },
-      { id: 'separator', label: 'Separator' },
-      { id: 'sheet', label: 'Sheet' },
-      { id: 'sidebar', label: 'Sidebar' },
-      { id: 'skeleton', label: 'Skeleton' },
-      { id: 'sonner', label: 'Sonner' },
-      { id: 'switch', label: 'Switch' },
-      { id: 'table', label: 'Table' },
-      { id: 'tabs', label: 'Tabs' },
-      { id: 'textarea', label: 'Textarea' },
-      { id: 'tooltip', label: 'Tooltip' },
-    ],
-  },
-  {
-    title: 'Fragment components',
-    items: [
-      { id: 'admonition', label: 'Admonition' },
-      { id: 'form-item-layout', label: 'Form Item Layout' },
-      { id: 'info-tooltip', label: 'Info Tooltip' },
-      { id: 'empty-state', label: 'Empty State' },
-      { id: 'error-display', label: 'Error Display' },
-      { id: 'shimmering-loader', label: 'Shimmering Loader' },
-      { id: 'metric-card', label: 'Metric Card' },
-      { id: 'multi-select', label: 'Multi Select' },
-      { id: 'date-picker', label: 'Date Picker' },
-      { id: 'code-block', label: 'Code Block' },
-      { id: 'data-input', label: 'Data Input' },
-      { id: 'timestamp-info', label: 'Timestamp Info' },
-      { id: 'status-code', label: 'Status Code' },
-      { id: 'text-link', label: 'Text Link' },
-      { id: 'theme-toggle', label: 'Theme Toggle' },
-      { id: 'glass-panel', label: 'Glass Panel' },
-      { id: 'row', label: 'Row' },
-    ],
-  },
-]
+    // COMPONENT_GROUPS is a module-level constant — this never actually reruns.
+    []
+  );
+
+  return (
+    <>
+      {/* Wide trigger, upstream's own breakpoint (`lg:flex hidden`) and classes. */}
+      <button
+        type="button"
+        onClick={() => setOpen(true)}
+        className="focus-ring relative hidden h-8 items-center justify-start rounded-lg border border-strong bg-background px-2.5 text-sm font-normal text-foreground-muted shadow-none transition-colors hover:border-foreground-muted hover:bg-surface-100 hover:text-foreground-lighter sm:pr-10 lg:flex lg:w-48"
+      >
+        <span className="truncate">Komponent axtar…</span>
+        <kbd className="pointer-events-none absolute right-[0.3rem] top-[0.3rem] hidden h-5 select-none items-center gap-1 rounded-sm border bg-surface-200 px-1.5 font-mono text-[10px] font-medium text-foreground-light opacity-100 sm:flex">
+          <span className="text-sm">⌘</span>K
+        </kbd>
+      </button>
+      {/* Icon-only trigger below the breakpoint the wide box needs. */}
+      <button
+        type="button"
+        aria-label="Axtar"
+        onClick={() => setOpen(true)}
+        className="focus-ring inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-foreground-light transition-colors hover:bg-surface-100 hover:text-foreground lg:hidden"
+      >
+        <Search className="h-4 w-4" />
+      </button>
+      <Dialog.Root open={open} onOpenChange={setOpen}>
+        <Dialog.Content className="overflow-hidden p-0 shadow-lg">
+          <Dialog.Title className="sr-only">Komponent axtar</Dialog.Title>
+          <Command.Root className={commandRootClassName}>
+            <Command.Input placeholder="Komponent axtar…" />
+            {/*
+             * 63 rows would otherwise stretch the dialog to the viewport height (the
+             * shared CommandList defaults to max-h-full, i.e. uncapped) — upstream's own
+             * search dialog caps its list the same way (max-h-[300px] in its live DOM).
+             */}
+            <Command.List className="max-h-[300px]">
+              <Command.Empty>Nəticə tapılmadı.</Command.Empty>
+              {groups.map((group, index) => (
+                <div key={group.key}>
+                  {index > 0 && <Command.Separator />}
+                  <Command.Group heading={group.heading}>
+                    {group.items.map((item) => (
+                      <Command.Item key={item.key} value={item.value} onSelect={item.onSelect}>
+                        {item.icon}
+                        <span>{item.label}</span>
+                      </Command.Item>
+                    ))}
+                  </Command.Group>
+                </div>
+              ))}
+            </Command.List>
+          </Command.Root>
+        </Dialog.Content>
+      </Dialog.Root>
+    </>
+  );
+}
+
+function Header() {
+  const { path } = useRouter();
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+
+  // A route change (link click, back/forward, or a redirect) always means the
+  // drawer's job is done — close it rather than trusting every call site to do so.
+  useEffect(() => {
+    setMobileNavOpen(false);
+  }, [path]);
+
+  return (
+    <header className="sticky top-0 z-50 w-full border-b bg-studio/95 backdrop-blur-sm supports-backdrop-filter:bg-studio/60 relative">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-brand-default/70 to-transparent"
+      />
+      <div className="flex h-14 items-center gap-3 px-6">
+        <div className="flex items-center gap-3">
+          <Sheet.Root open={mobileNavOpen} onOpenChange={setMobileNavOpen}>
+            <Sheet.Trigger asChild>
+              <button
+                type="button"
+                aria-label="Komponent siyahısını aç"
+                className="focus-ring inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md text-foreground-light transition-colors hover:bg-surface-100 hover:text-foreground md:hidden"
+              >
+                <Menu className="h-4.5 w-4.5" />
+              </button>
+            </Sheet.Trigger>
+            <Sheet.Content side="left" className="w-72 overflow-y-auto px-6">
+              <Sheet.Title className="sr-only">Naviqasiya</Sheet.Title>
+              <SidebarNav onNavigate={() => setMobileNavOpen(false)} />
+            </Sheet.Content>
+          </Sheet.Root>
+
+          <Link
+            to="/"
+            aria-label="coco — ana səhifə"
+            className="focus-ring shrink-0 rounded-sm"
+          >
+            <img
+              src="/coco-logo.svg"
+              alt="coco"
+              width={84}
+              height={26}
+              className="dark:invert"
+            />
+          </Link>
+          <Badge variant="secondary" className="hidden lg:inline-flex">
+            design system
+          </Badge>
+        </div>
+
+        <div className="ml-auto flex items-center gap-3">
+          <CommandMenu />
+          <ThemeToggle />
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function Sidebar() {
+  return (
+    <aside className="sticky top-14 z-30 hidden h-[calc(100vh-3.5rem)] shrink-0 overflow-y-auto border-r px-6 md:block">
+      <SidebarNav />
+    </aside>
+  );
+}
+
+/* Shared page anatomy: every route gets an h1 title, a lede and a divider. */
+function PageHeader({ title, description }: { title: string; description: string }) {
+  return (
+    <>
+      <h1 className="scroll-m-20 text-3xl tracking-tight">{title}</h1>
+      <p className="mt-2 text-lg text-foreground-light">{description}</p>
+      <div role="none" className="mt-6 mb-6 h-px w-full shrink-0 bg-border-muted" />
+    </>
+  )
+}
+
+function Overview() {
+  return (
+    <div className="flex flex-col">
+      <h1 className="scroll-m-20 text-4xl tracking-tight">Components</h1>
+      <p className="mt-2 text-lg text-foreground-light">
+        React components, patterns and design tokens for coco.
+      </p>
+      <div
+        role="none"
+        className="mt-6 mb-6 h-px w-full shrink-0 bg-border-muted"
+      />
+      {COMPONENT_GROUPS.map((group) => (
+        <div key={group.title} className="mb-10">
+          <p className="font-mono text-xs uppercase text-foreground-muted">
+            {group.title}
+          </p>
+          <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+            {group.entries.map((entry) => {
+              const Icon = entry.icon;
+              return (
+                <Link
+                  key={entry.id}
+                  to={`/components/${entry.id}`}
+                  className="focus-ring group flex gap-3 rounded-md border bg-studio p-4 transition-colors hover:border-foreground-lighter"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border bg-surface-100 text-foreground-muted transition-colors group-hover:text-foreground">
+                    <Icon className="h-4 w-4" />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium">{entry.title}</p>
+                    <p className="mt-1 line-clamp-2 text-xs text-foreground-light">
+                      {entry.description}
+                    </p>
+                  </div>
+                </Link>
+              );
+            })}
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
+
+function ColorsPage() {
+  return (
+    <div>
+      <PageHeader
+        title="Colors"
+        description="Semantic tokens derived in OKLCH from a single hue, surface and contrast input."
+      />
+      <Preview label="Surfaces" align="start">
+        <Swatch token="bg-background" className="bg-background" />
+        <Swatch token="bg-surface-100" className="bg-surface-100" />
+        <Swatch token="bg-surface-200" className="bg-surface-200" />
+        <Swatch token="bg-surface-300" className="bg-surface-300" />
+        <Swatch token="bg-overlay" className="bg-overlay" />
+      </Preview>
+      <Preview label="Brand & status" align="start">
+        <Swatch token="bg-brand-default" className="bg-brand-default" />
+        <Swatch token="bg-brand-400" className="bg-brand-400" />
+        <Swatch token="bg-primary" className="bg-primary" />
+        <Swatch token="bg-warning" className="bg-warning" />
+        <Swatch token="bg-destructive" className="bg-destructive" />
+      </Preview>
+      <Preview label="Foreground & border" align="start">
+        <Swatch token="bg-foreground" className="bg-foreground" />
+        <Swatch token="bg-foreground-light" className="bg-foreground-light" />
+        <Swatch token="bg-foreground-muted" className="bg-foreground-muted" />
+        <Swatch token="bg-border" className="bg-border" />
+        <Swatch token="bg-border-stronger" className="bg-border-stronger" />
+      </Preview>
+    </div>
+  );
+}
+
+function TypographyPage() {
+  return (
+    <div>
+      <PageHeader
+        title="Typography"
+        description="Inter-tuned scale: text-sm is 13px and text-base 15px, with normal weight at 450."
+      />
+      <Preview label="Scale" align="start">
+        <div className="flex flex-col gap-2">
+          <p className="text-2xl">text-2xl — heading</p>
+          <p className="text-base">text-base — body</p>
+          <p className="text-sm text-foreground-light">
+            text-sm — foreground-light
+          </p>
+          <p className="text-xs text-foreground-lighter">
+            text-xs — foreground-lighter
+          </p>
+          <p className="font-mono text-xs uppercase text-foreground-muted">
+            font-mono — labels
+          </p>
+        </div>
+      </Preview>
+    </div>
+  );
+}
+
+/**
+ * Jumps to the labelled previews on a page (Button's "Variants", "Sizes", …).
+ * Anchors match the ids ComponentPreview derives from the same labels, and a page
+ * with fewer than two labelled previews renders nothing.
+ */
+function PageContents({ previews }: { previews: ComponentPreviewSpec[] }) {
+  const labelled = previews.filter((preview) => preview.label);
+  if (labelled.length < 2) return null;
+
+  return (
+    <nav className="mb-8 flex flex-wrap gap-x-4 gap-y-1 border-b pb-4 text-sm">
+      {labelled.map((preview) => (
+        <a
+          key={preview.name}
+          href={`#${previewAnchor(preview.label!)}`}
+          className="focus-ring rounded-sm text-foreground-light transition-colors hover:text-foreground"
+        >
+          {preview.label}
+        </a>
+      ))}
+    </nav>
+  );
+}
+
+function ComponentPage({ id }: { id: string }) {
+  const entry = findComponent(id);
+
+  if (!entry) {
+    return <Navigate to="/" />;
+  }
+
+  return (
+    <div>
+      <PageHeader title={entry.title} description={entry.description} />
+      <PageContents previews={entry.previews} />
+      {entry.previews.map((preview) => (
+        <ComponentPreview key={preview.name} {...preview} />
+      ))}
+    </div>
+  );
+}
 
 export function App() {
-  const { resolvedTheme } = useTheme()
+  const { path } = useRouter();
+  const { resolvedTheme } = useTheme();
+
+  // Route change → scroll to top (the router does this on push, but a back/forward
+  // navigation also needs it since the popstate handler just swaps the path).
+  useEffect(() => {
+    window.scrollTo({ top: 0 });
+  }, [path]);
+
+  let page: ReactNode;
+  if (path === "/") {
+    page = <Overview />;
+  } else if (path === "/colors") {
+    page = <ColorsPage />;
+  } else if (path === "/typography") {
+    page = <TypographyPage />;
+  } else if (path.startsWith("/components/")) {
+    page = <ComponentPage id={path.slice("/components/".length)} />;
+  } else {
+    page = <Navigate to="/" />;
+  }
 
   return (
     <div className="min-h-screen bg-studio text-foreground">
-      <header className="sticky top-0 z-50 w-full border-b bg-studio/95 backdrop-blur-sm supports-backdrop-filter:bg-studio/60 relative">
-        <div
-          aria-hidden
-          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-brand-default/70 to-transparent"
-        />
-        <div className="flex h-14 items-center justify-between px-6">
-          <div className="flex items-center gap-3">
-            <a href="#" aria-label="coco — ana səhifə" className="focus-ring rounded-sm">
-              <img src="/coco-logo.svg" alt="coco" width={84} height={26} className="dark:invert" />
-            </a>
-            <Badge variant="secondary">design system</Badge>
-          </div>
-          <div className="flex items-center gap-3">
-            <Badge variant="success" className="hidden sm:inline-flex">
-              23 hybrid · 57 components
-            </Badge>
-            <ThemeToggle />
-          </div>
-        </div>
-      </header>
-
+      <Header />
       <div className="flex">
-        <aside className="sticky top-14 z-30 hidden h-[calc(100vh-3.5rem)] shrink-0 overflow-y-auto border-r px-6 md:block">
-          <nav className="flex min-w-[220px] flex-col gap-6 py-6 lg:py-8">
-            {NAV.map((group) => (
-              <div key={group.title} className="flex flex-col gap-2">
-                <p className="font-mono text-xs uppercase text-foreground-muted">{group.title}</p>
-                {group.items.map((item) => (
-                  <a
-                    key={item.id}
-                    href={`#${item.id}`}
-                    className="text-sm text-foreground-light transition-colors hover:text-foreground"
-                  >
-                    {item.label}
-                  </a>
-                ))}
-              </div>
-            ))}
-          </nav>
-        </aside>
-
+        <Sidebar />
         <main className="min-w-0 flex-1 scroll-mt-14 px-6 py-8 outline-hidden md:px-10">
-          <div className="mx-auto max-w-4xl">
-            <h1 className="scroll-m-20 text-4xl tracking-tight">Components</h1>
-            <p className="mt-2 text-lg text-foreground-light">
-              React components, patterns and design tokens for coco.
-            </p>
-            <div role="none" className="mt-6 mb-6 h-px w-full shrink-0 bg-border-muted" />
-
-            <Section
-              id="colors"
-              title="Colors"
-              description="Semantic tokens derived in OKLCH from a single hue, surface and contrast input."
-            >
-              <Preview label="Surfaces" align="start">
-                <Swatch token="bg-background" className="bg-background" />
-                <Swatch token="bg-surface-100" className="bg-surface-100" />
-                <Swatch token="bg-surface-200" className="bg-surface-200" />
-                <Swatch token="bg-surface-300" className="bg-surface-300" />
-                <Swatch token="bg-overlay" className="bg-overlay" />
-              </Preview>
-              <Preview label="Brand & status" align="start">
-                <Swatch token="bg-brand-default" className="bg-brand-default" />
-                <Swatch token="bg-brand-400" className="bg-brand-400" />
-                <Swatch token="bg-primary" className="bg-primary" />
-                <Swatch token="bg-warning" className="bg-warning" />
-                <Swatch token="bg-destructive" className="bg-destructive" />
-              </Preview>
-              <Preview label="Foreground & border" align="start">
-                <Swatch token="bg-foreground" className="bg-foreground" />
-                <Swatch token="bg-foreground-light" className="bg-foreground-light" />
-                <Swatch token="bg-foreground-muted" className="bg-foreground-muted" />
-                <Swatch token="bg-border" className="bg-border" />
-                <Swatch token="bg-border-stronger" className="bg-border-stronger" />
-              </Preview>
-            </Section>
-
-            <Section
-              id="typography"
-              title="Typography"
-              description="Inter-tuned scale: text-sm is 13px and text-base 15px, with normal weight at 450."
-            >
-              <Preview label="Scale" align="start">
-                <div className="flex flex-col gap-2">
-                  <p className="text-2xl">text-2xl — heading</p>
-                  <p className="text-base">text-base — body</p>
-                  <p className="text-sm text-foreground-light">text-sm — foreground-light</p>
-                  <p className="text-xs text-foreground-lighter">text-xs — foreground-lighter</p>
-                  <p className="font-mono text-xs uppercase text-foreground-muted">
-                    font-mono — labels
-                  </p>
-                </div>
-              </Preview>
-            </Section>
-
-            <Section
-              id="accordion"
-              title="Accordion"
-              description="Disclosure list with animated height transitions."
-            >
-              <ComponentPreview
-                name="accordion-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'accordion-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'accordion-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="alert"
-              title="Alert"
-              description="Tinted container with an optional icon, title and description."
-            >
-              <ComponentPreview
-                name="alert-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'alert-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'alert-variants' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="aspect-ratio"
-              title="Aspect Ratio"
-              description="Keeps embedded content at a fixed ratio."
-            >
-              <ComponentPreview name="aspect-ratio-demo" />
-            </Section>
-
-            <Section
-              id="avatar"
-              title="Avatar"
-              description="Image with a fallback shown while it loads or when it fails."
-            >
-              <ComponentPreview
-                name="avatar-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'avatar-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'avatar-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="badge"
-              title="Badge"
-              description="Uppercase pill used for status; five variants."
-            >
-              <ComponentPreview name="badge-variants" />
-            </Section>
-
-            <Section
-              id="breadcrumb"
-              title="Breadcrumb"
-              description="Ancestor trail with a chevron separator; the last item renders as static text."
-            >
-              <ComponentPreview
-                name="breadcrumb-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'breadcrumb-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'breadcrumb-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="button"
-              title="Button"
-              description="Nine variants, five sizes, icons on either side, loading and block states."
-            >
-              <ComponentPreview name="button-variants" label="Variants" />
-              <ComponentPreview name="button-sizes" label="Sizes" />
-              <ComponentPreview name="button-icons" label="With icons" />
-              <ComponentPreview name="button-states" label="States" />
-              <ComponentPreview name="button-block" label="Block" />
-            </Section>
-
-            <Section
-              id="calendar"
-              title="Calendar"
-              description="Single and range date selection built on React DayPicker."
-            >
-              <ComponentPreview name="calendar-demo" />
-            </Section>
-
-            <Section
-              id="card"
-              title="Card"
-              description="Panel with border-separated header, content and footer sections."
-            >
-              <ComponentPreview
-                name="card-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'card-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'card-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="chart"
-              title="Chart"
-              description="Responsive Recharts wrapper with theme-aware colour configuration, tooltips and legends."
-            >
-              <ComponentPreview
-                name="chart-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'chart-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'chart-bar-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="checkbox"
-              title="Checkbox"
-              description="Sunk control surface that inverts to the foreground colour when checked."
-            >
-              <ComponentPreview name="checkbox-demo" />
-            </Section>
-
-            <Section
-              id="collapsible"
-              title="Collapsible"
-              description="Single disclosure region without the list chrome."
-            >
-              <ComponentPreview
-                name="collapsible-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'collapsible-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'collapsible-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="command"
-              title="Command"
-              description="Searchable command menu with grouped items, shortcuts and dialog composition."
-            >
-              <ComponentPreview
-                name="command-props-demo"
-                label="Inline"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'command-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'command-demo' },
-                ]}
-              />
-              <ComponentPreview
-                name="command-dialog-props-demo"
-                label="Dialog"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'command-dialog-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'command-dialog' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="dialog"
-              title="Dialog"
-              description="Modal built on Radix, with header, section and footer slots."
-            >
-              <ComponentPreview
-                name="dialog-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'dialog-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'dialog-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="drawer"
-              title="Drawer"
-              description="Touch-friendly sliding panel with directional layouts and drag gestures."
-            >
-              <ComponentPreview
-                name="drawer-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'drawer-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'drawer-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="dropdown-menu"
-              title="Dropdown Menu"
-              description="Menu with labels, separators, shortcuts and submenus."
-            >
-              <ComponentPreview
-                name="dropdown-menu-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'dropdown-menu-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'dropdown-menu-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="floating-plate"
-              title="Floating Plate"
-              description="Opaque backing plate for a default Button floating over busy content (code, tables, gradients)."
-            >
-              <ComponentPreview name="floating-plate-demo" />
-            </Section>
-
-            <Section
-              id="form"
-              title="Form"
-              description="React Hook Form composition with accessible labels, descriptions and animated validation messages."
-            >
-              <ComponentPreview name="input-form" />
-            </Section>
-
-            <Section
-              id="hover-card"
-              title="Hover Card"
-              description="Richer preview surface shown after a hover delay."
-            >
-              <ComponentPreview
-                name="hover-card-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'hover-card-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'hover-card-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="input"
-              title="Input"
-              description="Sunk field surface with the shared size scale and an aria-invalid state."
-            >
-              <ComponentPreview name="input-sizes" label="Sizes" />
-              <ComponentPreview name="input-states" label="States" />
-            </Section>
-
-            <Section
-              id="input-otp"
-              title="Input OTP"
-              description="One-time-password field split into per-character slots, built on input-otp."
-            >
-              <ComponentPreview
-                name="input-otp-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'input-otp-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'input-otp-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="label"
-              title="Label"
-              description="Radix label bound to a control; dims when its peer is disabled."
-            >
-              <ComponentPreview name="label-demo" />
-            </Section>
-
-            <Section
-              id="popover"
-              title="Popover"
-              description="Anchored surface for small forms and controls."
-            >
-              <ComponentPreview
-                name="popover-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'popover-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'popover-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="progress"
-              title="Progress"
-              description="Determinate bar filled with the foreground colour."
-            >
-              <ComponentPreview name="progress-demo" />
-            </Section>
-
-            <Section
-              id="radio-group"
-              title="Radio Group"
-              description="Standard items, plus the large card-style item used for pickers."
-            >
-              <ComponentPreview
-                name="radio-group-props-demo"
-                label="Items"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'radio-group-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'radio-group-demo' },
-                ]}
-              />
-              <ComponentPreview
-                name="radio-group-large-props-demo"
-                label="Large items"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'radio-group-large-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'radio-group-large' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="resizable"
-              title="Resizable"
-              description="Drag-resizable panel group (react-resizable-panels), with optional layout persistence."
-            >
-              <ComponentPreview
-                name="resizable-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'resizable-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'resizable-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="select"
-              title="Select"
-              description="Radix select on the raised control surface, with grouped items and a separator."
-            >
-              <ComponentPreview
-                name="select-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'select-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'select-demo' },
-                ]}
-              />
-              <ComponentPreview
-                name="select-sizes-props-demo"
-                label="Sizes"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'select-sizes-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'select-sizes' },
-                ]}
-              />
-              <ComponentPreview
-                name="select-groups-props-demo"
-                label="Groups"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'select-groups-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'select-groups' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="separator"
-              title="Separator"
-              description="One-pixel divider in either orientation."
-            >
-              <ComponentPreview name="separator-demo" />
-            </Section>
-
-            <Section
-              id="sheet"
-              title="Sheet"
-              description="Same primitive as Dialog, anchored to an edge of the viewport."
-            >
-              <ComponentPreview
-                name="sheet-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'sheet-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'sheet-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="sidebar"
-              title="Sidebar"
-              description="Responsive navigation shell with collapsible icon mode, mobile sheet and tooltip support."
-            >
-              <ComponentPreview name="sidebar-demo" />
-            </Section>
-
-            <Section
-              id="skeleton"
-              title="Skeleton"
-              description="Pulsing placeholder for content that is still loading."
-            >
-              <ComponentPreview name="skeleton-demo" />
-            </Section>
-
-            <Section
-              id="sonner"
-              title="Sonner"
-              description="Theme-aware toast stack with status icons and button variants."
-            >
-              <ComponentPreview name="sonner-demo" />
-            </Section>
-
-            <Section
-              id="switch"
-              title="Switch"
-              description="Three sizes; the checked track uses the brand fill."
-            >
-              <ComponentPreview name="switch-sizes" label="Sizes" />
-              <ComponentPreview name="switch-states" label="States" />
-            </Section>
-
-            <Section
-              id="table"
-              title="Table"
-              description="Responsive data table with scroll shadows, sortable headers and an optional sticky last column."
-            >
-              <ComponentPreview
-                name="table-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'table-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'table-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="tabs"
-              title="Tabs"
-              description="Tab list with an animated indicator driven by useTabIndicator."
-            >
-              <ComponentPreview
-                name="tabs-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'tabs-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'tabs-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="textarea"
-              title="Textarea"
-              description="Multi-line field sharing the Input surface, with an aria-invalid state."
-            >
-              <ComponentPreview name="textarea-states" />
-            </Section>
-
-            <Section
-              id="tooltip"
-              title="Tooltip"
-              description="Short hint on hover or focus; requires a TooltipProvider."
-            >
-              <ComponentPreview
-                name="tooltip-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'tooltip-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'tooltip-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="admonition"
-              title="Admonition"
-              description="Callout built on Alert, with a type-driven icon/variant, optional actions and a horizontal/vertical/responsive layout."
-            >
-              <ComponentPreview name="admonition-demo" />
-            </Section>
-
-            <Section
-              id="form-item-layout"
-              title="Form Item Layout"
-              description="Label/description/error wrapper around a form field, sharing layout with FormField."
-            >
-              <ComponentPreview name="form-item-layout-demo" />
-            </Section>
-
-            <Section
-              id="info-tooltip"
-              title="Info Tooltip"
-              description="Info-glyph trigger with a self-contained TooltipProvider, for inline hints."
-            >
-              <ComponentPreview name="info-tooltip-demo" />
-            </Section>
-
-            <Section
-              id="empty-state"
-              title="Empty State"
-              description="Dashed-border placeholder for a first-run feature state, with an icon, title and action slot."
-            >
-              <ComponentPreview name="empty-state-presentational-demo" />
-            </Section>
-
-            <Section
-              id="error-display"
-              title="Error Display"
-              description="Card-based error panel with a monospace error message and a support-link footer."
-            >
-              <ComponentPreview name="error-display-demo" />
-            </Section>
-
-            <Section
-              id="shimmering-loader"
-              title="Shimmering Loader"
-              description="Animated skeleton bar and its generic list/table loading compositions."
-            >
-              <ComponentPreview name="shimmering-loader-demo" />
-            </Section>
-
-            <Section
-              id="metric-card"
-              title="Metric Card"
-              description="Dashboard tile with a label/link header, value/differential and a Recharts sparkline."
-            >
-              <ComponentPreview
-                name="metric-card-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'metric-card-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'metric-card-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="multi-select"
-              title="Multi Select"
-              description="Command-driven combobox for picking several values, with badges, a creatable mode and an inline-search variant."
-            >
-              <ComponentPreview
-                name="multi-select-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'multi-select-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'multi-select-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="date-picker"
-              title="Date Picker"
-              description="Popover-wrapped Calendar with a styled trigger button, for a single date."
-            >
-              <ComponentPreview
-                name="date-picker-props-demo"
-                codeVariants={[
-                  { id: 'props', label: 'Props-driven', name: 'date-picker-props-demo' },
-                  { id: 'compound', label: 'Compound', name: 'date-picker-demo' },
-                ]}
-              />
-            </Section>
-
-            <Section
-              id="code-block"
-              title="Code Block"
-              description="Syntax-highlighted code (react-syntax-highlighter, Monokai theme) with a hover-reveal copy button."
-            >
-              <ComponentPreview name="code-block-demo" />
-            </Section>
-
-            <Section
-              id="data-input"
-              title="Data Input"
-              description="Input wrapped in an InputGroup with optional copy, password-style reveal and action slots."
-            >
-              <ComponentPreview name="data-input-demo" />
-            </Section>
-
-            <Section
-              id="timestamp-info"
-              title="Timestamp Info"
-              description="Formatted timestamp whose tooltip lists UTC, local, relative and raw values — each row copies on click."
-            >
-              <ComponentPreview name="timestamp-info-demo" />
-            </Section>
-
-            <Section
-              id="status-code"
-              title="Status Code"
-              description="HTTP method + status pill, coloured by the response class (2xx/4xx/5xx)."
-            >
-              <ComponentPreview name="status-code-demo" />
-            </Section>
-
-            <Section
-              id="text-link"
-              title="Text Link"
-              description="Inline link with an optional counter and an animated chevron."
-            >
-              <ComponentPreview name="text-link-demo" />
-            </Section>
-
-            <Section
-              id="theme-toggle"
-              title="Theme Toggle"
-              description="Sun/moon icon button opening a System/Dark/Light dropdown, wired to this package's own ThemeProvider."
-            >
-              <ComponentPreview name="theme-toggle-demo" />
-            </Section>
-
-            <Section
-              id="glass-panel"
-              title="Glass Panel"
-              description="Bordered feature card with an icon/logo header, used for marketing-style grids."
-            >
-              <ComponentPreview name="glass-panel-demo" />
-            </Section>
-
-            <Section
-              id="row"
-              title="Row"
-              description="Horizontally scrollable row of equal-width items with edge-fade arrow navigation."
-            >
-              <ComponentPreview name="row-demo" />
-            </Section>
-          </div>
+          <div className="mx-auto max-w-4xl">{page}</div>
         </main>
       </div>
       <SonnerToaster theme={resolvedTheme} />
     </div>
-  )
+  );
 }

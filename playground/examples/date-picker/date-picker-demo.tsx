@@ -9,24 +9,21 @@ import { useState } from 'react'
 import {
   Calendar,
   DatePicker,
-  DatePickerButton,
-  DatePickerContent,
-  DatePickerTrigger,
 } from '../../../src'
 
 export default function DatePickerDemo() {
   const [date, setDate] = useState<Date>()
 
   return (
-    <DatePicker>
-      <DatePickerTrigger asChild>
-        <DatePickerButton variant="outline" className="w-[280px]">
+    <DatePicker.Root>
+      <DatePicker.Trigger asChild>
+        <DatePicker.Button variant="outline" className="w-[280px]">
           {date ? dayjs(date).format('MMMM D, YYYY') : <span>Pick a date</span>}
-        </DatePickerButton>
-      </DatePickerTrigger>
-      <DatePickerContent>
+        </DatePicker.Button>
+      </DatePicker.Trigger>
+      <DatePicker.Content>
         <Calendar mode="single" selected={date} onSelect={setDate} initialFocus />
-      </DatePickerContent>
-    </DatePicker>
+      </DatePicker.Content>
+    </DatePicker.Root>
   )
 }

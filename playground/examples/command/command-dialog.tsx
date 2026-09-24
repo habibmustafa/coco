@@ -3,14 +3,7 @@
 import { Calculator, Calendar, CreditCard, Settings, Smile, User } from 'lucide-react'
 import * as React from 'react'
 import {
-  CommandDialog,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-  CommandSeparator,
-  CommandShortcut,
+  Command,
 } from '../../../src'
 
 export default function CommandDialogDemo() {
@@ -36,44 +29,44 @@ export default function CommandDialogDemo() {
           <span className="text-xs">⌘</span>J
         </kbd>
       </p>
-      <CommandDialog open={open} onOpenChange={setOpen}>
-        <CommandInput placeholder="Type a command or search..." />
-        <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
-          <CommandGroup heading="Suggestions">
-            <CommandItem>
+      <Command.Dialog open={open} onOpenChange={setOpen}>
+        <Command.Input placeholder="Type a command or search..." />
+        <Command.List>
+          <Command.Empty>No results found.</Command.Empty>
+          <Command.Group heading="Suggestions">
+            <Command.Item>
               <Calendar className="mr-2 h-4 w-4" />
               <span>Calendar</span>
-            </CommandItem>
-            <CommandItem>
+            </Command.Item>
+            <Command.Item>
               <Smile className="mr-2 h-4 w-4" />
               <span>Search Emoji</span>
-            </CommandItem>
-            <CommandItem>
+            </Command.Item>
+            <Command.Item>
               <Calculator className="mr-2 h-4 w-4" />
               <span>Calculator</span>
-            </CommandItem>
-          </CommandGroup>
-          <CommandSeparator />
-          <CommandGroup heading="Settings">
-            <CommandItem>
+            </Command.Item>
+          </Command.Group>
+          <Command.Separator />
+          <Command.Group heading="Settings">
+            <Command.Item>
               <User className="mr-2 h-4 w-4" />
               <span>Profile</span>
-              <CommandShortcut>⌘P</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
+              <Command.Shortcut>⌘P</Command.Shortcut>
+            </Command.Item>
+            <Command.Item>
               <CreditCard className="mr-2 h-4 w-4" />
               <span>Billing</span>
-              <CommandShortcut>⌘B</CommandShortcut>
-            </CommandItem>
-            <CommandItem>
+              <Command.Shortcut>⌘B</Command.Shortcut>
+            </Command.Item>
+            <Command.Item>
               <Settings className="mr-2 h-4 w-4" />
               <span>Settings</span>
-              <CommandShortcut>⌘S</CommandShortcut>
-            </CommandItem>
-          </CommandGroup>
-        </CommandList>
-      </CommandDialog>
+              <Command.Shortcut>⌘S</Command.Shortcut>
+            </Command.Item>
+          </Command.Group>
+        </Command.List>
+      </Command.Dialog>
     </>
   )
 }

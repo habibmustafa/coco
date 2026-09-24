@@ -1,10 +1,13 @@
-import { createRoot } from "react-dom/client";
+import { createRoot } from 'react-dom/client'
 
-import { ThemeProvider } from "../src";
-import { App } from "./app";
+import { ThemeProvider } from '../src'
+import { App } from './app'
+import { RouterProvider } from './router'
 
-createRoot(document.getElementById("root")!).render(
+createRoot(document.getElementById('root')!).render(
   <ThemeProvider>
-    <App />
+    <RouterProvider>
+      <App />
+    </RouterProvider>
   </ThemeProvider>
-);
+)

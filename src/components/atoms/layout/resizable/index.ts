@@ -2,6 +2,7 @@ import { ResizableHybrid } from './resizable'
 import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from './resizable-parts'
 
 export const Resizable = Object.assign(ResizableHybrid, {
+  Root: ResizablePanelGroup,
   Group: ResizablePanelGroup,
   Panel: ResizablePanel,
   Handle: ResizableHandle,

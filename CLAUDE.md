@@ -1,64 +1,56 @@
-# coco — Supabase design system portu
+# coco — agent qaydaları
 
-Bu layihə Supabase-in açıq-mənbə design system-inin (`supabase.com/design-system`,
-`github.com/supabase/supabase`, Apache-2.0) React komponent paketi kimi portudur.
-Hədəf: **birəbir eyni görünüş**, approksimasiya yox.
+`coco` Supabase design system-inin (`supabase.com/design-system`, Apache-2.0) özəl React
+kitabxanasıdır. Məqsəd vizual və davranış baxımından upstream ilə eyni nəticədir.
 
-## İş qaydaları
+## İşə başlamazdan əvvəl
 
-- **Cavablar və sənədlər Azərbaycan dilində** olsun. Kod, identifikator və kod şərhləri ingiliscə qalır.
-- **`docs/plan.md` canlı sənəddir.** Hər qərar, düzəliş və tamamlanan iş dərhal ora yazılmalıdır —
-  təkcə planlaşdırma mərhələsində yox, iş getdikcə. Sessiyanın əvvəlində onu oxu.
-- **Komponent portlayarkən:** əvvəlcə `packages/ui/index.tsx`-dən hansı implementasiyanın *public*
-  olduğunu təsdiqlə (hər şey `shadcn/ui/` altında deyil), sonra faylı olduğu kimi götür və
-  **yalnız import path-larını** dəyiş. CVA variantları, class-lar və markup toxunulmaz qalır.
-- **Vendored fayllara dəyər dəyişikliyi etmə.** `src/styles/vendor/theme/` altındakı CSS
-  dəyərləri upstream ilə eynidir; mənbə və lisenziya məlumatı həmin qovluğun
-  `NOTICE.md` faylındadır. Paylamadan əvvəl fayl səviyyəsində dəyişiklik
-  bildirişlərini yenidən qiymətləndir.
-- Fayl/qovluq adları **lowercase kebab-case** (Windows lokal / Linux CI case fərqi bug yaradır).
-- **Atom / fragment bölgüsü** upstream-i əks etdirir:
-  - `src/components/atoms/<kateqoriya>/<ad>/` — `packages/ui`-dən gələnlər ("Atom components").
-    Kateqoriyalar: `actions`, `forms`, `layout`, `feedback`, `overlay`, `data-display`, `navigation`.
-  - `src/components/fragments/<ad>/` — `packages/ui-patterns`-dən gələnlər ("Fragment components").
-    Fragmentlər atomlardan qurulur, ona görə kateqoriyasız (flat) saxlanılır.
-- Atom faylları `lib/`-ə **`../../../../lib/...`** ilə, fragment faylları **`../../../lib/...`** ilə çatır.
+1. Bu faylı və cari qərar xülasəsi olan `docs/plan.md`-i oxu. Tarixi səbəb lazım olarsa
+   `docs/plan-history.md`-də aid qeydə bax; köhnə planı cari tapşırıq sayma. Hibrid API-yə
+   toxunanda `docs/hybrid-api-migration.md`-ə bax.
+2. Dəyişəcəyin komponentin `src/` kodunu, playground nümunələrini və lazım olduqda upstream-in
+   public export-unu və demosunu yoxla. Supabase-dəki hər `shadcn/ui/` faylı public deyil.
+3. Mövcud işçi qovluğundakı başqa dəyişiklikləri qoruyub saxla.
 
-## Əmrlər
+## Dəyişməz qaydalar
 
-```
-npm run dev            # playground (design-system tipli demo sayt)
-npm run build:lib      # dist/coco.js + coco.cjs + styles.css + index.d.ts
-npm run lint           # oxlint
-npx tsc -b             # tip yoxlaması
-npm run check:classes  # işlədilən class-ın CSS-də qarşılığı varmı
-npm run check:tokens   # tokenlərimiz canlı supabase.com/design-system ilə üst-üstə düşürmü
-npm run verify         # hamısı ardıcıl
-```
+- İstifadəçiyə cavablar və sənədlər Azərbaycan dilində; kod, adlar və kod şərhləri ingiliscə.
+- Fayl və qovluq adları `lowercase-kebab-case`.
+- Atomlar `src/components/atoms/<kateqoriya>/<ad>/`, fragmentlər
+  `src/components/fragments/<ad>/` altındadır. Atomlar `lib/`-ə `../../../../lib/`,
+  fragmentlər `../../../lib/` yolu ilə çatır.
+- `src/styles/vendor/theme/` içindəki dəyərləri dəyişmə. Mənbə və lisenziya məlumatı həmin
+  qovluğun `NOTICE.md` faylındadır; paylamadan əvvəl fayl səviyyəli bildirişləri yoxla.
+- Mövcud komponentdə DOM, class, ARIA, focus, animasiya və davranış sadiqliyini qoru.
+  İlk portda upstream-in public faylını götür, yalnız import yollarını uyğunlaşdır; upstream
+  demosunu da gətir. Mövcud hibriddə daxili refaktor mümkündür, nəticəni golden testlə yoxla.
+- Tailwind class adını runtime-da qurma (`gap-${n}` kimi). Literal class xəritəsi işlət;
+  layout primitivlərində `layout-classes.ts` vahid mənbədir.
+- `dark:` utility-ləri `data-theme*="dark"`, tokenlər isə `.dark`/`.light` ilə işləyir;
+  `ThemeProvider` hər ikisini qoyur. Base üslublar `design-system-base.css`-dədir.
+- Yeni runtime dependency əlavə edəndə `vite.config.ts`-də external siyahısını da yenilə.
+- React 19-da `ref` adi prop-dur; yeni `forwardRef` istifadə etmə. Shiki tema qaydalarını
+  `settings`-ə yaz, `tokenColors`-a yox. Windows-da qovluq köçürməzdən əvvəl dev serveri saxla.
 
-## Style səhvlərinin qarşısını almaq (məcburi)
+## Hibrid API və nümunələr
 
-Bu layihədə dizayn fərqlərinin **hamısı** eyni iki səbəbdən yarandı: işlədilən class-ın CSS-i
-ümumiyyətlə yaranmamışdı, və ya komponent upstream-dəki kimi *istifadə* olunmamışdı.
-Ona görə hər dəyişiklikdən sonra:
+- Yalnız mənalı Root + bir neçə hissəsi olan komponent hibridləşir. Tək elementə süni
+  compound/props ikiliyi əlavə etmə. Strategiya və tiplər üçün `docs/hybrid-api-migration.md`.
+- Props rejimi `<Component ... />`; compound rejimi
+  `<Component.Root><Component.Child /></Component.Root>`. Mövcud `ComponentRoot` və
+  `ComponentChild` named export-ları uyğunluq üçün qalır, yeni nümunələrdə namespace yazılışını
+  işlət.
+- Hər hibrid playground nümunəsinin props və compound kodu `playground/registry.tsx`-də
+  `codeVariants: [{ id: 'props', ... }, { id: 'compound', ... }]` cütü ilə göstərilir.
+  `Preview` props nümunəsini göstərir. Hibrid olmayan nümunə tək `Preview`/`Code` rejimindədir.
+- Props API nümunənin davranışını ifadə etmirsə, uydurma wrapper yazma; səbəbini `plan.md`-də
+  qeyd et. Props API genişlənməsi ayrıca əsaslandırılmış dəyişiklikdir.
 
-1. **`npm run verify` işlət.** `check:classes` CSS-də qarşılığı olmayan class-ı tapır (belə class
-   səssizcə stilsiz render olunur — `focus-ring`, `animate-accordion-down`, `hit-area-6`
-   hamısı bu yolla tapıldı). `check:tokens` isə tokenlərimizi canlı saytınkı ilə müqayisə edir.
-   Hər ikisi təmiz olmalıdır; səs-küy görsən filtri düzəlt, nəticəni görməzdən gəlmə.
-2. **Komponenti portlayanda onun upstream istifadəsini də götür:**
-   `apps/design-system/registry/default/example/<ad>-demo.tsx`. Komponent tək başına kifayət
-   etmir — məsələn `TabsTrigger`-in padding-i yoxdur, boşluq `TabsList`-ə verilən `grid-cols-N`
-   ilə gəlir və `<TabsIndicator />` ayrıca əlavə olunmalıdır.
-3. **Layout ölçülərini gözlə seçmə** — lazım olanda saytın HTML/CSS-ini çək və real dəyərləri
-   oxu (`scripts/check-tokens.mjs` içindəki yanaşma ilə).
+## Bitirmə qaydası
 
-## Diqqət tələb edən məqamlar
-
-- `dark:` utility-ləri yalnız `data-theme*="dark"` ilə işləyir; token blokları isə `.dark`/`.light`
-  class-ına baxır. `ThemeProvider` hər ikisini qoyur.
-- Rendered görünüş təkcə komponent fayllarından gəlmir — tipoqrafiya və base layer
-  `design-system-base.css`-dədir (upstream-də `apps/design-system/styles/globals.css`).
-- Runtime asılılıqları (`radix-ui`, `cmdk`, `vaul`, `sonner`, `react-day-picker`, `recharts`,
-  `react-hook-form`, `framer-motion`, `lucide-react`, `cva`, `clsx`, `tailwind-merge`) build-də
-  **external**-dır; yeni runtime asılılığı əlavə edilsə, `vite.config.ts`-ə də yazılmalıdır.
+- Qərarı və görülən işi **eyni turda** `docs/plan.md`-ə yaz. Tarixi arxivi dəyişmə;
+  düzəlişi yeni cari qərar kimi qeyd et.
+- `npm run verify` işlət: `build:lib`, `lint`, `check:classes`, `check:tokens`, `test`.
+  Xəta və golden fərqlərini araşdır; sırf testi keçirmək üçün snapshot yeniləmə.
+- Playground görünüşü və ya marşrutları dəyişibsə, lazım olduqda `scripts/browser-check.mjs`
+  ilə brauzer yoxlaması apar. Vizual ölçüləri təxmin etmə; upstream HTML/CSS-ə bax.

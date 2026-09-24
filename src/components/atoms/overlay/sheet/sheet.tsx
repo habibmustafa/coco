@@ -61,6 +61,8 @@ export interface SheetProps {
   closeOnConfirm?: boolean
   /** Allow closing via overlay click / Escape. @default true */
   dismissible?: boolean
+  /** Radix's own non-modal mode — no overlay, underlying content stays interactive. @default true */
+  modal?: boolean
   /** Edge of the viewport the sheet slides in from. @default "right" */
   side?: SheetContentProps['side']
   /** Sheet width/height. @default "default" */
@@ -88,6 +90,7 @@ export function SheetHybrid({
   confirmType = 'primary',
   closeOnConfirm = true,
   dismissible = true,
+  modal,
   side,
   size,
   className,
@@ -157,7 +160,7 @@ export function SheetHybrid({
   } = slotProps?.content ?? {}
 
   return (
-    <SheetRoot open={open} onOpenChange={handleOpenChange}>
+    <SheetRoot open={open} onOpenChange={handleOpenChange} modal={modal}>
       {trigger && <SheetTrigger asChild>{trigger}</SheetTrigger>}
       <SheetContent
         side={side}

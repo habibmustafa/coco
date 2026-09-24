@@ -1,29 +1,29 @@
-import { ResizableHandle, ResizablePanel, ResizablePanelGroup } from '../../../src'
+import { Resizable } from '../../../src'
 
 export default function ResizableDemo() {
   return (
-    <ResizablePanelGroup orientation="horizontal" className="max-w-md rounded-lg border">
-      <ResizablePanel defaultSize="50">
+    <Resizable.Root orientation="horizontal" className="max-w-md rounded-lg border">
+      <Resizable.Panel defaultSize="50">
         <div className="flex h-[200px] items-center justify-center p-6">
           <span className="font-semibold">One</span>
         </div>
-      </ResizablePanel>
-      <ResizableHandle withHandle />
-      <ResizablePanel defaultSize="50">
-        <ResizablePanelGroup orientation="vertical">
-          <ResizablePanel defaultSize="25">
+      </Resizable.Panel>
+      <Resizable.Handle withHandle />
+      <Resizable.Panel defaultSize="50">
+        <Resizable.Root orientation="vertical">
+          <Resizable.Panel defaultSize="25">
             <div className="flex h-full items-center justify-center p-6">
               <span className="font-semibold">Two</span>
             </div>
-          </ResizablePanel>
-          <ResizableHandle withHandle />
-          <ResizablePanel defaultSize="75">
+          </Resizable.Panel>
+          <Resizable.Handle withHandle />
+          <Resizable.Panel defaultSize="75">
             <div className="flex h-full items-center justify-center p-6">
               <span className="font-semibold">Three</span>
             </div>
-          </ResizablePanel>
-        </ResizablePanelGroup>
-      </ResizablePanel>
-    </ResizablePanelGroup>
+          </Resizable.Panel>
+        </Resizable.Root>
+      </Resizable.Panel>
+    </Resizable.Root>
   )
 }

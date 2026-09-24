@@ -1,228 +1,38 @@
-# Handoff prompt (for ChatGPT Codex or any other coding agent)
+# AI agent üçün qısa handoff
 
-Copy everything below the line into the new agent's first message.
+Bu mətn yeni agentə layihə kontekstini ötürmək üçündür. Cari istifadəçi tapşırığını yerinə yetir;
+buradakı keçmiş işləri yeni tapşırıq və ya təsdiq gözləyən roadmap kimi qəbul etmə.
 
----
+## Layihə
 
-You are continuing work on an existing project. Read this brief fully before touching anything.
+`coco` (`C:\Users\hmustafazadeh\Desktop\core`) Supabase design system-inin özəl React
+kitabxana portudur. Hədəf görünüş və davranış sadiqliyidir. Paket yayımlanmayıb.
+React 19, TypeScript, Vite library mode və Tailwind CSS v4 istifadə olunur.
 
-## 1. What the project is
+## Mənbə sırası
 
-`coco/` (Windows path: `C:\Users\hmustafazadeh\Desktop\core`) is a **private React component
-library** that ports the **Supabase design system** (<https://supabase.com/design-system>).
+1. `CLAUDE.md` — cari və məcburi iş qaydaları; təkrarını burada saxlamırıq.
+2. `docs/plan.md` — cari vəziyyət və qüvvədə olan qərarlar. Tarixi səbəb lazım olarsa
+   `docs/plan-history.md`-də aid qeydə bax; köhnə statusu cari vəziyyət sayma.
+3. Hibrid komponentə toxunanda `docs/hybrid-api-migration.md` — Strategy A/B, tip və demo
+   qaydaları. Sonra həmin komponentin `src/`, `playground/examples/` kodunu oxu.
+4. Yeni portda upstream `packages/ui/index.tsx` və
+   `apps/design-system/registry/default/example/<ad>-demo.tsx` ilə public kodu və istifadəsini
+   təsdiqlə.
 
-The goal is **visual identity, not inspiration**: components must look exactly like upstream.
-Upstream is open source under **Apache-2.0** (`github.com/supabase/supabase`), so its code and
-CSS are copied with attribution rather than reimplemented.
+## Cari struktur
 
-It is **not published to npm**. `package.json` is publish-shaped (`exports`, `files`,
-`sideEffects`, `peerDependencies`) but stays `"private": true`.
+- Publish olunan kod: `src/components/atoms/<kateqoriya>/<ad>/`,
+  `src/components/fragments/<ad>/`; public giriş `src/index.ts`.
+- Nümunələr: `playground/examples/<komponent>/<ad>.tsx`; səhifə və code variant xəritəsi
+  `playground/registry.tsx`.
+- Stil və token yoxlamaları: `scripts/check-classes.mjs`, `scripts/check-tokens.mjs`.
+- Golden HTML testləri: `tests/golden/`; ümumi yoxlama: `npm run verify`.
+- 26 komponent hibriddir. Cari siyahı və istisnalar `docs/plan.md`-dədir.
+  `Chart` xüsusi, qismən props API-dir;
+  Sonner, Calendar, Form və Sidebar üçün süni hibrid wrapper qurulmur.
 
-## 2. Stack
+## İcra ardıcıllığı
 
-React 19 · TypeScript 6 · Vite 8 (library mode) · Tailwind CSS v4 (CSS-first `@theme`) ·
-Radix (`radix-ui` single package) · `cmdk` · `vaul` · `sonner` · `react-day-picker` · `recharts` ·
-`react-hook-form` · `framer-motion` · `class-variance-authority` · `clsx` + `tailwind-merge` ·
-`lucide-react` · oxlint. Playground-only: `shiki`, `@hookform/resolvers`, `zod`. Git branch: `main`.
-
-Commands:
-
-```
-npm run dev            # playground dev server
-npm run build:lib      # dist/coco.js + coco.cjs + styles.css + index.d.ts
-npm run lint           # oxlint
-npx tsc -b             # typecheck
-npm run check:classes  # every utility class used must exist in the built CSS
-npm run check:tokens   # our design tokens vs the live supabase.com/design-system CSS
-npm run verify         # all of the above in order
-```
-
-## 3. Talk to the user in Azerbaijani
-
-The user writes in Azerbaijani and expects prose, explanations and docs in Azerbaijani.
-Code, identifiers, code comments and file names stay in English.
-
-## 4. Where the docs live (read these first)
-
-- `CLAUDE.md` — the working rules, auto-loaded by Claude Code. Treat it as binding.
-- `docs/plan.md` — **living record**: decision log, corrections log, structure, completed work,
-  roadmap, verification. **Update it in the same turn as the work, not in a batch at the end.**
-  The user asked for this explicitly.
-- `docs/hybrid-api-migration.md` — separate, self-contained agent brief for the ongoing hybrid
-  API migration (compound + props-driven dual API for the 16 atoms listed in its §9, golden
-  markup tests as the fidelity safety net). Read it fully before touching any atom listed
-  there; it supersedes byte-exact re-sync for those components (see its §2).
-
-## 5. Current state
-
-Layihənin adı **coco**-dur. Paket və build çıxışları `coco` adını istifadə edir;
-fiziki workspace yolu hələ `C:\Users\hmustafazadeh\Desktop\core`-dur.
-SVG loqo, nişan və favicon `public/` altındadır; qaydalar `docs/brand.md`-dədir.
-
-**37 atom components + 20 fragment components ported** (upstream source is preserved; import
-paths and TypeScript-only compatibility annotations are adapted). 23 of them (20 atoms + 3
-fragments) are hybrid — both a compound (Root/Parts) and a flat props-driven API, see
-`docs/hybrid-api-migration.md`.
-
-Atoms: accordion, alert, aspect-ratio, avatar, badge, breadcrumb, button, calendar, card,
-chart, checkbox, collapsible, command, dialog, drawer, dropdown-menu, floating-plate, form,
-hover-card, input, input-otp, label, popover, progress, radio-group, resizable, select,
-separator, sheet, sidebar, skeleton, sonner, switch, table, tabs, textarea, tooltip.
-
-Fragments: admonition, code-block, data-input, date-picker, empty-state, error-display,
-form-item-layout, glass-panel, info-tooltip, metric-card, multi-select, row,
-shimmering-loader, status-code, text-link, theme-toggle, timestamp-info.
-
-Plus: `ThemeProvider` + `useTheme` + `singleThemes` (System/Dark/Light, persisted in
-localStorage, live `matchMedia` tracking, cross-tab sync, no-flash inline script in `index.html`).
-
-Build output: `dist/coco.js` ~200.1 kB (gzip 43.7 kB), `dist/styles.css` ~165.0 kB (gzip 28.4 kB),
-267 public exports. Runtime deps are **external** in the bundle.
-
-**Hybrid API migration complete** for 17 atoms (`docs/hybrid-api-migration.md`): Dialog, Sheet,
-Drawer, Tooltip, Popover, HoverCard, DropdownMenu, Tabs, Accordion, Collapsible, Select,
-RadioGroup, Command, Card, Alert, Avatar, Table each expose both a props-driven mode and the
-original compound API from the same import (`<Tabs items={...} />` vs. `<Tabs><TabsList>...`).
-Dialog/Sheet/Drawer are Strategy B (root renamed to `*Root`, the plain name is now the
-props-driven component); the rest are Strategy A (additive, non-breaking — a data prop like
-`items`/`content`/`options` switches into props mode). Golden markup tests (`tests/golden/`,
-`npm run test`, 73 tests) are the fidelity guarantee — every pre-existing compound snapshot
-stayed byte-identical through the refactor. Two gotchas worth knowing before touching any atom
-this pattern hasn't reached yet (Sonner, Calendar, Chart, Form, Sidebar): (1) React's
-`HTMLAttributes` already defines `content` and `title` — a same-named content prop must
-`Omit` those explicitly from the root's prop type, or TypeScript produces a confusing
-`string & ReactPortal`-style intersection error; (2) any part attached to the
-`Object.assign(Hybrid, { ... })` namespace needs its prop type actually `export`-ed from the
-`-parts.tsx` file, or `vite-plugin-dts`/api-extractor fails the build with `TS4023` when
-bundling declarations. Playground examples live one folder per component now
-(`playground/examples/<component>/<name>.tsx`), addressed by bare filename via a recursive
-glob + basename lookup in `component-preview.tsx`.
-
-### Structure
-
-```
-coco/
-├── CLAUDE.md, docs/plan.md, docs/codex-prompt.md
-├── scripts/{check-classes.mjs, check-tokens.mjs}
-├── index.html                      # playground shell; Inter + Source Code Pro; no-flash theme script
-├── playground/                     # dev-only docs site, never built or published
-│   ├── main.tsx, app.tsx, docs.tsx, shiki-theme.ts
-│   ├── component-preview.tsx       # Preview/Code tabs, Shiki highlight, copy button
-│   ├── shiki-theme.ts
-│   └── examples/*.tsx              # 42 demo files
-├── src/
-│   ├── index.ts                    # public entry (imports the CSS, re-exports everything)
-│   ├── lib/{utils.ts, constants.ts, get-explicit-tab-index.ts}
-│   ├── providers/{theme-provider.tsx, single-themes.ts}
-│   ├── styles/
-│   │   ├── globals.css             # the upstream import chain, order matters
-│   │   └── vendor/theme/        # 17 vendored CSS files + NOTICE.md
-│   └── components/
-│       ├── atoms/                  # from packages/ui
-│       │   ├── actions/button/
-│       │   ├── data-display/{accordion,avatar,chart,collapsible,table}/
-│       │   ├── feedback/{alert,badge,progress,skeleton,sonner}/
-│       │   ├── forms/{calendar,checkbox,form,input,label,radio-group,select,switch,textarea}/
-│       │   ├── layout/{aspect-ratio,card,separator}/
-│       │   ├── navigation/{command,sidebar,tabs}/
-│       │   └── overlay/{dialog,drawer,dropdown-menu,hover-card,popover,sheet,tooltip}/
-│       └── fragments/              # from packages/ui-patterns — still empty
-├── vite.config.ts, package.json, tsconfig*.json
-```
-
-### Vendored CSS (import order in `src/styles/globals.css` is significant)
-
-`tailwindcss` → `@plugin @tailwindcss/forms` → `tw-animate-css` → `global.css` →
-`semantic.css` → `compat.css` → `themes/dark.css` → `themes/light.css` → `unset-tw-colors.css`
-→ `colors.css` → `theme.css` → `charts.css` → `animations.css` → `utilities.css` → `hit-area.css` →
-`variants.css` → `base.css` → `typography.css` → `design-system-base.css` →
-`code-block-variables.css`.
-
-Never edit values inside `src/styles/vendor/theme/`. `NOTICE.md` holds source
-attribution and license details; review file-level change notices before distribution.
-
-## 6. How to port a component (follow exactly)
-
-1. **Find the public implementation.** Check `packages/ui/index.tsx` upstream — not everything
-   lives under `shadcn/ui/`. Example: the public `Button` is
-   `packages/ui/src/components/Button/Button.tsx`, while `shadcn/ui/button.tsx` is only exported
-   as the legacy alias `Button_Shadcn_`. Porting the wrong one produces a visibly poorer component.
-2. **Fetch the file and change only import paths.** CVA variants, class strings and markup stay
-   identical. Use a script rather than retyping:
-   `curl` the raw file, prepend an attribution header, then `sed`
-   `'../../../lib/utils/cn'` → `'../../../../lib/utils'`,
-   `'../../../lib/utils/getExplicitTabIndex'` → `'../../../../lib/get-explicit-tab-index'`,
-   `'../../../lib/constants'` → `'../../../../lib/constants'`.
-   (Atoms sit one level deeper than upstream, hence four `../`.)
-3. **Also fetch upstream's own usage example**:
-   `apps/design-system/registry/default/example/<name>-demo.tsx`. The component file alone is not
-   enough — see the Tabs gotcha below.
-4. Place it in the right category folder, add an `index.ts` barrel, re-export from `src/index.ts`
-   (keep it alphabetical).
-5. Add `playground/examples/<name>/<name>-demo.tsx` (one folder per component — glob is
-   recursive, addressed by bare filename) and a `<Section>` + `<ComponentPreview>` in
-   `playground/app.tsx`, in alphabetical order.
-6. Run `npm run verify` (build + lint + check:classes + check:tokens + golden tests). All must
-   be clean. If the component is going hybrid (see `docs/hybrid-api-migration.md`), also add it
-   to `CLICK_TO_OPEN`/`HOVER_TO_OPEN` in `tests/golden/golden.test.tsx` if it's an overlay.
-7. Update `docs/plan.md`.
-
-## 7. Gotchas already paid for — do not rediscover these
-
-- **The rendered look does not come from component files alone.** The type scale, font stacks and
-  base layer live in `apps/design-system/styles/globals.css`, not `packages/config`. Without them
-  Tailwind v4's default border colour (`currentColor`) makes every bare `border` render in the
-  text colour. Vendored as `design-system-base.css`.
-- **Files that look skippable are not**: `focus-ring` is in `utilities.css`, `--card-padding-x` in
-  `global.css`, the `dark:` variant in `variants.css`, accordion/overlay keyframes in
-  `animations.css`, `hit-area-6` (Dialog/Sheet close button) in `tailwind-plugins/hit-area.css`.
-- **`dark:` utilities key off `data-theme*="dark"`, tokens key off `.dark`/`.light`.** Both must be
-  set; `ThemeProvider` does that. Document it for consumers.
-- **Component usage matters.** `TabsTrigger` has no horizontal padding: spacing comes from
-  `TabsList` being `grid w-full grid-cols-N`, and `<TabsIndicator />` must be placed inside the
-  list for the animated underline. Without both, tab labels collide.
-- **Shiki themes**: put rules in `settings`, never `tokenColors`. Shiki reads `settings` first and
-  only falls back to `tokenColors` when absent, so an empty `settings: []` silently drops every
-  rule (this produced monochrome code blocks). Shiki v4 does accept `var(--x)` as a colour, which
-  is how code blocks follow the theme without re-highlighting.
-- **`vite-plugin-dts` v5** renamed `rollupTypes` to `bundleTypes` and needs
-  `@microsoft/api-extractor` installed.
-- **Windows**: the running dev server locks directories. Stop it before moving folders, and use
-  PowerShell `Move-Item` — Git Bash `mv` fails with "Permission denied". Also note `TaskStop` on
-  the npm wrapper can leave the vite child alive holding the port.
-- New runtime dependencies must also be added to `rollupOptions.external` in `vite.config.ts`.
-- **Hybrid components**: a same-named content prop (`content`, `title`) can silently collide
-  with a key React's `HTMLAttributes` already defines — `Omit` it explicitly from the root's
-  props or you get a baffling `string & ReactPortal` intersection error instead of a clear one.
-  And any part attached to the `Object.assign(Hybrid, {...})` namespace needs its prop
-  interface actually `export`-ed from `-parts.tsx`, or the declaration bundler fails with
-  `TS4023` at build time, not at `tsc -b`.
-
-## 8. Roadmap
-
-**Remaining atoms** (from `packages/ui/src/components/shadcn/ui/`): Resizable, Input OTP,
-alert-dialog, context-menu, menubar, navigation-menu, scroll-area, slider, toggle, toggle-group,
-button-group, input-group, field, breadcrumb. Start with **Resizable** next.
-
-**Fragments** (from `packages/ui-patterns/src/`, go in `src/components/fragments/`, flat, no
-categories): Admonition, `collapsible-alert.tsx`, CollapsibleCardSection, `form/` (FormItemLayout),
-`info-tooltip.tsx`, `multi-select/`, DataInputs, EmptyStatePresentational, ErrorDisplay, FilterBar,
-InnerSideMenu, MetricCard, PageBreadcrumbs/Container/Header/Nav/Section, ShimmeringLoader,
-SkipToContent, StatusCode, Toc, TimestampInfo, DatePicker, CodeBlock.
-Do **not** port Supabase-specific ones: ConsentToast, PromoToast, TweetCard, SqlToRest,
-McpUrlBuilder, PrivacySettings.
-
-## 9. Known open issues
-
-- **Nothing has been verified visually in a browser** — all checking so far is at the CSS/type/
-  golden-markup level. Side-by-side comparison against the live site is still owed.
-- README coco istifadəsini və tema inteqrasiyasını sənədləşdirir.
-- `oxlint` reports a handful of warnings that come from upstream code as-is
-  (`only-export-components`, unused params). Leave them; do not "fix" vendored logic.
-- Hybrid API migration done for 17 atoms; Sonner/Calendar/Chart/Form/Sidebar not yet
-  evaluated for it (Sonner is already imperative — `toast()` — so it may not need one).
-
-## 10. First thing to do
-
-Read `CLAUDE.md` and `docs/plan.md`, run `npm run verify` to confirm the baseline is green, then
-ask the user which item from the roadmap to start with.
+Mövcud kodu və aid qərarı yoxla → dəyişikliyi et → lazım olan playground və golden nəticəni
+yoxla → `npm run verify` işlət → qərarı və nəticəni həmin turda `docs/plan.md`-ə yaz.

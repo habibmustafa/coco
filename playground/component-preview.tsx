@@ -2,13 +2,18 @@ import { Check, Copy } from 'lucide-react'
 import { codeToHtml } from 'shiki'
 import { useEffect, useState, type ComponentType } from 'react'
 
-import { Tabs, TabsContent, TabsIndicator, TabsList, TabsTrigger } from '../src'
+import { Tabs } from '../src'
 import { cocoCodeTheme } from './shiki-theme'
 
 // Examples live one folder per component (./examples/<component>/<name>.tsx), so the
 // glob is recursive; call sites still address a demo by its bare file name.
 function basename(path: string) {
   return path.split('/').pop()!.replace(/\.tsx$/, '')
+}
+
+/** Anchor id for a labelled preview — shared with the page-contents nav in app.tsx. */
+export function previewAnchor(label: string) {
+  return `preview-${label.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')}`
 }
 
 function byBasename<T>(modules: Record<string, T>) {
@@ -64,6 +69,19 @@ function CodeTab({ source }: { source: string }) {
   )
 }
 
+function PreviewPane({ Demo }: { Demo: ComponentType }) {
+  return (
+    <div className="relative overflow-hidden rounded-md border bg-studio">
+      <div className="z-0 pointer-events-none absolute h-full w-full bg-[radial-gradient(oklch(from_var(--foreground-default)_l_c_h_/_0.02)_1px,transparent_1px)] bg-size-[16px_16px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
+      <div className="z-10 relative">
+        <div className="preview flex min-h-64 w-full flex-wrap items-center justify-center gap-3 p-10">
+          <Demo />
+        </div>
+      </div>
+    </div>
+  )
+}
+
 function CopyButton({ value }: { value: string }) {
   const [copied, setCopied] = useState(false)
 
@@ -101,11 +119,7 @@ export function ComponentPreview({
 }: {
   name: string
   label?: string
-  /**
-   * Extra code tabs after "Preview", each showing another example's source
-   * (no separate live render — one preview is enough). Defaults to a single
-   * "Code" tab for `name` itself, matching the plain Preview/Code layout.
-   */
+  /** Paired examples show the props-driven preview and separate source tabs. */
   codeVariants?: ComponentPreviewCodeVariant[]
 }) {
   const Demo = demos[name]?.default
@@ -119,40 +133,36 @@ export function ComponentPreview({
     )
   }
 
+  // Anchor for the page-contents nav, which derives the same id from the same label.
+  const slug = label ? previewAnchor(label) : undefined
+
   return (
-    <div className="@container mt-4 mb-12">
+    <div id={slug} className="@container mt-4 mb-12 scroll-mt-20">
       {label ? (
         <p className="mb-2 font-mono text-xs uppercase text-foreground-muted">{label}</p>
       ) : null}
 
-      <Tabs defaultValue="preview">
-        <TabsList className="gap-5">
-          <TabsTrigger value="preview">Preview</TabsTrigger>
+      <Tabs.Root defaultValue="preview">
+        <Tabs.List className="gap-5">
+          <Tabs.Trigger value="preview">Preview</Tabs.Trigger>
           {variants.map((variant) => (
-            <TabsTrigger key={variant.id} value={variant.id}>
+            <Tabs.Trigger key={variant.id} value={variant.id}>
               {variant.label}
-            </TabsTrigger>
+            </Tabs.Trigger>
           ))}
-          <TabsIndicator />
-        </TabsList>
+          <Tabs.Indicator />
+        </Tabs.List>
 
-        <TabsContent value="preview">
-          <div className="relative overflow-hidden rounded-md border bg-studio">
-            <div className="z-0 pointer-events-none absolute h-full w-full bg-[radial-gradient(oklch(from_var(--foreground-default)_l_c_h_/_0.02)_1px,transparent_1px)] bg-size-[16px_16px] mask-[radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]" />
-            <div className="z-10 relative">
-              <div className="preview flex min-h-64 w-full flex-wrap items-center justify-center gap-3 p-10">
-                <Demo />
-              </div>
-            </div>
-          </div>
-        </TabsContent>
+        <Tabs.Content value="preview">
+          <PreviewPane Demo={Demo} />
+        </Tabs.Content>
 
         {variants.map((variant) => (
-          <TabsContent key={variant.id} value={variant.id}>
+          <Tabs.Content key={variant.id} value={variant.id}>
             <CodeTab source={presentSource(sources[variant.name] ?? '')} />
-          </TabsContent>
+          </Tabs.Content>
         ))}
-      </Tabs>
+      </Tabs.Root>
     </div>
   )
 }

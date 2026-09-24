@@ -7,6 +7,8 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuPortal,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuRoot,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
@@ -36,6 +38,14 @@ export type MenuItem =
       label: React.ReactNode
       checked: boolean
       onCheckedChange: (checked: boolean) => void
+      disabled?: boolean
+    }
+  | {
+      type: 'radio-group'
+      key: string
+      value: string
+      onValueChange: (value: string) => void
+      items: { value: string; label: React.ReactNode }[]
     }
 
 function renderMenuItems(items: readonly MenuItem[]): React.ReactNode {
@@ -67,9 +77,24 @@ function renderMenuItems(items: readonly MenuItem[]): React.ReactNode {
             key={item.key}
             checked={item.checked}
             onCheckedChange={item.onCheckedChange}
+            disabled={item.disabled}
           >
             {item.label}
           </DropdownMenuCheckboxItem>
+        )
+      case 'radio-group':
+        return (
+          <DropdownMenuRadioGroup
+            key={item.key}
+            value={item.value}
+            onValueChange={item.onValueChange}
+          >
+            {item.items.map((radio) => (
+              <DropdownMenuRadioItem key={radio.value} value={radio.value}>
+                {radio.label}
+              </DropdownMenuRadioItem>
+            ))}
+          </DropdownMenuRadioGroup>
         )
       default:
         return (

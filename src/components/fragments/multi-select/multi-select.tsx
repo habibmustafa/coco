@@ -7,6 +7,7 @@ import type * as React from 'react'
 
 import {
   MultiSelectorContent,
+  MultiSelectorInput,
   MultiSelectorItem,
   MultiSelectorList,
   MultiSelectorRoot,
@@ -24,7 +25,14 @@ export interface MultiSelectorOption {
 type MultiSelectorOptionsModeProps = Omit<MultiSelectorRootProps, 'children'> &
   Pick<
     MultiSelectorTriggerProps,
-    'label' | 'persistLabel' | 'badgeLimit' | 'wrapBadges' | 'deletableBadge' | 'showIcon' | 'renderValue'
+    | 'label'
+    | 'persistLabel'
+    | 'badgeLimit'
+    | 'wrapBadges'
+    | 'deletableBadge'
+    | 'showIcon'
+    | 'renderValue'
+    | 'mode'
   > & {
     options: readonly MultiSelectorOption[]
     /** @default 9999 (no wrap) */
@@ -34,6 +42,13 @@ type MultiSelectorOptionsModeProps = Omit<MultiSelectorRootProps, 'children'> &
     errorLabel?: string
     loading?: boolean
     triggerClassName?: string
+    /**
+     * Renders a MultiSelectorInput search field above the list (`mode="combobox"`'s own
+     * filter box) — not used with `mode: "inline-combobox"`, which searches inline in the
+     * trigger instead.
+     */
+    searchable?: boolean
+    searchPlaceholder?: string
     children?: never
   }
 
@@ -55,12 +70,15 @@ export function MultiSelectorHybrid(props: MultiSelectorProps) {
     deletableBadge,
     showIcon,
     renderValue,
+    mode,
     creatable,
     emptyLabel,
     error,
     errorLabel,
     loading,
     triggerClassName,
+    searchable,
+    searchPlaceholder,
     ...rootProps
   } = props
 
@@ -75,8 +93,10 @@ export function MultiSelectorHybrid(props: MultiSelectorProps) {
         deletableBadge={deletableBadge}
         showIcon={showIcon}
         renderValue={renderValue}
+        mode={mode}
       />
       <MultiSelectorContent>
+        {searchable && <MultiSelectorInput placeholder={searchPlaceholder} showResetIcon />}
         <MultiSelectorList
           creatable={creatable}
           emptyLabel={emptyLabel}

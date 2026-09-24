@@ -1,17 +1,17 @@
-import { Button, Input, Label, Popover, PopoverContent, PopoverTrigger } from '../../../src'
+import { Button, Input, Label, Popover } from '../../../src'
 
 export default function PopoverDemo() {
   return (
-    <Popover>
-      <PopoverTrigger asChild>
+    <Popover.Root>
+      <Popover.Trigger asChild>
         <Button variant="outline">Set limit</Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-64 p-4">
+      </Popover.Trigger>
+      <Popover.Content className="w-64 p-4">
         <div className="flex flex-col gap-2">
           <Label htmlFor="limit">Row limit</Label>
           <Input id="limit" defaultValue="1000" />
         </div>
-      </PopoverContent>
-    </Popover>
+      </Popover.Content>
+    </Popover.Root>
   )
 }

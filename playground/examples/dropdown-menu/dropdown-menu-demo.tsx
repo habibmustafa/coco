@@ -1,31 +1,25 @@
 import {
   Button,
   DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuShortcut,
-  DropdownMenuTrigger,
 } from '../../../src'
 
 export default function DropdownMenuDemo() {
   return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+    <DropdownMenu.Root>
+      <DropdownMenu.Trigger asChild>
         <Button variant="outline">Open menu</Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent align="start" className="w-48">
-        <DropdownMenuLabel>Project</DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>
+      </DropdownMenu.Trigger>
+      <DropdownMenu.Content align="start" className="w-48">
+        <DropdownMenu.Label>Project</DropdownMenu.Label>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>
           Settings
-          <DropdownMenuShortcut>⌘S</DropdownMenuShortcut>
-        </DropdownMenuItem>
-        <DropdownMenuItem>Duplicate</DropdownMenuItem>
-        <DropdownMenuSeparator />
-        <DropdownMenuItem>Delete</DropdownMenuItem>
-      </DropdownMenuContent>
-    </DropdownMenu>
+          <DropdownMenu.Shortcut>⌘S</DropdownMenu.Shortcut>
+        </DropdownMenu.Item>
+        <DropdownMenu.Item>Duplicate</DropdownMenu.Item>
+        <DropdownMenu.Separator />
+        <DropdownMenu.Item>Delete</DropdownMenu.Item>
+      </DropdownMenu.Content>
+    </DropdownMenu.Root>
   )
 }

@@ -30,25 +30,6 @@
   </head>
   <body>
     <script>
-      // Reload the playground at the top instead of restoring a previous section.
-      // A single early scrollTo isn't enough: the browser's own scroll restoration
-      // and layout shifts from async web-font loading / React's first paint can both
-      // move the scroll position after this script runs on an otherwise-empty page.
-      if (performance.getEntriesByType('navigation')[0]?.type === 'reload') {
-        history.scrollRestoration = 'manual'
-        if (location.hash) {
-          history.replaceState(history.state, '', location.pathname + location.search)
-        }
-        var resetScroll = function () {
-          window.scrollTo(0, 0)
-        }
-        resetScroll()
-        window.addEventListener('load', resetScroll)
-        requestAnimationFrame(function () {
-          requestAnimationFrame(resetScroll)
-        })
-      }
-
       // Apply the stored theme before first paint so a reload does not flash the
       // wrong one. ThemeProvider takes over from here.
       try {

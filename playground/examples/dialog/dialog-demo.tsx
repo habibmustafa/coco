@@ -1,14 +1,6 @@
 import {
   Button,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogRoot,
-  DialogSection,
-  DialogSectionSeparator,
-  DialogTitle,
-  DialogTrigger,
+  Dialog,
   Input,
   Label,
 } from '../../../src'
@@ -16,42 +8,42 @@ import {
 export default function DialogDemo() {
   return (
     <>
-      <DialogRoot>
-        <DialogTrigger asChild>
+      <Dialog.Root>
+        <Dialog.Trigger asChild>
           <Button variant="danger">Delete project</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Delete project?</DialogTitle>
-            <DialogDescription>This action cannot be undone.</DialogDescription>
-          </DialogHeader>
-          <DialogFooter>
+        </Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Delete project?</Dialog.Title>
+            <Dialog.Description>This action cannot be undone.</Dialog.Description>
+          </Dialog.Header>
+          <Dialog.Footer>
             <Button variant="text">Cancel</Button>
             <Button variant="danger">Delete</Button>
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
 
-      <DialogRoot>
-        <DialogTrigger asChild>
+      <Dialog.Root>
+        <Dialog.Trigger asChild>
           <Button variant="outline">Update email</Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Update email</DialogTitle>
-            <DialogDescription>We'll send a confirmation link to the new address.</DialogDescription>
-          </DialogHeader>
-          <DialogSectionSeparator />
-          <DialogSection className="flex flex-col gap-2">
+        </Dialog.Trigger>
+        <Dialog.Content>
+          <Dialog.Header>
+            <Dialog.Title>Update email</Dialog.Title>
+            <Dialog.Description>We'll send a confirmation link to the new address.</Dialog.Description>
+          </Dialog.Header>
+          <Dialog.SectionSeparator />
+          <Dialog.Section className="flex flex-col gap-2">
             <Label htmlFor="dialog-demo-email">New email</Label>
             <Input id="dialog-demo-email" type="email" placeholder="you@example.com" />
-          </DialogSection>
-          <DialogFooter>
+          </Dialog.Section>
+          <Dialog.Footer>
             <Button variant="text">Cancel</Button>
             <Button variant="primary">Confirm</Button>
-          </DialogFooter>
-        </DialogContent>
-      </DialogRoot>
+          </Dialog.Footer>
+        </Dialog.Content>
+      </Dialog.Root>
     </>
   )
 }

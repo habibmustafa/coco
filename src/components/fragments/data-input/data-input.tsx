@@ -1,6 +1,8 @@
 import { Copy } from 'lucide-react'
 import React, {
   forwardRef,
+  useCallback,
+  useRef,
   useState,
   type ComponentProps,
   type ComponentPropsWithoutRef,
@@ -48,9 +50,19 @@ const DataInput = forwardRef<
   ) => {
     const [copyLabel, setCopyLabel] = useState('Copy')
     const [hidden, setHidden] = useState(true)
+    const inputRef = useRef<HTMLInputElement>(null)
 
-    function _onCopy(value: any) {
-      copyToClipboard(value, () => {
+    const setInputRef = useCallback(
+      (node: HTMLInputElement | null) => {
+        inputRef.current = node
+        if (typeof ref === 'function') ref(node)
+        else if (ref) ref.current = node
+      },
+      [ref]
+    )
+
+    function _onCopy() {
+      copyToClipboard(inputRef.current?.value ?? '', () => {
         /* clipboard successfully set */
         setCopyLabel('Copied')
         setTimeout(function () {
@@ -67,7 +79,7 @@ const DataInput = forwardRef<
     return (
       <InputGroup className={containerClassName}>
         <BaseInput
-          ref={ref}
+          ref={setInputRef}
           onFocus={(event: React.FocusEvent<HTMLInputElement>) => event.target.select()}
           {...props}
           size={size}
@@ -80,8 +92,12 @@ const DataInput = forwardRef<
           data-form-type="other" // Dashlane
           data-bwignore // Bitwarden
         />
-        {icon && <InputGroupAddon align="inline-start">{icon}</InputGroupAddon>}
-        {copy || actions ? (
+        {icon && (
+          <InputGroupAddon align="inline-start" className={iconContainerClassName}>
+            {icon}
+          </InputGroupAddon>
+        )}
+        {copy || actions || (reveal && hidden) ? (
           <InputGroupAddon
             align="inline-end"
             // Override defaults
@@ -96,7 +112,7 @@ const DataInput = forwardRef<
                     'opacity-0 group-hover/input-group:opacity-100 group-focus-within/input-group:opacity-100 transition'
                 )}
                 icon={<Copy size={16} className="text-foreground-muted" />}
-                onClick={() => _onCopy(props.value)}
+                onClick={_onCopy}
               >
                 {copyLabel}
               </InputGroupButton>
@@ -106,7 +122,7 @@ const DataInput = forwardRef<
                 Reveal
               </InputGroupButton>
             ) : null}
-            {actions && actions}
+            {actions}
           </InputGroupAddon>
         ) : null}
       </InputGroup>

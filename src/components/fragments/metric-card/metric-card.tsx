@@ -30,8 +30,9 @@ type MetricCardPropsMode = Omit<MetricCardRootProps, 'children'> & {
    */
   href?: string
   linkTooltip?: string
-  /** Icon rendered before the value, inside MetricCardContent. */
+  /** Icon rendered next to `label` (header) or before `value` (content). @default "content" */
   icon?: React.ReactNode
+  iconPlacement?: 'header' | 'content'
   value: React.ReactNode
   differential?: React.ReactNode
   differentialVariant?: 'positive' | 'negative' | 'default'
@@ -57,6 +58,7 @@ export function MetricCardHybrid(props: MetricCardProps) {
     href,
     linkTooltip,
     icon,
+    iconPlacement = 'content',
     value,
     differential,
     differentialVariant = 'default',
@@ -69,10 +71,11 @@ export function MetricCardHybrid(props: MetricCardProps) {
   return (
     <MetricCardRoot {...rootProps}>
       <MetricCardHeader href={href} linkTooltip={linkTooltip}>
+        {icon && iconPlacement === 'header' && <MetricCardIcon>{icon}</MetricCardIcon>}
         <MetricCardLabel tooltip={tooltip}>{label}</MetricCardLabel>
       </MetricCardHeader>
       <MetricCardContent orientation={orientation}>
-        {icon && <MetricCardIcon>{icon}</MetricCardIcon>}
+        {icon && iconPlacement === 'content' && <MetricCardIcon>{icon}</MetricCardIcon>}
         <MetricCardValue>{value}</MetricCardValue>
         {differential !== undefined && (
           <MetricCardDifferential variant={differentialVariant}>

@@ -1,35 +1,28 @@
 import {
   Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectSeparator,
-  SelectTrigger,
-  SelectValue,
 } from '../../../src'
 
 export default function SelectGroups() {
   return (
-    <Select defaultValue="postgres">
-      <SelectTrigger className="max-w-xs">
-        <SelectValue placeholder="Pick a database" />
-      </SelectTrigger>
-      <SelectContent>
-        <SelectGroup>
-          <SelectLabel>Relational</SelectLabel>
-          <SelectItem value="postgres">Postgres</SelectItem>
-          <SelectItem value="mysql">MySQL</SelectItem>
-        </SelectGroup>
-        <SelectSeparator />
-        <SelectGroup>
-          <SelectLabel>Other</SelectLabel>
-          <SelectItem value="redis">Redis</SelectItem>
-          <SelectItem value="mongo" disabled>
+    <Select.Root defaultValue="postgres">
+      <Select.Trigger className="max-w-xs">
+        <Select.Value placeholder="Pick a database" />
+      </Select.Trigger>
+      <Select.Content>
+        <Select.Group>
+          <Select.Label>Relational</Select.Label>
+          <Select.Item value="postgres">Postgres</Select.Item>
+          <Select.Item value="mysql">MySQL</Select.Item>
+        </Select.Group>
+        <Select.Separator />
+        <Select.Group>
+          <Select.Label>Other</Select.Label>
+          <Select.Item value="redis">Redis</Select.Item>
+          <Select.Item value="mongo" disabled>
             MongoDB
-          </SelectItem>
-        </SelectGroup>
-      </SelectContent>
-    </Select>
+          </Select.Item>
+        </Select.Group>
+      </Select.Content>
+    </Select.Root>
   )
 }

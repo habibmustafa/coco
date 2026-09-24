@@ -1,4 +1,4 @@
-import { Card, Table, TableCell, TableRow } from '../../../src'
+import { Card, Table } from '../../../src'
 
 interface Invoice {
   invoice: string
@@ -62,7 +62,7 @@ const invoices: Invoice[] = [
 
 export default function TablePropsDemo() {
   return (
-    <Card className="w-full">
+    <Card.Root className="w-full">
       <Table
         caption="A list of your recent invoices"
         classNames={{ caption: 'border-0' }}
@@ -97,12 +97,12 @@ export default function TablePropsDemo() {
           { key: 'amount', header: 'Amount', align: 'right', render: (row: Invoice) => row.totalAmount },
         ]}
         footer={
-          <TableRow>
-            <TableCell colSpan={4}>Total</TableCell>
-            <TableCell className="text-right">$2,250.00</TableCell>
-          </TableRow>
+          <Table.Row>
+            <Table.Cell colSpan={4}>Total</Table.Cell>
+            <Table.Cell className="text-right">$2,250.00</Table.Cell>
+          </Table.Row>
         }
       />
-    </Card>
+    </Card.Root>
   )
 }

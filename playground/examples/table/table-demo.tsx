@@ -1,13 +1,6 @@
 import {
   Card,
   Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableFooter,
-  TableHead,
-  TableHeader,
-  TableRow,
 } from '../../../src'
 
 const invoices = [
@@ -64,38 +57,38 @@ const invoices = [
 
 export default function TableDemo() {
   return (
-    <Card className="w-full">
-      <Table>
-        <TableCaption className="border-0">A list of your recent invoices</TableCaption>
-        <TableHeader>
-          <TableRow>
-            <TableHead>Invoice</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>Method</TableHead>
-            <TableHead className="hidden md:table-cell">Description</TableHead>
-            <TableHead className="text-right">Amount</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
+    <Card.Root className="w-full">
+      <Table.Root>
+        <Table.Caption className="border-0">A list of your recent invoices</Table.Caption>
+        <Table.Header>
+          <Table.Row>
+            <Table.Head>Invoice</Table.Head>
+            <Table.Head>Status</Table.Head>
+            <Table.Head>Method</Table.Head>
+            <Table.Head className="hidden md:table-cell">Description</Table.Head>
+            <Table.Head className="text-right">Amount</Table.Head>
+          </Table.Row>
+        </Table.Header>
+        <Table.Body>
           {invoices.map((invoice) => (
-            <TableRow key={invoice.invoice}>
-              <TableCell className="text-foreground font-mono">{invoice.invoice}</TableCell>
-              <TableCell className="text-foreground-lighter">{invoice.paymentStatus}</TableCell>
-              <TableCell className="text-foreground-lighter">{invoice.paymentMethod}</TableCell>
-              <TableCell className="hidden md:table-cell text-foreground-muted">
+            <Table.Row key={invoice.invoice}>
+              <Table.Cell className="text-foreground font-mono">{invoice.invoice}</Table.Cell>
+              <Table.Cell className="text-foreground-lighter">{invoice.paymentStatus}</Table.Cell>
+              <Table.Cell className="text-foreground-lighter">{invoice.paymentMethod}</Table.Cell>
+              <Table.Cell className="hidden md:table-cell text-foreground-muted">
                 {invoice.description}
-              </TableCell>
-              <TableCell className="text-right">{invoice.totalAmount}</TableCell>
-            </TableRow>
+              </Table.Cell>
+              <Table.Cell className="text-right">{invoice.totalAmount}</Table.Cell>
+            </Table.Row>
           ))}
-        </TableBody>
-        <TableFooter>
-          <TableRow>
-            <TableCell colSpan={4}>Total</TableCell>
-            <TableCell className="text-right">$2,250.00</TableCell>
-          </TableRow>
-        </TableFooter>
-      </Table>
-    </Card>
+        </Table.Body>
+        <Table.Footer>
+          <Table.Row>
+            <Table.Cell colSpan={4}>Total</Table.Cell>
+            <Table.Cell className="text-right">$2,250.00</Table.Cell>
+          </Table.Row>
+        </Table.Footer>
+      </Table.Root>
+    </Card.Root>
   )
 }

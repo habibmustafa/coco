@@ -5,14 +5,7 @@ import * as React from 'react'
 import { Bar, BarChart, ResponsiveContainer } from 'recharts'
 import {
   Button,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerRoot,
-  DrawerTitle,
-  DrawerTrigger,
+  Drawer,
 } from '../../../src'
 
 const data = [
@@ -65,16 +58,16 @@ export default function DrawerDemo() {
   }
 
   return (
-    <DrawerRoot>
-      <DrawerTrigger asChild>
+    <Drawer.Root>
+      <Drawer.Trigger asChild>
         <Button size="small">Open Drawer</Button>
-      </DrawerTrigger>
-      <DrawerContent>
+      </Drawer.Trigger>
+      <Drawer.Content>
         <div className="mx-auto w-full max-w-sm">
-          <DrawerHeader>
-            <DrawerTitle>Move Goal</DrawerTitle>
-            <DrawerDescription>Set your daily activity goal.</DrawerDescription>
-          </DrawerHeader>
+          <Drawer.Header>
+            <Drawer.Title>Move Goal</Drawer.Title>
+            <Drawer.Description>Set your daily activity goal.</Drawer.Description>
+          </Drawer.Header>
           <div className="p-4 pb-0">
             <div className="flex items-center justify-center space-x-2">
               <Button
@@ -118,14 +111,14 @@ export default function DrawerDemo() {
               </ResponsiveContainer>
             </div>
           </div>
-          <DrawerFooter>
+          <Drawer.Footer>
             <Button variant="primary">Submit</Button>
-            <DrawerClose asChild>
+            <Drawer.Close asChild>
               <Button variant="outline">Cancel</Button>
-            </DrawerClose>
-          </DrawerFooter>
+            </Drawer.Close>
+          </Drawer.Footer>
         </div>
-      </DrawerContent>
-    </DrawerRoot>
+      </Drawer.Content>
+    </Drawer.Root>
   )
 }

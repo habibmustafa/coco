@@ -1,14 +1,14 @@
-import { Button, Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from '../../../src'
+import { Button, Tooltip } from '../../../src'
 
 export default function TooltipDemo() {
   return (
-    <TooltipProvider>
-      <Tooltip>
-        <TooltipTrigger asChild>
+    <Tooltip.Provider>
+      <Tooltip.Root>
+        <Tooltip.Trigger asChild>
           <Button variant="outline">Hover me</Button>
-        </TooltipTrigger>
-        <TooltipContent>Restarts the database</TooltipContent>
-      </Tooltip>
-    </TooltipProvider>
+        </Tooltip.Trigger>
+        <Tooltip.Content>Restarts the database</Tooltip.Content>
+      </Tooltip.Root>
+    </Tooltip.Provider>
   )
 }

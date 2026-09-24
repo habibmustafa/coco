@@ -1,4 +1,4 @@
-import { Avatar, AvatarFallback, Button, HoverCard } from '../../../src'
+import { Avatar, Button, HoverCard } from '../../../src'
 
 export default function HoverCardPropsDemo() {
   return (
@@ -7,9 +7,9 @@ export default function HoverCardPropsDemo() {
       className="w-64"
       content={
         <div className="flex gap-3">
-          <Avatar>
-            <AvatarFallback>CO</AvatarFallback>
-          </Avatar>
+          <Avatar.Root>
+            <Avatar.Fallback>CO</Avatar.Fallback>
+          </Avatar.Root>
           <div>
             <p className="text-sm font-medium">coco</p>
             <p className="text-sm text-foreground-light">React components for your next interface.</p>

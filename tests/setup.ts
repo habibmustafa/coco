@@ -1,5 +1,26 @@
 import { cleanup } from "@testing-library/react";
-import { afterEach } from "vitest";
+import { afterEach, beforeEach, vi } from "vitest";
+
+// Deterministic clock: date-dependent examples (calendar-demo selects `new Date()` and
+// renders a `data-today` cell) would otherwise produce a new snapshot every day. Fixed to
+// the documented project date so the baseline stays stable.
+const FROZEN_NOW = new Date("2026-09-23T12:00:00.000Z");
+
+// Deterministic Math.random: a few examples generate sample data with it (metric-card's
+// sparkline, sidebar's skeleton widths). Reset the seed per test so the same render always
+// produces the same values; the demos themselves stay untouched for faithful live previews.
+let randomSeed = 0;
+function seededRandom() {
+  randomSeed = (randomSeed * 1664525 + 1013904223) >>> 0;
+  return randomSeed / 4294967296;
+}
+
+beforeEach(() => {
+  vi.restoreAllMocks();
+  vi.setSystemTime(FROZEN_NOW);
+  randomSeed = 0x2f6e2b1;
+  vi.spyOn(Math, "random").mockImplementation(seededRandom);
+});
 
 afterEach(() => {
   cleanup();

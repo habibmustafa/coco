@@ -5,7 +5,7 @@
 coco üçün React komponent kitabxanası. React 19, TypeScript,
 Tailwind CSS v4 və Radix üzərində qurulub. Paket özəldir, npm-də yayımlanmayıb.
 
-37 atom və 20 fragment komponent (23-ü hibrid — həm compound, həm props-driven API), 92 işlək
+37 atom və 20 fragment komponent (26-sı hibrid — həm compound, həm props-driven API), 92 işlək
 nümunə playground-da göstərilir.
 
 ## Lokal işə salma
@@ -45,7 +45,8 @@ təyin edin: tokenlər class-a, `dark:` utility-ləri isə atributa əsaslanır.
 
 ## Sənədlər
 
-- [Plan və iş jurnalı](docs/plan.md)
+- [Cari plan və qərarlar](docs/plan.md)
+- [Tarixi qərar jurnalı](docs/plan-history.md)
 - [Agent üçün brifinq](docs/codex-prompt.md)
 - [Loqo və brend qaydaları](docs/brand.md)
 - [Üçüncü tərəf mənbə və lisenziya qeydləri](src/styles/vendor/theme/NOTICE.md)

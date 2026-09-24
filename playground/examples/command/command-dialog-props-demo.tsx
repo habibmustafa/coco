@@ -2,7 +2,7 @@
 
 import { Calculator, Calendar, CreditCard, Settings, Smile, User } from 'lucide-react'
 import * as React from 'react'
-import { CommandDialog } from '../../../src'
+import { Command } from '../../../src'
 
 export default function CommandDialogPropsDemo() {
   const [open, setOpen] = React.useState(false)
@@ -27,7 +27,7 @@ export default function CommandDialogPropsDemo() {
           <span className="text-xs">⌘</span>J
         </kbd>
       </p>
-      <CommandDialog
+      <Command.Dialog
         open={open}
         onOpenChange={setOpen}
         placeholder="Type a command or search..."

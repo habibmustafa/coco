@@ -1,20 +1,20 @@
-import { Label, RadioGroup, RadioGroupItem } from '../../../src'
+import { Label, RadioGroup } from '../../../src'
 
 export default function RadioGroupDemo() {
   return (
-    <RadioGroup defaultValue="free">
+    <RadioGroup.Root defaultValue="free">
       <div className="flex items-center gap-2">
-        <RadioGroupItem value="free" id="plan-free" />
+        <RadioGroup.Item value="free" id="plan-free" />
         <Label htmlFor="plan-free">Free</Label>
       </div>
       <div className="flex items-center gap-2">
-        <RadioGroupItem value="pro" id="plan-pro" />
+        <RadioGroup.Item value="pro" id="plan-pro" />
         <Label htmlFor="plan-pro">Pro</Label>
       </div>
       <div className="flex items-center gap-2">
-        <RadioGroupItem value="team" id="plan-team" />
+        <RadioGroup.Item value="team" id="plan-team" />
         <Label htmlFor="plan-team">Team</Label>
       </div>
-    </RadioGroup>
+    </RadioGroup.Root>
   )
 }

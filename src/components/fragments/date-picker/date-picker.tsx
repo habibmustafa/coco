@@ -25,6 +25,8 @@ type DatePickerPropsMode = Omit<RootProps, 'children'> & {
   triggerLabel?: ReactNode
   buttonProps?: Omit<DatePickerButtonProps, 'children'>
   contentClassName?: string
+  /** Extra content rendered above the Calendar inside DatePickerContent, e.g. a presets Select. */
+  beforeCalendar?: ReactNode
   children?: never
 }
 
@@ -37,7 +39,8 @@ export function DatePickerHybrid(props: DatePickerProps) {
     return <DatePickerRoot {...props} />
   }
 
-  const { calendarProps, triggerLabel, buttonProps, contentClassName, ...rootProps } = props
+  const { calendarProps, triggerLabel, buttonProps, contentClassName, beforeCalendar, ...rootProps } =
+    props
 
   return (
     <DatePickerRoot {...rootProps}>
@@ -47,6 +50,7 @@ export function DatePickerHybrid(props: DatePickerProps) {
         </DatePickerButton>
       </DatePickerTrigger>
       <DatePickerContent className={contentClassName}>
+        {beforeCalendar}
         <Calendar {...calendarProps} />
       </DatePickerContent>
     </DatePickerRoot>

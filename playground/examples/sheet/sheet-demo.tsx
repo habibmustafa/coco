@@ -2,57 +2,50 @@ import {
   Button,
   Input,
   Label,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetRoot,
-  SheetSection,
-  SheetTitle,
-  SheetTrigger,
+  Sheet,
 } from '../../../src'
 
 export default function SheetDemo() {
   return (
     <>
-      <SheetRoot>
-        <SheetTrigger asChild>
+      <Sheet.Root>
+        <Sheet.Trigger asChild>
           <Button>Open sheet</Button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Connection details</SheetTitle>
-            <SheetDescription>Slides in from the edge of the viewport.</SheetDescription>
-          </SheetHeader>
-          <SheetSection>
+        </Sheet.Trigger>
+        <Sheet.Content>
+          <Sheet.Header>
+            <Sheet.Title>Connection details</Sheet.Title>
+            <Sheet.Description>Slides in from the edge of the viewport.</Sheet.Description>
+          </Sheet.Header>
+          <Sheet.Section>
             <p className="text-sm text-foreground-light">
               Sheets share the dialog primitive, so focus trapping and escape handling match.
             </p>
-          </SheetSection>
-        </SheetContent>
-      </SheetRoot>
+          </Sheet.Section>
+        </Sheet.Content>
+      </Sheet.Root>
 
-      <SheetRoot>
-        <SheetTrigger asChild>
+      <Sheet.Root>
+        <Sheet.Trigger asChild>
           <Button variant="outline">Edit profile</Button>
-        </SheetTrigger>
-        <SheetContent>
-          <SheetHeader>
-            <SheetTitle>Edit profile</SheetTitle>
-            <SheetDescription>Update your public profile information.</SheetDescription>
-          </SheetHeader>
-          <SheetSection>
+        </Sheet.Trigger>
+        <Sheet.Content>
+          <Sheet.Header>
+            <Sheet.Title>Edit profile</Sheet.Title>
+            <Sheet.Description>Update your public profile information.</Sheet.Description>
+          </Sheet.Header>
+          <Sheet.Section>
             <div className="flex flex-col gap-2">
               <Label htmlFor="sheet-demo-name">Name</Label>
               <Input id="sheet-demo-name" defaultValue="Jane Doe" />
             </div>
-          </SheetSection>
-          <SheetFooter>
+          </Sheet.Section>
+          <Sheet.Footer>
             <Button variant="outline">Cancel</Button>
             <Button variant="primary">Confirm</Button>
-          </SheetFooter>
-        </SheetContent>
-      </SheetRoot>
+          </Sheet.Footer>
+        </Sheet.Content>
+      </Sheet.Root>
     </>
   )
 }

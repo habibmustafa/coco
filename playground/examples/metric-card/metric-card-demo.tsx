@@ -2,12 +2,6 @@ import { useEffect, useState } from 'react'
 
 import {
   MetricCard,
-  MetricCardContent,
-  MetricCardDifferential,
-  MetricCardHeader,
-  MetricCardLabel,
-  MetricCardSparkline,
-  MetricCardValue,
 } from '../../../src'
 
 export default function MetricCardDemo() {
@@ -30,23 +24,23 @@ export default function MetricCardDemo() {
 
   return (
     <div className="w-full max-w-sm">
-      <MetricCard isLoading={!data.length}>
-        <MetricCardHeader href="#metric-card">
-          <MetricCardLabel tooltip="The number of active users over the last 24 hours">
+      <MetricCard.Root isLoading={!data.length}>
+        <MetricCard.Header href="#metric-card">
+          <MetricCard.Label tooltip="The number of active users over the last 24 hours">
             Active Users
-          </MetricCardLabel>
-        </MetricCardHeader>
-        <MetricCardContent>
-          <MetricCardValue>
+          </MetricCard.Label>
+        </MetricCard.Header>
+        <MetricCard.Content>
+          <MetricCard.Value>
             {averageValue.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-          </MetricCardValue>
-          <MetricCardDifferential variant={diffPercentage > 0 ? 'positive' : 'negative'}>
+          </MetricCard.Value>
+          <MetricCard.Differential variant={diffPercentage > 0 ? 'positive' : 'negative'}>
             {diffPercentage > 0 ? '+' : '-'}
             {Math.abs(diffPercentage).toFixed(1)}%
-          </MetricCardDifferential>
-        </MetricCardContent>
-        <MetricCardSparkline data={data} dataKey="value" />
-      </MetricCard>
+          </MetricCard.Differential>
+        </MetricCard.Content>
+        <MetricCard.Sparkline data={data} dataKey="value" />
+      </MetricCard.Root>
     </div>
   )
 }

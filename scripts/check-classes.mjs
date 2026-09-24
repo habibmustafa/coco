@@ -12,7 +12,11 @@ import { readFileSync } from 'node:fs'
 import { globSync } from 'node:fs'
 
 const CSS = 'dist/styles.css'
-const SOURCES = ['src/**/*.tsx', 'playground/**/*.tsx']
+const SOURCES = ['src/**/*.tsx', 'playground/**/*.tsx', 'src/components/atoms/layout/layout-classes.ts']
+
+// Files whose class names live in lookup tables rather than next to a `className`, so the
+// `className`-proximity heuristic below would miss every one of them. Full-scanned instead.
+const FULL_SCAN = new Set(['src/components/atoms/layout/layout-classes.ts'])
 
 // Tokens that look like class names rather than prose, ids or paths.
 const CANDIDATE = /^[a-z@][a-z0-9@:_\-[\]()/.,%!#&'*+<>=?|$]*$/
@@ -33,6 +37,30 @@ const NOT_CLASSES = new Set([
   'aria-disabled',
   'aria-invalid',
   'aria-label=',
+  // DropdownMenu checkbox demo: MenuItem `key` values, not classes.
+  'activity-bar',
+  'status-bar',
+  // Ported upstream examples: element ids and radio/checkbox values, not classes.
+  'airplane-mode',
+  'email-2',
+  'message-2',
+  'type-all',
+  'type-mentions',
+  'type-none',
+  // Chart tooltip demo: CSS custom properties read from a JS `fill`, not classes.
+  'var(--chart-1)',
+  'var(--chart-3)',
+  // Upstream typo, same category as `items-right`/`font-italic` below: Tailwind's
+  // utility is `items-start`, `items-top` resolves to nothing on their site either.
+  'items-top',
+  // Layout primitives: prose from the "coco-specific"/"page-width" descriptions, not classes.
+  'coco-specific',
+  'page-width',
+  // Layout class tables: enum keys (FlexDirection/GridFlow values), not utilities.
+  'column-dense',
+  'column-reverse',
+  'row-dense',
+  'row-reverse',
   'aspect-ratio',
   'block-end',
   'block-start',
@@ -107,6 +135,25 @@ const NOT_CLASSES = new Set([
   'sep-1',
   'sep-2',
   'us-east',
+  // AlertDialog: data-slot values, not classes.
+  'alert-dialog-body',
+  'alert-dialog-footer',
+  // Props-driven pairs added for the hybrid-examples rule: element ids, not classes.
+  'dialog-centered-off-name',
+  'dialog-centered-off-username',
+  'dialog-close-button-link',
+  'multi-select-in-dialog-fruits',
+  'radio-group-form-props-all',
+  'radio-group-form-props-mentions',
+  'radio-group-form-props-none',
+  'drawer-dialog-props-email',
+  'drawer-dialog-props-username',
+  'sheet-confirm-props-endpoint-url',
+  'sheet-confirm-props-secret-header',
+  // sheet-confirm-on-close-demo: form field ids/placeholder text, not classes.
+  'endpoint-url',
+  'secret-header',
+  'top-secret-value',
   'var(--color-desktop)',
   'var(--color-mobile)',
   'var(--foreground-default)',
@@ -125,8 +172,9 @@ function classRegions(code) {
 function collectCandidates(file) {
   const code = readFileSync(file, 'utf8')
   const found = new Set()
+  const searchable = FULL_SCAN.has(file.replace(/\\/g, '/')) ? code : classRegions(code).join('\n')
 
-  for (const match of classRegions(code).join('\n').matchAll(/(['"`])([^'"`\n]{2,400})\1/g)) {
+  for (const match of searchable.matchAll(/(['"`])([^'"`\n]{2,400})\1/g)) {
     const literal = match[2]
     if (literal.includes('://') || literal.startsWith('.') || literal.startsWith('/')) continue
 

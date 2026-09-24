@@ -2,10 +2,6 @@ import { useState } from 'react'
 
 import {
   MultiSelector,
-  MultiSelectorContent,
-  MultiSelectorItem,
-  MultiSelectorList,
-  MultiSelectorTrigger,
 } from '../../../src'
 
 export default function MultiSelectDemo() {
@@ -25,17 +21,17 @@ export default function MultiSelectDemo() {
   ]
 
   return (
-    <MultiSelector values={selectedValues} onValuesChange={setSelectedValues}>
-      <MultiSelectorTrigger className="w-72" label="Select fruits" badgeLimit="wrap" />
-      <MultiSelectorContent>
-        <MultiSelectorList>
+    <MultiSelector.Root values={selectedValues} onValuesChange={setSelectedValues}>
+      <MultiSelector.Trigger className="w-72" label="Select fruits" badgeLimit="wrap" />
+      <MultiSelector.Content>
+        <MultiSelector.List>
           {fruits.map(({ value, isDisabled }) => (
-            <MultiSelectorItem key={value} value={value} disabled={isDisabled}>
+            <MultiSelector.Item key={value} value={value} disabled={isDisabled}>
               {value}
-            </MultiSelectorItem>
+            </MultiSelector.Item>
           ))}
-        </MultiSelectorList>
-      </MultiSelectorContent>
-    </MultiSelector>
+        </MultiSelector.List>
+      </MultiSelector.Content>
+    </MultiSelector.Root>
   )
 }
