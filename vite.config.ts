@@ -34,6 +34,7 @@ export default defineConfig({
         "clsx",
         "cmdk",
         "dayjs",
+        "dayjs/plugin/customParseFormat",
         "framer-motion",
         "highlightjs-curl",
         "input-otp",

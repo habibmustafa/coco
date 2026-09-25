@@ -432,6 +432,14 @@ const atoms: ComponentEntry[] = [
     ],
   },
   {
+    id: 'date-field',
+    title: 'Date Field',
+    icon: CalendarDays,
+    description:
+      "coco-specific: a single typeable date input with MUI-style segments (day/month/year), not a port. Type digits, use arrow up/down to step a segment, arrow left/right to move between segments, backspace to clear, or paste a full date; optional minDate/maxDate mark aria-invalid without blocking typing. Standalone here — DatePicker composes it with a calendar popover.",
+    previews: [{ name: 'date-field-demo' }],
+  },
+  {
     id: 'dialog',
     title: 'Dialog',
     icon: AppWindow,
@@ -1021,6 +1029,14 @@ const fragments: ComponentEntry[] = [
     ],
   },
   {
+    id: 'form-fields',
+    title: 'Form Fields',
+    icon: FileText,
+    description:
+      "coco-specific: terser react-hook-form + zod fields (FormInput/FormSelect/FormCheckbox/FormSwitch/FormRadioGroup/FormTextarea/FormDatePicker) — each wraps the FormField/FormItem/FormLabel/FormControl/FormMessage ceremony behind a single `name`, so a field is one line instead of a whole render-prop tree.",
+    previews: [{ name: 'form-fields-demo' }],
+  },
+  {
     id: 'info-tooltip',
     title: 'Info Tooltip',
     icon: HelpCircle,
@@ -1216,7 +1232,8 @@ const fragments: ComponentEntry[] = [
     id: 'date-picker',
     title: 'Date Picker',
     icon: CalendarDays,
-    description: 'Popover-wrapped Calendar with a styled trigger button, for a single date.',
+    description:
+      'Typeable segmented field (day/month/year) with a calendar-icon button that opens a Popover-wrapped Calendar; range/multiple modes fall back to a text-label trigger button.',
     previews: [
       {
         name: 'date-picker-props-demo',

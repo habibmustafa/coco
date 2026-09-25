@@ -18,6 +18,7 @@ export * from './components/atoms/feedback/sonner'
 
 export * from './components/atoms/forms/calendar'
 export * from './components/atoms/forms/checkbox'
+export * from './components/atoms/forms/date-field'
 export * from './components/atoms/forms/form'
 export * from './components/atoms/forms/input'
 export * from './components/atoms/forms/input-otp'
@@ -56,6 +57,7 @@ export * from './components/atoms/overlay/tooltip'
 // Fragments — ported from packages/ui-patterns ("Fragment components")
 
 export * from './components/fragments/admonition'
+export * from './components/fragments/form-fields'
 export * from './components/fragments/form-item-layout'
 export * from './components/fragments/info-tooltip'
 export * from './components/fragments/empty-state'
