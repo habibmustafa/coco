@@ -1,6 +1,6 @@
 # Plan — cari vəziyyət və qərarlar
 
-> Son yenilənmə: 2026-09-24 (#51). Bu fayl cari qərarların qısa mənbəyidir.
+> Son yenilənmə: 2026-09-25 (#52). Bu fayl cari qərarların qısa mənbəyidir.
 > Tam qərar, düzəliş və icra jurnalı [plan-history.md](plan-history.md)-də saxlanılır.
 > Köhnə qeydlə cari qərar toqquşanda cari qərar əsas götürülür. Yeni qərarı və görülən işi
 > **eyni turda** burada qeyd et; tarixi arxivi geriyə dönük dəyişmə.
@@ -312,3 +312,67 @@ bunun **dark theme-də ikonu demək olar qara/görünməz etdiyini** bildirdi (`
 dark-da aşağı-lightness dəyərə düşür) — bu dəyişiklik tam geri qaytarıldı, ikonlar
 əvvəlki neytral `opacity-50 hover:opacity-100` stilinə qayıtdı. Nəticə: yalnız hündürlük
 sıxlaşdırması qaldı, rəng toxunulmadı. `npm run verify` yaşıl (296 test).
+
+**Əlavə (2026-09-25) — real bug tapılıb düzəldildi:** istifadəçi "sağ-sol icon hələ də
+qaradır" dedi — araşdırma göstərdi ki, bu mənim rəng dəyişikliyimdən deyil, struktur
+bugdan qaynaqlanır: `DatePickerCalendar`-ın `<Calendar components={{MonthCaption:...}}}/>`
+çağırışı `components` prop-unu TAM əvəz edir (deep-merge etmir), yəni `Calendar` atomunun
+öz `Chevron` (lucide) override-i də silinir və DayPicker öz daxili default chevron-una
+düşür — onun SVG-si `fill: rgb(0,0,0)` hardcoded-dir (`currentColor` yox), ona görə
+temadan asılı olmayaraq həmişə qara görünür. Fix: `DatePickerCalendar`-ın `components`
+obyektinə `Chevron`-u da (Calendar.tsx-dəki eyni lucide-based render) əlavə etdim —
+brauzer yoxlaması `svg class="lucide lucide-chevron-left ... rdp-chevron"`,
+`fill:"none"` təsdiqlədi (artıq DayPicker-in qara-fill default-u deyil).
+
+**Əlavə (2026-09-25) — placeholder davranışı:** istifadəçinin tələbinə görə `DateField`
+indi üç fərqli görünüş rejimi göstərir: (1) boş və fokussuz — native `placeholder`
+atributu ilə (`DD.MM.YYYY`, format-a görə), `value` əslində boşdur; (2) fokuslananda boş
+seqmentlər öz hərfini göstərir (`DD`/`MM`/`YYYY`); (3) yazarkən natamam seqment sıfırla-
+öndən-doldurulur (`1` → `01`, `14` yazılanda → `14`) — hərflə deyil (əvvəlki `1D` səhv
+görünüşü idi). `use-date-field-state.ts`-ə `isFocused` state və `handleFocus`/`handleBlur`,
+`placeholderValue` (format-dan hesablanan native placeholder mətni) əlavə olundu.
+`npm run verify` yaşıl (296 test, 5 gözlənilən golden snapshot yeniləndi — `value=""` +
+yeni `placeholder` atributu).
+
+## Son qərar — #52 (2026-09-25)
+
+**3 yeni atom portlandı: `Toggle`, `ToggleGroup`, `ContextMenu`.** Canlı GitHub-dan
+yoxlanılıb (`packages/ui/index.tsx`-dən public export təsdiqləndi); istifadəçinin
+əvvəl istədiyi "Copy Button" və "Pagination" isə upstream-də ayrıca komponent kimi
+mövcud deyil (Copy Button → mikro-mətn nümunələri idi, klipborda-kopyalama artıq
+`DataInput`-un `copy` prop-unda var; Pagination → yalnız `@tanstack/react-table`
+əsaslı `data-table-demo`-nun içində) — istifadəçi ilə aydınlaşdırılıb, bu ikisi
+xaric edilib.
+
+- **`Toggle`** (`src/components/atoms/actions/toggle/`) — flat atom, hibrid deyil
+  (Switch/Checkbox kimi tək element). Upstream-dən birəbir.
+- **`ToggleGroup`** (`src/components/atoms/actions/toggle-group/`) — hibrid, Strategy A,
+  `items` discriminator. Upstream-in `useTabIndicator`-u (segmented variantın sürüşən
+  indikatoru üçün) `use-toggle-group-indicator.ts` kimi **ayrıca** gətirildi — Tabs-ın
+  öz surəti artıq sadələşdirilib (options parametri yoxdur, Tabs-a hardcode), ona
+  toxunulmadı, iki fayl arasında kiçik təkrar qaldı (gələcək təmizlik namizədi).
+  `toggle-group-segmented` nümunəsi **compound-only** saxlanıldı (tone/size loop +
+  controlled state `items` prop-u ilə ifadə oluna bilməzdi — uydurma yazılmadı);
+  `tests/component-preview.test.tsx`-in `hybridPageIds`-inə görə bunun üçün
+  `toggle-group` id-si bilərəkdən əlavə edilmədi (əks halda test bu qəsdən solo
+  preview-i "hər preview cütlənməlidir" qaydasına görə sındırardı).
+- **`ContextMenu`** (`src/components/atoms/overlay/context-menu/`) — hibrid, Strategy A,
+  `DropdownMenu`-nun eyni `MenuItem`/`renderMenuItems` şablonu (tipi təkrarlamadan
+  `../dropdown-menu`-dan import edir). **Fidelity qərarı:** upstream-in
+  `context-menu.tsx`-i eyni branch-də `dropdown-menu.tsx`-dən köhnəlmiş görünürdü
+  (`bg-selection`/`text-muted-foreground` kimi əvəzlənmiş token-lər) — class-lar
+  upstream faylından yox, artıq fidelity-təsdiqlənmiş `dropdown-menu-parts.tsx`-dən
+  götürüldü (iki komponent canlı saytda vizual eynidir).
+- Yeni komponentlərdə (React 19 qaydasına görə) `forwardRef` işlədilmədi, `ref` adi
+  prop kimi keçdi.
+- `playground/registry.tsx`-ə 3 yeni giriş (`toggle`, `toggle-group`, `context-menu`),
+  uyğun playground nümunələri əlavə olundu.
+- `tests/component-preview.test.tsx`-də cütlənmiş preview sayı 82→84 yeniləndi
+  (yeni `context-menu`/`toggle-group` cütləri).
+- `scripts/check-classes.mjs`-in `NOT_CLASSES`-inə `context-menu-props-demo`-dakı
+  `MenuItem` `key` dəyərləri (`more-tools`, `save-page`, `create-shortcut`,
+  `name-window`, `sep-tools`) əlavə olundu (artıq tanış false-positive pattern-i).
+
+Headless Chrome-da təsdiqləndi: Toggle klikdən sonra `data-state="on"`; ToggleGroup-da
+eyni + segmented indikator elementləri (3 tone sıra) mövcuddur; ContextMenu sağ-klikdə
+açılır, item-lər düzgün render olunur. `npm run verify` yaşıl (304 test).

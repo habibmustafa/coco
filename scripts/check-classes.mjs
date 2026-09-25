@@ -41,6 +41,12 @@ const NOT_CLASSES = new Set([
   // DropdownMenu checkbox demo: MenuItem `key` values, not classes.
   'activity-bar',
   'status-bar',
+  // ContextMenu props demo: MenuItem `key` values, not classes.
+  'more-tools',
+  'save-page',
+  'create-shortcut',
+  'name-window',
+  'sep-tools',
   // Ported upstream examples: element ids and radio/checkbox values, not classes.
   'airplane-mode',
   'email-2',

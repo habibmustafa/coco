@@ -432,6 +432,21 @@ const atoms: ComponentEntry[] = [
     ],
   },
   {
+    id: 'context-menu',
+    title: 'Context Menu',
+    icon: MousePointerClick,
+    description: 'Right-click menu with sub-menus, checkbox and radio items.',
+    previews: [
+      {
+        name: 'context-menu-props-demo',
+        codeVariants: [
+          { id: 'props', label: 'Props-driven', name: 'context-menu-props-demo' },
+          { id: 'compound', label: 'Compound', name: 'context-menu-demo' },
+        ],
+      },
+    ],
+  },
+  {
     id: 'date-field',
     title: 'Date Field',
     icon: CalendarDays,
@@ -973,6 +988,34 @@ const atoms: ComponentEntry[] = [
       { name: 'textarea-with-button', label: 'With button' },
       { name: 'textarea-with-label', label: 'With label' },
       { name: 'textarea-with-text', label: 'With text' },
+    ],
+  },
+  {
+    id: 'toggle',
+    title: 'Toggle',
+    icon: ToggleLeft,
+    description: 'Single pressed/not-pressed button — for a toolbar-style on/off action.',
+    previews: [
+      { name: 'toggle-demo', label: 'Default' },
+      { name: 'toggle-outline', label: 'Outline' },
+      { name: 'toggle-with-text', label: 'With text' },
+    ],
+  },
+  {
+    id: 'toggle-group',
+    title: 'Toggle Group',
+    icon: Rows3,
+    description: 'A row of Toggles sharing single/multiple selection state.',
+    previews: [
+      {
+        name: 'toggle-group-props-demo',
+        label: 'Default',
+        codeVariants: [
+          { id: 'props', label: 'Props-driven', name: 'toggle-group-props-demo' },
+          { id: 'compound', label: 'Compound', name: 'toggle-group-demo' },
+        ],
+      },
+      { name: 'toggle-group-segmented', label: 'Segmented' },
     ],
   },
   {
