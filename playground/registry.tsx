@@ -582,7 +582,8 @@ const atoms: ComponentEntry[] = [
     id: 'input',
     title: 'Input',
     icon: TextCursorInput,
-    description: 'Sunk field surface with the shared size scale and an aria-invalid state.',
+    description:
+      'Sunk field surface with the shared size scale and an aria-invalid state; optional prefix/suffix (coco-specific) glue an icon or short label inside the same border.',
     previews: [
       { name: 'input-sizes', label: 'Sizes' },
       { name: 'input-states', label: 'States' },
@@ -592,6 +593,7 @@ const atoms: ComponentEntry[] = [
       { name: 'input-with-button', label: 'With button' },
       { name: 'input-with-label', label: 'With label' },
       { name: 'input-with-text', label: 'With text' },
+      { name: 'input-with-prefix-suffix', label: 'With prefix/suffix' },
     ],
   },
   {

@@ -14,4 +14,16 @@
   input[type='number'] {
     -moz-appearance: textfield;
   }
+
+  /*
+   * `type="number"`/`type="search"` keep Chrome's native textfield/searchfield
+   * appearance on the input itself (not just the spin-button pseudo-elements above),
+   * which paints its own inset box-shadow ring on focus — visible as a stray blue
+   * ring around our own focus-ring styling since it isn't reset anywhere else.
+   */
+  input[type='number'],
+  input[type='search'] {
+    appearance: none;
+    -webkit-appearance: none;
+  }
 }

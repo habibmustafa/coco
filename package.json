@@ -1,7 +1,15 @@
 {
-  "name": "coco",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@habibmustafa/coco",
+  "version": "0.1.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/habibmustafa/core.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com",
+    "access": "restricted"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css"
@@ -18,7 +26,8 @@
     "./styles.css": "./dist/styles.css"
   },
   "files": [
-    "dist"
+    "dist",
+    "NOTICE.md"
   ],
   "scripts": {
     "dev": "vite",

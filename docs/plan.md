@@ -376,3 +376,80 @@ xaric edilib.
 Headless Chrome-da təsdiqləndi: Toggle klikdən sonra `data-state="on"`; ToggleGroup-da
 eyni + segmented indikator elementləri (3 tone sıra) mövcuddur; ContextMenu sağ-klikdə
 açılır, item-lər düzgün render olunur. `npm run verify` yaşıl (304 test).
+
+## Son qərar — #53 (2026-09-25)
+
+**npm-ə (GitHub Packages) çıxarılmaq üçün hazırlıq.** İstifadəçi əvvəl "Apache olmadan
+çıxaq" dedi — Apache-2.0-ın §4-ə görə attribution saxlamağın **məcburi** olduğu (əks
+halda müəllif hüququ pozuntusu, npm-lə hüquqi risk) izah olundu, tələb özü isə çox
+kiçikdir (kod açıq mənbəli olmalı deyil, sadəcə NOTICE saxlanmalı) — istifadəçi bunu
+qəbul etdi, minimal NOTICE-la davam edildi.
+
+- **`NOTICE.md`** (root) yenidən yaradıldı — köhnə fayl (`src/styles/vendor/supabase/
+  NOTICE.md`) `theme/`-ə keçiddə (commit `b80c221`) itmişdi, `CLAUDE.md` isə hələ də
+  ona istinad edirdi (köhnəlmiş keçid). Git tarixçəsindən məzmun bərpa olundu, amma
+  köhnə statik fayl siyahısı/komponent sayı yerinə **cari** vəziyyətə uyğun ümumi
+  təsvirlə yazıldı (gələcəkdə yenə köhnəlməsin deyə).
+- **`LICENSE`** (root) — Apache-2.0-ın tam mətni, Supabase-in öz `LICENSE`-i ilə
+  eyni (canlı GitHub-dan götürüldü, əlaqədar "Copyright 2024 Supabase" appendiksi
+  saxlanıldı — §4(c) tələbinə görə orijinal mənbənin attribution-u silinmir).
+- `CLAUDE.md`-in `NOTICE.md` istinadı yeni root yerinə yeniləndi.
+- `package.json`: `"license": "Apache-2.0"`, `files`-ə `NOTICE.md` əlavə olundu
+  (npm avtomatik yalnız `LICENSE`/`README`-i daxil edir, `NOTICE.md`-i yox).
+
+**GitHub Packages sazlaması** (istifadəçi bu registry-ni seçdi, git remote-dan
+`github.com/habibmustafa/core` tapıldı):
+- `"name": "coco"` → `"@habibmustafa/coco"` (GitHub Packages scope-u repo sahibinin
+  adına uyğun olmalıdır).
+- `"private": true` silindi (bu flag var ikən `npm publish` heç bir registry-ə
+  icazə vermir — GitHub Packages-in öz məxfiliyi isə `access: "restricted"` və repo-nun
+  private olmasından gəlir, bu flag-dan asılı deyil).
+- `"version"`: `0.0.0` → `0.1.0` (ilk real versiya; hələ `1.0.0` elan olunmayıb).
+- `"repository"` və `"publishConfig": {"registry": "https://npm.pkg.github.com",
+  "access": "restricted"}` əlavə olundu.
+- Root `.npmrc`: `@habibmustafa:registry=https://npm.pkg.github.com`.
+- `npm run build:lib` bu dəyişikliklərdən sonra da təmiz keçdi.
+
+**Qalan (istifadəçinin özü etməli olduğu, mənim GitHub token-ə çıxışım yoxdur):**
+`npm login --registry=https://npm.pkg.github.com` (və ya `~/.npmrc`-ə `//npm.pkg.
+github.com/:_authToken=<PAT>`, `read:packages`+`write:packages` scope-lu) sonra
+`npm publish`. Digər layihələrdə istifadə üçün həmin layihələrin öz `.npmrc`-inə
+eyni registry sətri + oxuma-icazəli token lazımdır.
+
+## Son qərar — #54 (2026-09-26)
+
+**`Input`-a `prefix`/`suffix` prop-ları əlavə olundu** (istifadəçinin tələbi: ayrıca
+`InputGroup` komponenti qurmaq əvəzinə, mövcud `Input`-un özünə funksionallıq əlavə et).
+`src/components/atoms/forms/input/input.tsx`: `prefix?: ReactNode`/`suffix?: ReactNode` —
+heç biri verilməzsə (əksəriyyət hal) `Input` əvvəlki kimi çılpaq `<input>` render edir,
+sıfır risk; hər hansı biri verilərsə, `InputVariants`-ın özü border/bg/ölçü daşıyan
+wrapper `div`-ə keçir, daxildə `<input>` şəffaf/kənarsız olaraq, prefix/suffix `span`-ları
+ilə yanaşı render olunur. (Qeyd: `src/components/atoms/forms/form/input-group.tsx`
+adlı upstream `InputGroup`/`InputGroupAddon`/`InputGroupButton` ailəsi artıq mövcuddur,
+`Form`/`DataInput` daxilində istifadə olunur — amma registry-də ayrıca göstərilmir, bu
+yeni `prefix`/`suffix` daha yüngül alternativdir, onu əvəz etmir.)
+
+Tətbiq zamanı brauzer testi 3 real bug tapdı, hamısı düzəldildi:
+1. **Klik-ölü-zona**: wrapper-in padding sahəsi (border-dan input-a qədər boşluq)
+   input-un öz elementinin bir hissəsi olmadığı üçün ora klikləyəndə fokuslanmırdı
+   (adi input-da padding elementin öz daxilindədir, klikləmə həmişə fokuslayır) —
+   wrapper-ə `onClick` əlavə olundu, klik interaktiv overlay uşaq elementinə (input/
+   button/s.) düşməyibsə daxili input-u fokuslayır (upstream-in öz `InputGroupAddon`
+   `onClick` trikinin eynisi).
+2. **Mavi box-shadow** fokusda görünürdü — kök səbəb `shadow-none` Tailwind
+   utility-sinin yalnız `--tw-shadow` layer-ini sıfırlaması idi, `--tw-ring-shadow`
+   (kompozit `box-shadow`-un digər hissəsi) toxunulmamış qalırdı. CDP-nin
+   `CSS.getMatchedStylesForNode`-u ilə dəqiqləşdirildi (təxmin yox). Fix: `shadow-none`
+   yerinə arbitrary-property `[box-shadow:none]` (birbaşa literal property, kompozit
+   `--tw-*` dəyişənlərini keçib getmir).
+3. **`base.css`**-ə `input[type=number]`/`input[type=search]`-un öz native
+   `appearance`-ini sıfırlayan qayda əlavə olundu (spin-button pseudo-element-lərinin
+   sıfırlanması onsuz da var idi, elementin özününkü yox idi) — ümumi faydalı fix,
+   amma sınaqda əsl mavi kölgənin səbəbi bu deyildi (#2-yə bax).
+
+Demo `type="number"` yox, `type="text" inputMode="decimal"` istifadə edir (number
+input-un native spin-button/fokus xüsusiyyətləri `appearance-none`-dən sonra da
+brauzerlərdə fərqli davrana bilər — bu, onu ümumiyyətlə saxlamamağın adi səbəbidir).
+
+`playground/examples/input/input-with-prefix-suffix.tsx` yeni nümunə, `registry.tsx`-ə
+əlavə olundu. `npm run verify` yaşıl (305 test, 1 yeni golden snapshot).
