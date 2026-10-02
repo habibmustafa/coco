@@ -1,4 +1,4 @@
-<p align="center"><img src="https://raw.githubusercontent.com/habibmustafa/coco/main/public/ui-mark.svg" alt="ui" width="64" height="64" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/habibmustafa/ui/main/public/ui-mark.svg" alt="ui" width="64" height="64" /></p>
 
 # ui
 

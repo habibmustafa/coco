@@ -13,12 +13,12 @@
     "typescript"
   ],
   "author": "Habibullah Mustafazadeh",
-  "homepage": "https://github.com/habibmustafa/coco#readme",
-  "bugs": "https://github.com/habibmustafa/coco/issues",
+  "homepage": "https://github.com/habibmustafa/ui#readme",
+  "bugs": "https://github.com/habibmustafa/ui/issues",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/habibmustafa/coco.git"
+    "url": "https://github.com/habibmustafa/ui.git"
   },
   "publishConfig": {
     "registry": "https://registry.npmjs.org",
