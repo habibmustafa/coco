@@ -4,7 +4,7 @@ import { Tabs as TabsPrimitive } from 'radix-ui'
 import { useRef, type ComponentPropsWithRef } from 'react'
 
 import { cn } from '../../../../lib/utils'
-import { useTabIndicator } from './useTabIndicator'
+import { useTabIndicator } from '../../../../lib/use-tab-indicator'
 
 const TabsRoot = TabsPrimitive.Root
 

@@ -59,6 +59,9 @@ type TableColumnsProps<TRow> = Omit<RootProps, 'children'> & {
   children?: never
 }
 
+/** A row click that lands on one of these belongs to the child, not to the row. */
+const INTERACTIVE_CHILD = 'a, button, input, select, textarea, label, [role="menuitem"], [role="checkbox"], [role="switch"]'
+
 /** Parses the table-level `sort` string for a given column, to drive the header's aria-sort. */
 function sortDirection(sort: string | undefined, column: string): 'asc' | 'desc' | undefined {
   const [currentCol, currentOrder] = (sort ?? '').split(':')
@@ -131,7 +134,10 @@ export function TableHybrid<TRow = unknown>(props: TableProps<TRow>) {
             {...(onRowClick && {
               tabIndex: 0,
               onClick: (event: React.MouseEvent<HTMLTableRowElement>) => {
-                if (event.currentTarget !== event.target) return
+                // A real click always lands on a cell, never on the <tr>, so this can't
+                // compare target to currentTarget — it has to ask whether the click landed
+                // on something that handles its own activation.
+                if ((event.target as HTMLElement).closest(INTERACTIVE_CHILD)) return
                 onRowClick(row, event)
               },
               onKeyDown: (event: React.KeyboardEvent<HTMLTableRowElement>) => {

@@ -3,11 +3,10 @@
 import { useLayoutEffect, type RefObject } from 'react'
 
 /**
- * The generic (options-parameterized) version of Tabs' own
- * `src/components/atoms/navigation/tabs/useTabIndicator.ts` — that copy was
- * simplified/hardcoded to Tabs' own defaults during its port, so ToggleGroup's
- * `segmented` variant (which needs configurable selectors/property names) gets its
- * own copy of the original upstream hook here rather than reworking Tabs' version.
+ * Measures the active item in a list and publishes its offset/width as CSS custom
+ * properties, so a sibling indicator element can slide to it. Shared by Tabs (the
+ * underline) and ToggleGroup's `segmented` variant (the pill) — matching upstream,
+ * where both read from one file; the defaults below are Tabs'.
  */
 type IndicatorOptions = {
   activeItemSelector?: string
@@ -27,7 +26,7 @@ const tabDefaults = {
   insetByPadding: true,
 } satisfies Required<IndicatorOptions>
 
-export const useToggleGroupIndicator = (
+export const useTabIndicator = (
   listRef: RefObject<HTMLElement | null>,
   options: IndicatorOptions = {}
 ) => {

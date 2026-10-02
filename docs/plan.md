@@ -453,3 +453,68 @@ brauzerlərdə fərqli davrana bilər — bu, onu ümumiyyətlə saxlamamağın 
 
 `playground/examples/input/input-with-prefix-suffix.tsx` yeni nümunə, `registry.tsx`-ə
 əlavə olundu. `npm run verify` yaşıl (305 test, 1 yeni golden snapshot).
+
+## Son qərar — #55 (2026-10-02)
+
+**Layihə audit-inin 10 maddəsi icra olundu** (istifadəçi: "hamisini edek, aama ilkinde
+lisense ni qaldiraq"). Ardıcıllıqla:
+
+1. **Lisenziya qaldırıldı.** `package.json` → `"license": "UNLICENSED"`, `files`-dan
+   `NOTICE.md` çıxarıldı. Kök `LICENSE`/`NOTICE.md` əvvəldən silinmiş, lakin heç vaxt
+   commit edilməmişdi, halbuki `package.json` hələ `Apache-2.0` elan edirdi — bu uyğunsuzluq
+   aradan qalxdı. `CLAUDE.md`-dəki boşa düşmüş NOTICE istinadı yeniləndi: vendor dəyərləri
+   dəyişməz, hər fayl öz başlığında upstream yolunu/tarixini daşıyır, paket özəl registry-də
+   `UNLICENSED`. **Qeyd (faktiki məhdudiyyət):** Apache-2.0 §4 şərtləri yalnız üçüncü tərəfə
+   paylamada praktiki olaraq işə düşür; paket ictimailəşsə, upstream attribution geri
+   qaytarılmalıdır.
+2. **`ds.html`** (513 KB Supabase səhifə dump-u) `git rm --cached` + diskdən silindi,
+   `.gitignore`-a əlavə olundu.
+3. **SSR hydration bug** — `sidebar.tsx`-in skeleton genişlikləri `Math.random()` ilə
+   render zamanı hesablanırdı (server/klient uyğunsuzluğu). `React.useId()`-dən törədilən
+   deterministik hash-a keçirildi; oxlint `purity` xəbərdarlığı 0-a düşdü.
+4. **`useTabIndicator` birləşdirildi** → `src/lib/use-tab-indicator.ts` (options parametrli
+   generic versiya, upstream-dəki kimi bir fayl). Tabs və ToggleGroup hər ikisi bura baxır;
+   `navigation/tabs/useTabIndicator.ts` (camelCase, sadələşdirilmiş fork) silindi — layihədə
+   camelCase fayl adı qalmadı. Brauzerdə yoxlanıldı: Tabs alt-xətti (`0px → 69px`) və
+   ToggleGroup segmented pill (`1px/53px → 54px/84px`) hələ də sürüşür.
+5. **Ay/il grid-ləri** ortaq `PickerGrid`-ə çıxarıldı: `role="listbox"` + `role="option"`,
+   `aria-selected`, roving `tabIndex` (yalnız seçili element tabbable) və Arrow/Home/End
+   naviqasiyası (`GRID_COLUMNS = 3`). Brauzerdə təsdiqləndi (Oct→Nov→Dec, Home=Jan, End=Dec,
+   Enter ayı seçib gün görünüşünə qaytarır).
+6. **`.oxlintrc.json`** tənzimləndi (`only-export-components` off; `playground/**` və
+   `tests/**` üçün `set-state-in-effect`/`exhaustive-deps` off) — 75 → 38 xəbərdarlıq,
+   qalanların hamısı real kitabxana kodunda.
+7. **`InputGroup` ailəsi daxiliyə çevrildi** — `forms/form/index.ts` barrel-indən çıxarıldı,
+   `data-input.tsx` faylın özünə birbaşa baxır. Public yol `Input`-un `prefix`/`suffix`-idir.
+8. **Tree-shaking düzəldildi** (ən böyük faydalı dəyişiklik "digər layihələrdə istifadə"
+   məqsədi üçün). `vite.config.ts`-ə `preserveModules` (es + cjs üçün ayrı output girişləri)
+   əlavə olundu; `package.json` `main`/`module`/`exports` → `dist/index.cjs`/`dist/index.js`.
+   Ölçüldü (təxmin yox): tək `Button` import-u əvvəl 414.8 KB-lıq bundle-dan **367.1 KB**
+   çəkirdi, indi **7.6 KB** (~48×).
+9. **Davranış testləri** — 299 golden vs 3 davranış testi balanssızlığına cavab. 4 yeni fayl,
+   28 test: `date-field.test.tsx` (11), `table.test.tsx` (6), `dropdown-menu.test.tsx` (5),
+   `multi-select.test.tsx` (6). Golden snapshot-ların prinsipcə tutmadığı şeyləri yoxlayır
+   (bu sessiyada tapılan hər real bug yalnız interaksiya ilə görünmüşdü).
+
+**Testlər yazarkən 3 real bug tapıldı və düzəldildi:**
+
+- **`Table`-ın `onRowClick`-i heç vaxt işləmirdi.** Şərt `event.currentTarget !== event.target`
+  idi — amma real klik həmişə `<td>`-yə düşür, heç vaxt `<tr>`-ə, deməli hər klik rədd olunurdu
+  (klaviatura yolu işləyirdi, çünki fokus `<tr>`-dədir, target === currentTarget). Fix:
+  `INTERACTIVE_CHILD` selektoru ilə `closest()` — klik yalnız öz aktivasiyasını idarə edən
+  uşaq elementə (`a, button, input, select, textarea, label, [role=menuitem|checkbox|switch]`)
+  düşəndə rədd olunur. `Input`-un `prefix`/`suffix` wrapper-indəki eyni yanaşma (#54).
+- **`MultiSelector` trigger-i `label` yerine raw `value` göstərirdi** (`react` deyil `React`).
+  `options` rejimi hər seçimin label-ını onsuz da bilir; hibrid layer-də `renderValue`
+  default-u əlavə olundu (compound rejimdə option siyahısı olmadığı üçün default orada yox,
+  burada yaşayır).
+- **`MonthCaption`** DayPicker-in öz metadata prop-larını (`calendarMonth`, `displayIndex`)
+  DOM `div`-inə yayırdı → React "unrecognized prop" xəbərdarlığı. Destructure ilə ayrıldı.
+
+`npm run verify` yaşıl: **333 test** (305 → +28), check:classes və check:tokens təmiz,
+golden snapshot-lar dəyişməyib (düzəlişlər markup-a toxunmur).
+
+**Qalan informativ tapıntı (qərar verilməyib):** `dist/styles.css` tək fayl olaraq 208 KB —
+bütün komponentlərin CSS-i. Bölmək CSS-in komponent başına import-unu tələb edir, bu da
+`sideEffects`/`exports` səthini artırır; hazırda tək `@import '@habibmustafa/coco/styles.css'`
+sadəliyi seçilib.

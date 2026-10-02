@@ -1,7 +1,7 @@
 {
   "name": "@habibmustafa/coco",
   "version": "0.1.0",
-  "license": "Apache-2.0",
+  "license": "UNLICENSED",
   "repository": {
     "type": "git",
     "url": "https://github.com/habibmustafa/core.git"
@@ -14,20 +14,20 @@
   "sideEffects": [
     "**/*.css"
   ],
-  "main": "./dist/coco.cjs",
-  "module": "./dist/coco.js",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "import": "./dist/coco.js",
-      "require": "./dist/coco.cjs"
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
     },
-    "./styles.css": "./dist/styles.css"
+    "./styles.css": "./dist/styles.css",
+    "./package.json": "./package.json"
   },
   "files": [
-    "dist",
-    "NOTICE.md"
+    "dist"
   ],
   "scripts": {
     "dev": "vite",

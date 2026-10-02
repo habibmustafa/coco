@@ -49,6 +49,25 @@ export default defineConfig({
         "tailwind-merge",
         "vaul",
       ],
+      // One output file per source module instead of one merged bundle. Without this
+      // the whole library collapses into a single chunk and consumers can't shake it:
+      // importing just `Button` pulled ~367KB of a ~415KB bundle, because rollup has
+      // already erased the module boundaries a consumer's bundler would drop at.
+      output: [
+        {
+          format: "es",
+          preserveModules: true,
+          preserveModulesRoot: "src",
+          entryFileNames: "[name].js",
+        },
+        {
+          format: "cjs",
+          preserveModules: true,
+          preserveModulesRoot: "src",
+          entryFileNames: "[name].cjs",
+          exports: "named",
+        },
+      ],
     },
   },
 });

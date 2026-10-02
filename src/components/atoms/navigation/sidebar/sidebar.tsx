@@ -670,10 +670,17 @@ const SidebarMenuSkeleton = React.forwardRef<
     showIcon?: boolean
   }
 >(({ className, showIcon = false, ...props }, ref) => {
-  // Random width between 50 to 90%.
+  // Varied width between 50 and 90%, derived from the instance id rather than
+  // Math.random() (upstream's version): a random value differs between the server
+  // and the client render, which trips React's hydration check in any SSR consumer.
+  const id = React.useId()
   const width = React.useMemo(() => {
-    return `${Math.floor(Math.random() * 40) + 50}%`
-  }, [])
+    let hash = 0
+    for (let index = 0; index < id.length; index++) {
+      hash = (hash * 31 + id.charCodeAt(index)) | 0
+    }
+    return `${(Math.abs(hash) % 41) + 50}%`
+  }, [id])
 
   return (
     <div

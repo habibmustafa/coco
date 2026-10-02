@@ -1,7 +1,7 @@
 import dayjs from 'dayjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
-import { useEffect, useState, type ComponentProps, type ReactNode } from 'react'
+import { useEffect, useRef, useState, type ComponentProps, type ReactNode } from 'react'
 
 import { cn } from '../../../lib/utils'
 import { buttonVariants } from '../../atoms/actions/button/shadcn-button'
@@ -108,8 +108,10 @@ export function DatePickerCalendar({
           week: cn('mt-1', calendarProps.classNames?.week),
         }}
         components={{
-          MonthCaption: (props) => (
-            <div {...props}>
+          // `calendarMonth` and `displayIndex` are DayPicker's own caption metadata, not
+          // DOM attributes — spreading them onto the div made React warn about unknown props.
+          MonthCaption: ({ calendarMonth: _month, displayIndex: _index, ...captionProps }) => (
+            <div {...captionProps}>
               <button type="button" onClick={() => setView('month')} className={headerButton}>
                 {dayjs(displayMonth).format('MMMM YYYY')}
               </button>
@@ -162,6 +164,84 @@ function GridHeader({
   )
 }
 
+const GRID_COLUMNS = 3
+
+/**
+ * The month and year views are a single-choice list laid out in a grid, so they're
+ * exposed as a listbox rather than `role="grid"` — a grid would require row elements
+ * this flat CSS grid doesn't have. Focus roves with the arrow keys (only the selected
+ * option is tabbable), matching how the day grid behaves inside DayPicker.
+ */
+function PickerGrid({
+  label,
+  options,
+  activeIndex,
+  onPick,
+}: {
+  label: string
+  options: { key: string | number; text: string }[]
+  activeIndex: number
+  onPick: (index: number) => void
+}) {
+  const listRef = useRef<HTMLDivElement>(null)
+
+  const focusAt = (index: number) => {
+    const clamped = Math.max(0, Math.min(options.length - 1, index))
+    listRef.current?.querySelectorAll<HTMLButtonElement>('[role="option"]')[clamped]?.focus()
+  }
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>, index: number) => {
+    const step =
+      event.key === 'ArrowRight'
+        ? 1
+        : event.key === 'ArrowLeft'
+          ? -1
+          : event.key === 'ArrowDown'
+            ? GRID_COLUMNS
+            : event.key === 'ArrowUp'
+              ? -GRID_COLUMNS
+              : undefined
+
+    if (step !== undefined) {
+      event.preventDefault()
+      focusAt(index + step)
+      return
+    }
+    if (event.key === 'Home') {
+      event.preventDefault()
+      focusAt(0)
+    }
+    if (event.key === 'End') {
+      event.preventDefault()
+      focusAt(options.length - 1)
+    }
+  }
+
+  return (
+    <div
+      ref={listRef}
+      role="listbox"
+      aria-label={label}
+      className="mt-2 grid grid-cols-3 gap-1"
+    >
+      {options.map((option, index) => (
+        <button
+          key={option.key}
+          type="button"
+          role="option"
+          aria-selected={index === activeIndex}
+          tabIndex={index === activeIndex ? 0 : -1}
+          onClick={() => onPick(index)}
+          onKeyDown={(event) => handleKeyDown(event, index)}
+          className={cn(gridCell, index === activeIndex && 'bg-accent text-accent-foreground')}
+        >
+          {option.text}
+        </button>
+      ))}
+    </div>
+  )
+}
+
 function MonthGrid({
   displayMonth,
   onPick,
@@ -175,7 +255,6 @@ function MonthGrid({
   onPrevYear: () => void
   onNextYear: () => void
 }) {
-  const activeMonth = displayMonth.getMonth()
   return (
     <div className="w-[238px] p-2 pt-0">
       <GridHeader
@@ -184,18 +263,15 @@ function MonthGrid({
         onPrev={onPrevYear}
         onNext={onNextYear}
       />
-      <div className="mt-2 grid grid-cols-3 gap-1">
-        {Array.from({ length: 12 }, (_, i) => (
-          <button
-            key={i}
-            type="button"
-            onClick={() => onPick(i)}
-            className={cn(gridCell, i === activeMonth && 'bg-accent text-accent-foreground')}
-          >
-            {dayjs().month(i).format('MMM')}
-          </button>
-        ))}
-      </div>
+      <PickerGrid
+        label="Select month"
+        activeIndex={displayMonth.getMonth()}
+        onPick={onPick}
+        options={Array.from({ length: 12 }, (_, i) => ({
+          key: i,
+          text: dayjs().month(i).format('MMM'),
+        }))}
+      />
     </div>
   )
 }
@@ -218,18 +294,12 @@ function YearGrid({
         onPrev={() => setPageStart((p) => p - YEAR_PAGE_SIZE)}
         onNext={() => setPageStart((p) => p + YEAR_PAGE_SIZE)}
       />
-      <div className="mt-2 grid grid-cols-3 gap-1">
-        {years.map((year) => (
-          <button
-            key={year}
-            type="button"
-            onClick={() => onPick(year)}
-            className={cn(gridCell, year === activeYear && 'bg-accent text-accent-foreground')}
-          >
-            {year}
-          </button>
-        ))}
-      </div>
+      <PickerGrid
+        label="Select year"
+        activeIndex={years.indexOf(activeYear)}
+        onPick={(index) => onPick(years[index])}
+        options={years.map((year) => ({ key: year, text: String(year) }))}
+      />
     </div>
   )
 }

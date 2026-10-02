@@ -82,6 +82,12 @@ export function MultiSelectorHybrid(props: MultiSelectorProps) {
     ...rootProps
   } = props
 
+  // The trigger only knows the selected *values*; in options mode the consumer already
+  // told us each one's label, so show that instead of the raw value (compound mode has
+  // no option list to look this up in, hence the default living here).
+  const renderOptionLabel =
+    renderValue ?? ((value: string) => options.find((o) => o.value === value)?.label ?? value)
+
   return (
     <MultiSelectorRoot {...rootProps}>
       <MultiSelectorTrigger
@@ -92,7 +98,7 @@ export function MultiSelectorHybrid(props: MultiSelectorProps) {
         wrapBadges={wrapBadges}
         deletableBadge={deletableBadge}
         showIcon={showIcon}
-        renderValue={renderValue}
+        renderValue={renderOptionLabel}
         mode={mode}
       />
       <MultiSelectorContent>

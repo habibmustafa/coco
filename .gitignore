@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# Local reference dumps (upstream page snapshots used for fidelity checks)
+ds.html
+*.reference.html

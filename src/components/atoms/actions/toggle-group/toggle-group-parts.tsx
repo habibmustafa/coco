@@ -6,7 +6,7 @@ import * as React from 'react'
 
 import { cn } from '../../../../lib/utils'
 import { toggleVariants } from '../toggle'
-import { useToggleGroupIndicator } from './use-toggle-group-indicator'
+import { useTabIndicator } from '../../../../lib/use-tab-indicator'
 
 const segmentIndicatorOptions = {
   activeItemSelector: '[data-state="on"]',
@@ -81,7 +81,7 @@ function ToggleGroupRoot({
   ...props
 }: ToggleGroupRootProps) {
   const rootRef = React.useRef<HTMLDivElement>(null)
-  useToggleGroupIndicator(rootRef, segmentIndicatorOptions)
+  useTabIndicator(rootRef, segmentIndicatorOptions)
 
   const hasIndicator = variant === 'segmented' && props.type === 'single'
 

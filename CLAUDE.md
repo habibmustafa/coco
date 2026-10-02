@@ -19,8 +19,9 @@ kitabxanasıdır. Məqsəd vizual və davranış baxımından upstream ilə eyni
 - Atomlar `src/components/atoms/<kateqoriya>/<ad>/`, fragmentlər
   `src/components/fragments/<ad>/` altındadır. Atomlar `lib/`-ə `../../../../lib/`,
   fragmentlər `../../../lib/` yolu ilə çatır.
-- `src/styles/vendor/theme/` içindəki dəyərləri dəyişmə. Mənbə və lisenziya məlumatı həmin
-  qovluğun `NOTICE.md` faylındadır; paylamadan əvvəl fayl səviyyəli bildirişləri yoxla.
+- `src/styles/vendor/theme/` içindəki dəyərləri dəyişmə — upstream ilə eynidir, hər faylın
+  başlığında mənbə yolu və çəkilmə tarixi var. Paket özəldir (`UNLICENSED`, private
+  registry); public paylamaya keçilərsə upstream attribution-u geri qaytarılmalıdır.
 - Mövcud komponentdə DOM, class, ARIA, focus, animasiya və davranış sadiqliyini qoru.
   İlk portda upstream-in public faylını götür, yalnız import yollarını uyğunlaşdır; upstream
   demosunu da gətir. Mövcud hibriddə daxili refaktor mümkündür, nəticəni golden testlə yoxla.

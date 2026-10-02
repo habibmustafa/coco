@@ -1,0 +1,99 @@
+import { useState } from 'react'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { expect, test, vi } from 'vitest'
+
+import { MultiSelector } from '../src/components/fragments/multi-select'
+
+const options = [
+  { value: 'react', label: 'React' },
+  { value: 'vue', label: 'Vue' },
+  { value: 'svelte', label: 'Svelte', disabled: true },
+]
+
+function Host({
+  initial = [],
+  onValuesChange,
+  ...rest
+}: { initial?: string[]; onValuesChange?: (values: string[]) => void } & Record<string, unknown>) {
+  const [values, setValues] = useState<string[]>(initial)
+  return (
+    <MultiSelector
+      options={options}
+      values={values}
+      onValuesChange={(next) => {
+        setValues(next)
+        onValuesChange?.(next)
+      }}
+      label="Frameworks"
+      {...rest}
+    />
+  )
+}
+
+const trigger = () => screen.getByRole('combobox')
+const option = (name: string) => screen.getByRole('option', { name })
+
+async function openList() {
+  fireEvent.click(trigger())
+  return screen.findByRole('listbox')
+}
+
+test('selecting and re-selecting an option toggles it', async () => {
+  const onValuesChange = vi.fn()
+  render(<Host onValuesChange={onValuesChange} />)
+  await openList()
+
+  fireEvent.click(option('React'))
+  expect(onValuesChange).toHaveBeenLastCalledWith(['react'])
+
+  fireEvent.click(option('React'))
+  expect(onValuesChange).toHaveBeenLastCalledWith([])
+})
+
+test('multiple selections accumulate in order', async () => {
+  const onValuesChange = vi.fn()
+  render(<Host onValuesChange={onValuesChange} />)
+  await openList()
+
+  fireEvent.click(option('Vue'))
+  fireEvent.click(option('React'))
+  expect(onValuesChange).toHaveBeenLastCalledWith(['vue', 'react'])
+})
+
+test('a disabled option cannot be selected', async () => {
+  const onValuesChange = vi.fn()
+  render(<Host onValuesChange={onValuesChange} />)
+  await openList()
+
+  const svelte = option('Svelte')
+  expect(svelte.getAttribute('aria-disabled')).toBe('true')
+  fireEvent.click(svelte)
+  expect(onValuesChange).not.toHaveBeenCalled()
+})
+
+test('the trigger summarises the current selection instead of the label', () => {
+  render(<Host initial={['react', 'vue']} />)
+  expect(trigger().textContent).toContain('React')
+  expect(trigger().textContent).toContain('Vue')
+})
+
+test('badgeLimit collapses the overflow into a count badge', () => {
+  render(<Host initial={['react', 'vue']} badgeLimit={1} />)
+  expect(trigger().textContent).toContain('React')
+  expect(trigger().textContent).toContain('+1')
+  expect(trigger().textContent).not.toContain('Vue')
+})
+
+test('the search box filters the list and falls back to the empty label', async () => {
+  render(<Host searchable searchPlaceholder="Search…" />)
+  await openList()
+
+  const search = screen.getByPlaceholderText('Search…')
+  fireEvent.change(search, { target: { value: 'vu' } })
+  expect(screen.queryByRole('option', { name: 'React' })).toBeNull()
+  expect(option('Vue')).toBeTruthy()
+
+  fireEvent.change(search, { target: { value: 'zzz' } })
+  expect(screen.queryByRole('option')).toBeNull()
+  expect(screen.getByText('No results found')).toBeTruthy()
+})
