@@ -7,7 +7,7 @@
  * `<Form {...methods}>` (a `FormProvider`) automatically, so none of these take a `control`
  * prop — just `name`.
  *
- * These are coco's own components, not an upstream port — the atoms they wrap
+ * These are ui's own components, not an upstream port — the atoms they wrap
  * (Input/Textarea/Checkbox/Switch/Select/RadioGroup/DatePicker) and FormItemLayout stay
  * untouched, so using them outside a form is unaffected.
  */

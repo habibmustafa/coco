@@ -60,8 +60,8 @@ const NOT_CLASSES = new Set([
   // Upstream typo, same category as `items-right`/`font-italic` below: Tailwind's
   // utility is `items-start`, `items-top` resolves to nothing on their site either.
   'items-top',
-  // Layout primitives: prose from the "coco-specific"/"page-width" descriptions, not classes.
-  'coco-specific',
+  // Layout primitives: prose from the "ui-specific"/"page-width" descriptions, not classes.
+  'ui-specific',
   'page-width',
   // Layout class tables: enum keys (FlexDirection/GridFlow values), not utilities.
   'column-dense',

@@ -19,7 +19,7 @@ const hybridPageIds = new Set([
   'sheet', 'table', 'tabs', 'tooltip', 'metric-card', 'multi-select', 'date-picker',
   // 'toggle-group' deliberately excluded: its "Segmented" preview is compound-only
   // (the tone/size demo-loop + controlled state can't be expressed through the
-  // `items` props API without faking it — see docs/plan.md).
+  // `items` props API without faking it).
 ])
 
 test('every codeVariants preview has both source tabs and a props preview', () => {

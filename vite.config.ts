@@ -20,7 +20,7 @@ export default defineConfig({
     lib: {
       entry: "src/index.ts",
       formats: ["es", "cjs"],
-      fileName: (format) => (format === "es" ? "coco.js" : "coco.cjs"),
+      fileName: (format) => (format === "es" ? "index.js" : "index.cjs"),
       cssFileName: "styles",
     },
     rollupOptions: {

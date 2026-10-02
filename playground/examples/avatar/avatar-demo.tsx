@@ -4,7 +4,7 @@ export default function AvatarDemo() {
   return (
     <>
       <Avatar.Root>
-        <Avatar.Image src="/coco-mark.svg" alt="coco" />
+        <Avatar.Image src="/ui-mark.svg" alt="ui" />
         <Avatar.Fallback>CO</Avatar.Fallback>
       </Avatar.Root>
       <Avatar.Root>

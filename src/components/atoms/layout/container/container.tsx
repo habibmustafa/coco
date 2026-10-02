@@ -1,5 +1,5 @@
 /*
- * coco-specific layout primitive — no upstream counterpart; see box.tsx and docs/plan.md #37.
+ * ui-specific layout primitive — no upstream counterpart; see box.tsx.
  *
  * Centred, bounded page-width wrapper. Upstream sizes pages with ad-hoc max-w-* utilities;
  * Container names the three widths the design system actually uses so call sites stay

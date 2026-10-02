@@ -4,15 +4,15 @@ export default function HoverCardDemo() {
   return (
     <HoverCard.Root>
       <HoverCard.Trigger asChild>
-        <Button variant="link">@coco</Button>
+        <Button variant="link">@habibmustafa</Button>
       </HoverCard.Trigger>
       <HoverCard.Content className="w-64">
         <div className="flex gap-3">
           <Avatar.Root>
-            <Avatar.Fallback>CO</Avatar.Fallback>
+            <Avatar.Fallback>UI</Avatar.Fallback>
           </Avatar.Root>
           <div>
-            <p className="text-sm font-medium">coco</p>
+            <p className="text-sm font-medium">ui</p>
             <p className="text-sm text-foreground-light">React components for your next interface.</p>
           </div>
         </div>

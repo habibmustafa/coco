@@ -67,7 +67,7 @@ import type { ComponentPreviewCodeVariant } from './component-preview'
  * Single source of truth for the playground's component pages. Every entry is
  * addressable at /components/<id>; the sidebar nav in app.tsx is derived from
  * these groups, so adding an entry here is enough to get a page and a link.
- * `icon` is purely decorative (Overview grid scanning) — coco's own choice, not
+ * `icon` is purely decorative (Overview grid scanning) — ui's own choice, not
  * an upstream fidelity concern.
  */
 
@@ -94,14 +94,14 @@ export interface ComponentGroup {
   entries: ComponentEntry[]
 }
 
-/* coco-specific additions — not part of the upstream Supabase design system. */
+/* ui-specific additions — not part of the upstream Supabase design system. */
 const layoutPrimitives: ComponentEntry[] = [
   {
     id: 'box',
     title: 'Box',
     icon: Box,
     description:
-      'coco-specific primitive: one component that renders any element via `as`, merged through cn().',
+      'ui-specific primitive: one component that renders any element via `as`, merged through cn().',
     previews: [
       { name: 'box-demo' },
     ],
@@ -111,7 +111,7 @@ const layoutPrimitives: ComponentEntry[] = [
     title: 'Container',
     icon: Frame,
     description:
-      'coco-specific primitive: centred, bounded page-width wrapper (sm/md/lg/full).',
+      'ui-specific primitive: centred, bounded page-width wrapper (sm/md/lg/full).',
     previews: [
       { name: 'container-demo' },
     ],
@@ -121,7 +121,7 @@ const layoutPrimitives: ComponentEntry[] = [
     title: 'Flex',
     icon: Columns3,
     description:
-      'coco-specific primitive: flex container with direction, align, justify, wrap and token gaps.',
+      'ui-specific primitive: flex container with direction, align, justify, wrap and token gaps.',
     previews: [
       { name: 'flex-demo' },
     ],
@@ -131,7 +131,7 @@ const layoutPrimitives: ComponentEntry[] = [
     title: 'Grid',
     icon: LayoutGrid,
     description:
-      'coco-specific primitive: CSS grid with columns, rows, flow and independent axis gaps.',
+      'ui-specific primitive: CSS grid with columns, rows, flow and independent axis gaps.',
     previews: [
       { name: 'grid-demo' },
     ],
@@ -141,7 +141,7 @@ const layoutPrimitives: ComponentEntry[] = [
     title: 'Stack',
     icon: Rows3,
     description:
-      'coco-specific primitive: the opinionated 1-dimensional preset of Flex — vertical by default, always gapped.',
+      'ui-specific primitive: the opinionated 1-dimensional preset of Flex — vertical by default, always gapped.',
     previews: [
       { name: 'stack-demo' },
     ],
@@ -451,7 +451,7 @@ const atoms: ComponentEntry[] = [
     title: 'Date Field',
     icon: CalendarDays,
     description:
-      "coco-specific: a single typeable date input with MUI-style segments (day/month/year), not a port. Type digits, use arrow up/down to step a segment, arrow left/right to move between segments, backspace to clear, or paste a full date; optional minDate/maxDate mark aria-invalid without blocking typing. Standalone here — DatePicker composes it with a calendar popover.",
+      "ui-specific: a single typeable date input with MUI-style segments (day/month/year), not a port. Type digits, use arrow up/down to step a segment, arrow left/right to move between segments, backspace to clear, or paste a full date; optional minDate/maxDate mark aria-invalid without blocking typing. Standalone here — DatePicker composes it with a calendar popover.",
     previews: [{ name: 'date-field-demo' }],
   },
   {
@@ -583,7 +583,7 @@ const atoms: ComponentEntry[] = [
     title: 'Input',
     icon: TextCursorInput,
     description:
-      'Sunk field surface with the shared size scale and an aria-invalid state; optional prefix/suffix (coco-specific) glue an icon or short label inside the same border.',
+      'Sunk field surface with the shared size scale and an aria-invalid state; optional prefix/suffix (ui-specific) glue an icon or short label inside the same border.',
     previews: [
       { name: 'input-sizes', label: 'Sizes' },
       { name: 'input-states', label: 'States' },
@@ -1078,7 +1078,7 @@ const fragments: ComponentEntry[] = [
     title: 'Form Fields',
     icon: FileText,
     description:
-      "coco-specific: terser react-hook-form + zod fields (FormInput/FormSelect/FormCheckbox/FormSwitch/FormRadioGroup/FormTextarea/FormDatePicker) — each wraps the FormField/FormItem/FormLabel/FormControl/FormMessage ceremony behind a single `name`, so a field is one line instead of a whole render-prop tree.",
+      "ui-specific: terser react-hook-form + zod fields (FormInput/FormSelect/FormCheckbox/FormSwitch/FormRadioGroup/FormTextarea/FormDatePicker) — each wraps the FormField/FormItem/FormLabel/FormControl/FormMessage ceremony behind a single `name`, so a field is one line instead of a whole render-prop tree.",
     previews: [{ name: 'form-fields-demo' }],
   },
   {

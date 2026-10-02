@@ -1,7 +1,7 @@
 # Hibrid API — cari texniki qaydalar
 
-Bu sənəd hibrid komponenti dəyişəndə istifadə olunur. Ümumi qaydalar `CLAUDE.md`-də, cari
-qərarlar `docs/plan.md`-də, tam tarix `docs/plan-history.md`-dədir. Mövcud
+Bu sənəd hibrid komponenti dəyişəndə istifadə olunur. Ümumi qaydalar `CONTRIBUTING.md`-də, cari
+Mövcud
 `dialog.tsx`/`dialog-parts.tsx` və
 `dialog-demo.tsx`/`dialog-props-demo.tsx` cütü işlək istinaddır.
 
@@ -11,7 +11,7 @@ Yalnız Root və bir neçə mənalı public hissəsi olan komponent hibrid olur.
 (`items`, `options`, `columns` və s.) əl ilə hissə yığmağı əvəz etməlidir. Tək elementli
 komponentə və ya tam sxem generatoru tələb edən sistemə süni ikinci API əlavə etmə.
 `Chart`-ın məhdud props API-si ümumi hibrid nümunəsi deyil; Sonner, Calendar, Form və Sidebar
-haqqında qərarlar `plan.md`-dədir.
+qəsdən hibridləşdirilməyib.
 
 ```tsx
 <Tabs items={items} />
@@ -53,7 +53,7 @@ bundle `TS4023` ilə sına bilər. Birbaşa Radix export-una statik sahə yapı�
 - Default görünüşdə upstream demo və compound nümunənin DOM-u, class-ları, ARIA-sı, focus
   idarəsi, portalı və animasiyası eyni qalır. Variant tiplərini hissənin prop tipindən çıxar;
   paralel union yazma. Yeni data prop üçün sinifləri literal xəritədə saxla, dinamik Tailwind
-  class adı qurma. Upstream demo yoxdursa, minimal hissə kompozisiyası seç və bunu `plan.md`-də
+  class adı qurma. Upstream demo yoxdursa, minimal hissə kompozisiyası seç
   qeyd et.
 - `open/defaultOpen/onOpenChange`, `value/defaultValue/onValueChange` kimi adları saxla.
   Lazım olanda `src/lib/use-controllable-state.ts`-dən istifadə et; controlled state-i
@@ -81,11 +81,11 @@ bundle `TS4023` ilə sına bilər. Birbaşa Radix export-una statik sahə yapı�
 Hər uyğun hibrid nümunə üçün props və compound faylını
 `playground/registry.tsx`-də `codeVariants: [{ id: 'props', ... }, { id: 'compound', ... }]`
 ilə cütləşdir. `Preview` props nümunəsini göstərir; compound faylı `.Root`/`.Child` yazır.
-Əgər props API eyni davranışı ifadə etmirsə, saxta nümunə düzəltmə və səbəbi `plan.md`-də
+Əgər props API eyni davranışı ifadə etmirsə, saxta nümunə düzəltmə
 qeyd et. Flat komponentlərdə ikinci rejim yaratma.
 
 Yeni hibrid keçidindən əvvəl compound nümunənin golden baseline-ını yarat. Mövcud golden HTML
-dəyişməməlidir. Dəyişiklik qəsdəndirsə, səbəbini testdə və `plan.md`-də
+dəyişməməlidir. Dəyişiklik qəsdəndirsə, səbəbini testdə
 izah et; sadəcə testi keçirmək üçün snapshot yeniləmə. `npm run verify` build, lint,
 class/token yoxlamaları və testləri birlikdə işlədir. Qərarı və nəticəni eyni turda
-`docs/plan.md`-ə əlavə et.
+sənədləşdir.

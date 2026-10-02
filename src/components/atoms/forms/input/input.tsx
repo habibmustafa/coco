@@ -32,7 +32,7 @@ export const InputVariants = cva(
 )
 
 /**
- * `prefix`/`suffix` are coco's own addition, not upstream — a lighter-weight
+ * `prefix`/`suffix` are ui's own addition, not upstream — a lighter-weight
  * alternative to composing the full `InputGroup`/`InputGroupAddon` shell
  * (`src/components/atoms/forms/form/input-group.tsx`) for the common case of one
  * icon or short label glued to the field. Only this branch renders a wrapper div;

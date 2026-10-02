@@ -1,16 +1,15 @@
-# coco
+# ui
 
-Ad həmişə kiçik hərflərlə yazılır: **coco**. Paket importları `coco`, üslub importu
-`coco/styles.css`, build faylları isə `coco.js` və `coco.cjs` adlanır.
+Ad həmişə kiçik hərflərlə yazılır: **ui**. Paket adı `@habibmustafa/ui`, üslub importu
+`@habibmustafa/ui/styles.css`, build faylları `index.js` və `index.cjs`.
 
-Loqo yumru, eyni qalınlıqlı xətlərdən qurulmuş dörd hərfdən ibarətdir. İki təkrarlanan
-“co” hissəsi komponentlərin birləşdirilərək interfeys yaratmasını ifadə edir.
-Şrift faylı tələb etmir: bütün hərflər SVG həndəsəsidir.
+Loqo yumru, eyni qalınlıqlı xətlərdən qurulmuş iki hərfdən ibarətdir — `u` kasası və `i`
+gövdəsi + nöqtəsi. Şrift faylı tələb etmir: bütün formalar SVG həndəsəsidir, ona görə
+istənilən ölçüdə kəskin qalır.
 
-- `public/coco-logo.svg` — şəffaf fonlu əsas yazı loqosu; başlıqda 80 × 24 px.
-- `public/coco-mark.svg` — iki “c” formasından ibarət kvadrat nişan.
-- `public/favicon.svg` — sistemin açıq/tünd rəng rejiminə uyğunlaşan brauzer nişanı.
+- `public/ui-logo.svg` — şəffaf fonlu əsas yazı loqosu; başlıqda 52 × 26 px (2 : 1 nisbət).
+- `public/ui-mark.svg` — kvadrat nişan, yuvarlaqlaşdırılmış tünd fon üzərində açıq xətlər.
+- `public/favicon.svg` — sistemin açıq/tünd rejiminə uyğunlaşan brauzer nişanı.
 
-Əsas rənglər kömür qarası `#18181b` və yumşaq ağ `#fafaf9`-dır. Playground tünd
-temada yazı loqosunu CSS ilə inversiya edir. Loqonun nisbətlərini saxla; ətrafında
-ən azı xətt qalınlığının iki misli qədər boşluq burax.
+Rənglər: tünd `#18181b`, açıq `#fafaf9`. Loqo açıq fonda `#18181b` xətlərlə gəlir, tünd
+temada `dark:invert` ilə çevrilir — ayrıca tünd variant faylı saxlanmır.

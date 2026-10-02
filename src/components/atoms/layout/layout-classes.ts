@@ -1,5 +1,5 @@
 /*
- * Internal class tables for the coco-specific layout primitives (see docs/plan.md #37).
+ * Internal class tables for the ui-specific layout primitives.
  *
  * Every utility is written out literally: Tailwind only emits CSS for class names it can
  * read in the source, so an interpolated `gap-${n}` would silently produce nothing.

@@ -144,7 +144,7 @@ async function main() {
     process.exit(1)
   }
 
-  const userDir = mkdtempSync(join(tmpdir(), 'coco-cdp-'))
+  const userDir = mkdtempSync(join(tmpdir(), 'ui-cdp-'))
   const proc = spawn(
     chrome,
     [

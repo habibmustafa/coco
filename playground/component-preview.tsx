@@ -3,7 +3,7 @@ import { codeToHtml } from 'shiki'
 import { useEffect, useState, type ComponentType } from 'react'
 
 import { Tabs } from '../src'
-import { cocoCodeTheme } from './shiki-theme'
+import { uiCodeTheme } from './shiki-theme'
 
 // Examples live one folder per component (./examples/<component>/<name>.tsx), so the
 // glob is recursive; call sites still address a demo by its bare file name.
@@ -34,7 +34,7 @@ const sources = byBasename(
 // The examples import from the library source; show the package name instead so
 // the snippet reads the way a consumer would write it.
 function presentSource(source: string) {
-  return source.replace(/(['"])(?:\.\.\/)+src\1/g, "'coco'").trim()
+  return source.replace(/(['"])(?:\.\.\/)+src\1/g, "'@habibmustafa/ui'").trim()
 }
 
 function useHighlighted(source: string) {
@@ -43,7 +43,7 @@ function useHighlighted(source: string) {
   useEffect(() => {
     let active = true
 
-    codeToHtml(source, { lang: 'tsx', theme: cocoCodeTheme }).then((result) => {
+    codeToHtml(source, { lang: 'tsx', theme: uiCodeTheme }).then((result) => {
       if (active) setHtml(result)
     })
 

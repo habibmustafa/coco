@@ -109,7 +109,7 @@ function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
  * command palette listing every route, each row carrying the same icon as its
  * Overview card (registry.tsx is the single source for both). The trigger button
  * is lifted verbatim from supabase.com/design-system's own header (checked against
- * its live, rendered DOM — see docs/plan.md); the dialog composes the Command
+ * its live, rendered DOM); the dialog composes the Command
  * primitives directly rather than the library's own CommandDialog, which is sized
  * for its "Type a command…" demo, not a dense, whole-library search list.
  */
@@ -272,13 +272,13 @@ function Header() {
 
           <Link
             to="/"
-            aria-label="coco — ana səhifə"
+            aria-label="ui — ana səhifə"
             className="focus-ring shrink-0 rounded-sm"
           >
             <img
-              src="/coco-logo.svg"
-              alt="coco"
-              width={84}
+              src="/ui-logo.svg"
+              alt="ui"
+              width={52}
               height={26}
               className="dark:invert"
             />
@@ -321,7 +321,7 @@ function Overview() {
     <div className="flex flex-col">
       <h1 className="scroll-m-20 text-4xl tracking-tight">Components</h1>
       <p className="mt-2 text-lg text-foreground-light">
-        React components, patterns and design tokens for coco.
+        React components, patterns and design tokens for ui.
       </p>
       <div
         role="none"

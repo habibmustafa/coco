@@ -92,8 +92,8 @@ const settings: NonNullable<ThemeRegistrationRaw['settings']> = [
   },
 ]
 
-export const cocoCodeTheme: ThemeRegistrationRaw = {
-  name: 'coco',
+export const uiCodeTheme: ThemeRegistrationRaw = {
+  name: 'ui',
   type: 'dark',
   colors: {
     'editor.foreground': 'var(--code-foreground)',

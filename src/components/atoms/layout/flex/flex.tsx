@@ -1,5 +1,5 @@
 /*
- * coco-specific layout primitive — no upstream counterpart; see box.tsx and docs/plan.md #37.
+ * ui-specific layout primitive — no upstream counterpart; see box.tsx.
  */
 import * as React from 'react'
 

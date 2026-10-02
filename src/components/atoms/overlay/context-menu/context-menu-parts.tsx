@@ -12,7 +12,7 @@ import { cn } from '../../../../lib/utils'
  * instead of that file's own — upstream's `context-menu.tsx` is stale relative to
  * `dropdown-menu.tsx` on the same branch (old `bg-selection`/`text-muted-foreground`
  * tokens vs. the current `bg-overlay-hover`/`text-foreground-lighter` ones), and the
- * two components render identically in the live design system. See docs/plan.md.
+ * two components render identically in the live design system.
  */
 
 const ContextMenuRoot = ContextMenuPrimitive.Root

@@ -1,5 +1,5 @@
 /*
- * coco-specific layout primitive — no upstream counterpart; see box.tsx and docs/plan.md #37.
+ * ui-specific layout primitive — no upstream counterpart; see box.tsx.
  *
  * Stack is the opinionated preset of Flex: 1-dimensional, vertical by default, with a gap
  * that is always set. Use Flex when you need full control over both axes.

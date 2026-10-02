@@ -1,9 +1,13 @@
-<p align="center"><img src="public/coco-mark.svg" alt="coco" width="64" height="64" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/habibmustafa/coco/main/public/ui-mark.svg" alt="ui" width="64" height="64" /></p>
 
-# coco
+# ui
 
-coco üçün React komponent kitabxanası. React 19, TypeScript,
-Tailwind CSS v4 və Radix üzərində qurulub. Paket özəldir, npm-də yayımlanmayıb.
+React komponent kitabxanası. React 19, TypeScript,
+Tailwind CSS v4 və Radix üzərində qurulub.
+
+```sh
+npm i @habibmustafa/ui
+```
 
 37 atom və 20 fragment komponent (26-sı hibrid — həm compound, həm props-driven API), 92 işlək
 nümunə playground-da göstərilir.
@@ -19,16 +23,16 @@ Playground: http://localhost:3000.
 
 ```sh
 npm run verify     # build, tip, lint, class və canlı token yoxlaması
-npm run build:lib  # dist/coco.js, coco.cjs, styles.css və index.d.ts
+npm run build:lib  # dist/index.js, index.cjs, styles.css və index.d.ts
 ```
 
 ## İstifadə
 
-Paket lokal dependency kimi qoşulduqdan sonra:
+Paket React 19 tələb edir (peer dependency):
 
 ```tsx
-import { Button, ThemeProvider } from 'coco'
-import 'coco/styles.css'
+import { Button, ThemeProvider } from '@habibmustafa/ui'
+import '@habibmustafa/ui/styles.css'
 
 export function App() {
   return (
@@ -45,8 +49,7 @@ təyin edin: tokenlər class-a, `dark:` utility-ləri isə atributa əsaslanır.
 
 ## Sənədlər
 
-- [Cari plan və qərarlar](docs/plan.md)
-- [Tarixi qərar jurnalı](docs/plan-history.md)
-- [Agent üçün brifinq](docs/codex-prompt.md)
+- [Layihə qaydaları](CONTRIBUTING.md)
+- [Hibrid API](docs/hybrid-api-migration.md)
 - [Loqo və brend qaydaları](docs/brand.md)
-- [Üçüncü tərəf mənbə və lisenziya qeydləri](src/styles/vendor/theme/NOTICE.md)
+- [Üçüncü tərəf mənbə və lisenziya qeydləri](THIRD-PARTY-NOTICES.md)
